@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files (secrets!)
+.env
+.env.*
+!.env.example
+
+# Test files
+*_test.go
+coverage.*
+*.test
+
+# Database (will be on volume)
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+data/
+
+# PDFs (large files)
+*.pdf
+
+# Build artifacts
+bin/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Fly.io
+fly.toml

@@ -1,0 +1,61 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Dependency directories
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+data/lectionary.db
+
+# PDF source files (large, don't commit)
+data/pdfs/*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/lectionary-api
+/api
+/import
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/

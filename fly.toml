@@ -1,0 +1,43 @@
+# Fly.io Configuration
+# Deploy with: fly deploy
+
+app = "lectionary-api"
+primary_region = "ord"  # Chicago - change to your preferred region
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  ENV = "production"
+  DATABASE_PATH = "/data/lectionary.db"
+  LOG_FORMAT = "json"
+  LOG_LEVEL = "info"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 250
+    soft_limit = 200
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  timeout = "5s"
+  path = "/health"
+
+[mounts]
+  source = "lectionary_data"
+  destination = "/data"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
