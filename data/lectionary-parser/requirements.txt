@@ -1,0 +1,6 @@
+pdfplumber
+python-dateutil
+pydantic
+
+requests
+beautifulsoup4

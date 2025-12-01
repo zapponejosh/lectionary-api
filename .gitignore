@@ -59,3 +59,9 @@ logs/
 # Temporary files
 tmp/
 temp/
+
+# Python ingored files
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
