@@ -397,6 +397,224 @@ func (tx *Tx) CreateReading(ctx context.Context, reading *Reading) error {
 }
 
 // =============================================================================
+// Reading Progress Queries
+// =============================================================================
+
+// GetProgressByUser retrieves a user's reading progress with pagination.
+func (db *DB) GetProgressByUser(ctx context.Context, userID string, limit, offset int) ([]ReadingProgress, error) {
+	query := `
+		SELECT id, user_id, reading_id, notes, completed_at, created_at, updated_at
+		FROM reading_progress
+		WHERE user_id = ?
+		ORDER BY completed_at DESC
+		LIMIT ? OFFSET ?
+	`
+
+	rows, err := db.QueryContext(ctx, query, userID, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("query progress by user: %w", err)
+	}
+	defer rows.Close()
+
+	var progress []ReadingProgress
+	for rows.Next() {
+		var p ReadingProgress
+		var notes sql.NullString
+		var completedAt, createdAt, updatedAt string
+
+		if err := rows.Scan(
+			&p.ID,
+			&p.UserID,
+			&p.ReadingID,
+			&notes,
+			&completedAt,
+			&createdAt,
+			&updatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("scan progress: %w", err)
+		}
+
+		if notes.Valid {
+			p.Notes = &notes.String
+		}
+		p.CompletedAt, _ = time.Parse(time.DateTime, completedAt)
+		p.CreatedAt, _ = time.Parse(time.DateTime, createdAt)
+		p.UpdatedAt, _ = time.Parse(time.DateTime, updatedAt)
+
+		progress = append(progress, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate progress: %w", err)
+	}
+
+	return progress, nil
+}
+
+// GetProgressByID retrieves a progress entry by ID.
+func (db *DB) GetProgressByID(ctx context.Context, id int64) (*ReadingProgress, error) {
+	query := `
+		SELECT id, user_id, reading_id, notes, completed_at, created_at, updated_at
+		FROM reading_progress
+		WHERE id = ?
+	`
+
+	var p ReadingProgress
+	var notes sql.NullString
+	var completedAt, createdAt, updatedAt string
+
+	err := db.QueryRowContext(ctx, query, id).Scan(
+		&p.ID,
+		&p.UserID,
+		&p.ReadingID,
+		&notes,
+		&completedAt,
+		&createdAt,
+		&updatedAt,
+	)
+	if err == sql.ErrNoRows {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("query progress by id: %w", err)
+	}
+
+	if notes.Valid {
+		p.Notes = &notes.String
+	}
+	p.CompletedAt, _ = time.Parse(time.DateTime, completedAt)
+	p.CreatedAt, _ = time.Parse(time.DateTime, createdAt)
+	p.UpdatedAt, _ = time.Parse(time.DateTime, updatedAt)
+
+	return &p, nil
+}
+
+// CreateProgress inserts a new progress entry.
+func (db *DB) CreateProgress(ctx context.Context, progress *ReadingProgress) error {
+	query := `
+		INSERT INTO reading_progress (user_id, reading_id, notes, completed_at)
+		VALUES (?, ?, ?, ?)
+	`
+
+	result, err := db.ExecContext(ctx, query,
+		progress.UserID,
+		progress.ReadingID,
+		progress.Notes,
+		progress.CompletedAt.Format(time.DateTime),
+	)
+	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint") {
+			return ErrDuplicate
+		}
+		return fmt.Errorf("insert progress: %w", err)
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("get last insert id: %w", err)
+	}
+
+	progress.ID = id
+	return nil
+}
+
+// DeleteProgress deletes a progress entry.
+func (db *DB) DeleteProgress(ctx context.Context, id int64) error {
+	query := `DELETE FROM reading_progress WHERE id = ?`
+
+	result, err := db.ExecContext(ctx, query, id)
+	if err != nil {
+		return fmt.Errorf("delete progress: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return ErrNotFound
+	}
+
+	return nil
+}
+
+// GetProgressStats calculates statistics for a user's reading progress.
+func (db *DB) GetProgressStats(ctx context.Context, userID string) (*ProgressStats, error) {
+	// Get total readings count
+	totalQuery := `SELECT COUNT(*) FROM readings`
+	var totalReadings int
+	if err := db.QueryRowContext(ctx, totalQuery).Scan(&totalReadings); err != nil {
+		return nil, fmt.Errorf("count total readings: %w", err)
+	}
+
+	// Get completed readings count
+	completedQuery := `
+		SELECT COUNT(DISTINCT reading_id)
+		FROM reading_progress
+		WHERE user_id = ?
+	`
+	var completedReadings int
+	if err := db.QueryRowContext(ctx, completedQuery, userID).Scan(&completedReadings); err != nil {
+		return nil, fmt.Errorf("count completed readings: %w", err)
+	}
+
+	// Calculate completion percentage
+	completionPercent := 0.0
+	if totalReadings > 0 {
+		completionPercent = (float64(completedReadings) / float64(totalReadings)) * 100.0
+	}
+
+	// Calculate current streak (consecutive days with completed readings)
+	currentStreak := 0
+	streakQuery := `
+		SELECT DATE(completed_at) as date, COUNT(*) as count
+		FROM reading_progress
+		WHERE user_id = ?
+		GROUP BY DATE(completed_at)
+		ORDER BY date DESC
+	`
+	rows, err := db.QueryContext(ctx, streakQuery, userID)
+	if err == nil {
+		defer rows.Close()
+		expectedDate := time.Now()
+		for rows.Next() {
+			var dateStr string
+			var count int
+			if err := rows.Scan(&dateStr, &count); err != nil {
+				break
+			}
+			date, err := time.Parse("2006-01-02", dateStr)
+			if err != nil {
+				break
+			}
+
+			// Check if this date is consecutive
+			daysDiff := int(expectedDate.Sub(date).Hours() / 24)
+			if daysDiff == 0 || (currentStreak == 0 && daysDiff <= 1) {
+				currentStreak++
+				expectedDate = date.AddDate(0, 0, -1)
+			} else if daysDiff > 1 {
+				break
+			}
+		}
+	}
+
+	// Calculate longest streak (simplified - could be optimized)
+	longestStreak := currentStreak // For MVP, use current streak
+
+	stats := &ProgressStats{
+		TotalReadings:     totalReadings,
+		CompletedReadings: completedReadings,
+		CompletionPercent: completionPercent,
+		CurrentStreak:     currentStreak,
+		LongestStreak:     longestStreak,
+	}
+
+	return stats, nil
+}
+
+// =============================================================================
 // Helper Functions
 // =============================================================================
 
