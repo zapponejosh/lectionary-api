@@ -48,25 +48,24 @@ func seedTestData(t *testing.T, db *DB) {
 	t.Helper()
 	ctx := context.Background()
 
-	// Create a liturgical day
-	day := &LiturgicalDay{
-		Date:           "2025-01-01",
-		Weekday:        3, // Wednesday
-		YearCycle:      1,
-		Season:         string(SeasonChristmas),
-		SpecialDayName: strPtr("New Year's Day"),
+	// Create a lectionary day (position-based)
+	day := &LectionaryDay{
+		Period:        "1st Week of Advent",
+		DayIdentifier: "Sunday",
+		PeriodType:    PeriodTypeLiturgical,
+		SpecialName:   strPtr("First Sunday of Advent"),
+		MorningPsalms: []string{"24", "150"},
+		EveningPsalms: []string{"25", "110"},
 	}
 	if err := db.CreateDay(ctx, day); err != nil {
 		t.Fatalf("create test day: %v", err)
 	}
 
-	// Create readings for the day
+	// Create readings for Year 1
 	readings := []Reading{
-		{DayID: day.ID, ReadingType: ReadingTypeMorningPsalm, Position: 1, Reference: "Pss. 98; 147:1–11"},
-		{DayID: day.ID, ReadingType: ReadingTypeEveningPsalm, Position: 1, Reference: "Pss. 99; 8"},
-		{DayID: day.ID, ReadingType: ReadingTypeOldTestament, Position: 1, Reference: "Gen. 17:1–12a, 15–16"},
-		{DayID: day.ID, ReadingType: ReadingTypeEpistle, Position: 1, Reference: "Col. 2:6–12"},
-		{DayID: day.ID, ReadingType: ReadingTypeGospel, Position: 1, Reference: "John 16:23b–30"},
+		{LectionaryDayID: day.ID, YearCycle: 1, ReadingType: ReadingTypeFirst, Position: 1, Reference: "Isaiah 1:1–9"},
+		{LectionaryDayID: day.ID, YearCycle: 1, ReadingType: ReadingTypeSecond, Position: 1, Reference: "Col. 2:6–12"},
+		{LectionaryDayID: day.ID, YearCycle: 1, ReadingType: ReadingTypeGospel, Position: 1, Reference: "John 16:23b–30"},
 	}
 
 	for i := range readings {
@@ -117,12 +116,13 @@ func TestCreateDay(t *testing.T) {
 	db := testDB(t)
 	ctx := context.Background()
 
-	day := &LiturgicalDay{
-		Date:           "2025-03-05",
-		Weekday:        3,
-		YearCycle:      1,
-		Season:         string(SeasonLent),
-		SpecialDayName: strPtr("Ash Wednesday"),
+	day := &LectionaryDay{
+		Period:        "1st Week of Lent",
+		DayIdentifier: "Wednesday",
+		PeriodType:    PeriodTypeLiturgical,
+		SpecialName:   strPtr("Ash Wednesday"),
+		MorningPsalms: []string{"51"},
+		EveningPsalms: []string{"32", "143"},
 	}
 
 	err := db.CreateDay(ctx, day)
@@ -139,23 +139,25 @@ func TestCreateDay_Duplicate(t *testing.T) {
 	db := testDB(t)
 	ctx := context.Background()
 
-	day := &LiturgicalDay{
-		Date:      "2025-03-05",
-		Weekday:   3,
-		YearCycle: 1,
-		Season:    string(SeasonLent),
+	day := &LectionaryDay{
+		Period:        "1st Week of Lent",
+		DayIdentifier: "Wednesday",
+		PeriodType:    PeriodTypeLiturgical,
+		MorningPsalms: []string{"51"},
+		EveningPsalms: []string{"32"},
 	}
 
 	if err := db.CreateDay(ctx, day); err != nil {
 		t.Fatalf("first CreateDay() error = %v", err)
 	}
 
-	// Try to create duplicate
-	day2 := &LiturgicalDay{
-		Date:      "2025-03-05",
-		Weekday:   3,
-		YearCycle: 1,
-		Season:    string(SeasonLent),
+	// Try to create duplicate (same period + day_identifier)
+	day2 := &LectionaryDay{
+		Period:        "1st Week of Lent",
+		DayIdentifier: "Wednesday",
+		PeriodType:    PeriodTypeLiturgical,
+		MorningPsalms: []string{"52"},
+		EveningPsalms: []string{"33"},
 	}
 
 	err := db.CreateDay(ctx, day2)
@@ -164,68 +166,75 @@ func TestCreateDay_Duplicate(t *testing.T) {
 	}
 }
 
-func TestGetDayByDate(t *testing.T) {
+func TestGetDayByPosition(t *testing.T) {
 	db := testDB(t)
 	seedTestData(t, db)
 	ctx := context.Background()
 
-	day, err := db.GetDayByDate(ctx, "2025-01-01")
+	day, err := db.GetDayByPosition(ctx, "1st Week of Advent", "Sunday")
 	if err != nil {
-		t.Fatalf("GetDayByDate() error = %v", err)
+		t.Fatalf("GetDayByPosition() error = %v", err)
 	}
 
-	if day.Date != "2025-01-01" {
-		t.Errorf("GetDayByDate() date = %q, want %q", day.Date, "2025-01-01")
+	if day.Period != "1st Week of Advent" {
+		t.Errorf("GetDayByPosition() period = %q, want %q", day.Period, "1st Week of Advent")
 	}
-	if day.Season != string(SeasonChristmas) {
-		t.Errorf("GetDayByDate() season = %q, want %q", day.Season, SeasonChristmas)
+	if day.DayIdentifier != "Sunday" {
+		t.Errorf("GetDayByPosition() day_identifier = %q, want %q", day.DayIdentifier, "Sunday")
 	}
-	if day.SpecialDayName == nil || *day.SpecialDayName != "New Year's Day" {
-		t.Errorf("GetDayByDate() special_day_name = %v, want %q", day.SpecialDayName, "New Year's Day")
+	if day.PeriodType != PeriodTypeLiturgical {
+		t.Errorf("GetDayByPosition() period_type = %q, want %q", day.PeriodType, PeriodTypeLiturgical)
+	}
+	if day.SpecialName == nil || *day.SpecialName != "First Sunday of Advent" {
+		t.Errorf("GetDayByPosition() special_name = %v, want %q", day.SpecialName, "First Sunday of Advent")
+	}
+	if len(day.MorningPsalms) != 2 || day.MorningPsalms[0] != "24" {
+		t.Errorf("GetDayByPosition() morning_psalms = %v, want [\"24\", \"150\"]", day.MorningPsalms)
 	}
 }
 
-func TestGetDayByDate_NotFound(t *testing.T) {
+func TestGetDayByPosition_NotFound(t *testing.T) {
 	db := testDB(t)
 	ctx := context.Background()
 
-	_, err := db.GetDayByDate(ctx, "9999-12-31")
+	_, err := db.GetDayByPosition(ctx, "Non-existent Period", "Monday")
 	if err != ErrNotFound {
-		t.Errorf("GetDayByDate() error = %v, want ErrNotFound", err)
+		t.Errorf("GetDayByPosition() error = %v, want ErrNotFound", err)
 	}
 }
 
-func TestGetDaysInRange(t *testing.T) {
+func TestGetDaysByPeriod(t *testing.T) {
 	db := testDB(t)
 	ctx := context.Background()
 
-	// Create several days
-	dates := []string{"2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04", "2025-01-05"}
-	for i, date := range dates {
-		day := &LiturgicalDay{
-			Date:      date,
-			Weekday:   i % 7,
-			YearCycle: 1,
-			Season:    string(SeasonChristmas),
+	// Create several days in the same period
+	dayIdentifiers := []string{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"}
+	for _, dayID := range dayIdentifiers {
+		day := &LectionaryDay{
+			Period:        "1st Week of Advent",
+			DayIdentifier: dayID,
+			PeriodType:    PeriodTypeLiturgical,
+			MorningPsalms: []string{"24"},
+			EveningPsalms: []string{"25"},
 		}
 		if err := db.CreateDay(ctx, day); err != nil {
-			t.Fatalf("create day %s: %v", date, err)
+			t.Fatalf("create day %s: %v", dayID, err)
 		}
 	}
 
-	// Query range
-	days, err := db.GetDaysInRange(ctx, "2025-01-02", "2025-01-04")
+	// Query by period
+	days, err := db.GetDaysByPeriod(ctx, "1st Week of Advent")
 	if err != nil {
-		t.Fatalf("GetDaysInRange() error = %v", err)
+		t.Fatalf("GetDaysByPeriod() error = %v", err)
 	}
 
-	if len(days) != 3 {
-		t.Errorf("GetDaysInRange() returned %d days, want 3", len(days))
+	if len(days) != 5 {
+		t.Errorf("GetDaysByPeriod() returned %d days, want 5", len(days))
 	}
 
-	// Verify order
-	if len(days) >= 2 && days[0].Date > days[1].Date {
-		t.Error("GetDaysInRange() days not in ascending order")
+	// Verify order (Sunday first)
+	if len(days) >= 1 && days[0].DayIdentifier != "Sunday" {
+		t.Errorf("GetDaysByPeriod() first day = %q, want %q", days[0].DayIdentifier, "Sunday")
 	}
 }
 
@@ -233,38 +242,81 @@ func TestGetDaysInRange(t *testing.T) {
 // Reading tests
 // -----------------------------------------------------------------
 
-func TestGetReadingsByDayID(t *testing.T) {
+func TestGetReadingsByDayAndYear(t *testing.T) {
 	db := testDB(t)
 	seedTestData(t, db)
 	ctx := context.Background()
 
 	// Get the day first
-	day, err := db.GetDayByDate(ctx, "2025-01-01")
+	day, err := db.GetDayByPosition(ctx, "1st Week of Advent", "Sunday")
 	if err != nil {
 		t.Fatalf("get day: %v", err)
 	}
 
-	readings, err := db.GetReadingsByDayID(ctx, day.ID)
+	readings, err := db.GetReadingsByDayAndYear(ctx, day.ID, 1)
 	if err != nil {
-		t.Fatalf("GetReadingsByDayID() error = %v", err)
+		t.Fatalf("GetReadingsByDayAndYear() error = %v", err)
 	}
 
-	if len(readings) != 5 {
-		t.Errorf("GetReadingsByDayID() returned %d readings, want 5", len(readings))
+	if len(readings) != 3 {
+		t.Errorf("GetReadingsByDayAndYear() returned %d readings, want 3", len(readings))
 	}
 
-	// Verify ordering (morning psalms first, then evening, OT, epistle, gospel)
+	// Verify ordering (first, second, gospel)
 	expectedOrder := []ReadingType{
-		ReadingTypeMorningPsalm,
-		ReadingTypeEveningPsalm,
-		ReadingTypeOldTestament,
-		ReadingTypeEpistle,
+		ReadingTypeFirst,
+		ReadingTypeSecond,
 		ReadingTypeGospel,
 	}
 	for i, reading := range readings {
 		if reading.ReadingType != expectedOrder[i] {
 			t.Errorf("reading[%d].ReadingType = %q, want %q", i, reading.ReadingType, expectedOrder[i])
 		}
+		if reading.YearCycle != 1 {
+			t.Errorf("reading[%d].YearCycle = %d, want 1", i, reading.YearCycle)
+		}
+	}
+}
+
+func TestGetReadingsByDayID(t *testing.T) {
+	db := testDB(t)
+	seedTestData(t, db)
+	ctx := context.Background()
+
+	// Get the day first
+	day, err := db.GetDayByPosition(ctx, "1st Week of Advent", "Sunday")
+	if err != nil {
+		t.Fatalf("get day: %v", err)
+	}
+
+	// Add Year 2 readings
+	year2Readings := []Reading{
+		{LectionaryDayID: day.ID, YearCycle: 2, ReadingType: ReadingTypeFirst, Position: 1, Reference: "Jeremiah 1:1–10"},
+		{LectionaryDayID: day.ID, YearCycle: 2, ReadingType: ReadingTypeSecond, Position: 1, Reference: "1 Thess. 1:1–10"},
+		{LectionaryDayID: day.ID, YearCycle: 2, ReadingType: ReadingTypeGospel, Position: 1, Reference: "Matt. 3:1–12"},
+	}
+	for i := range year2Readings {
+		if err := db.CreateReading(ctx, &year2Readings[i]); err != nil {
+			t.Fatalf("create year 2 reading: %v", err)
+		}
+	}
+
+	// Get all readings (both years)
+	readings, err := db.GetReadingsByDayID(ctx, day.ID)
+	if err != nil {
+		t.Fatalf("GetReadingsByDayID() error = %v", err)
+	}
+
+	if len(readings) != 6 {
+		t.Errorf("GetReadingsByDayID() returned %d readings, want 6 (3 for each year)", len(readings))
+	}
+
+	// Verify ordering: year 1 first, then year 2
+	if readings[0].YearCycle != 1 {
+		t.Errorf("first reading year_cycle = %d, want 1", readings[0].YearCycle)
+	}
+	if readings[3].YearCycle != 2 {
+		t.Errorf("fourth reading year_cycle = %d, want 2", readings[3].YearCycle)
 	}
 }
 
@@ -273,11 +325,12 @@ func TestCreateReading(t *testing.T) {
 	ctx := context.Background()
 
 	// Create a day first
-	day := &LiturgicalDay{
-		Date:      "2025-01-10",
-		Weekday:   5,
-		YearCycle: 1,
-		Season:    string(SeasonEpiphany),
+	day := &LectionaryDay{
+		Period:        "2nd Week of Epiphany",
+		DayIdentifier: "Monday",
+		PeriodType:    PeriodTypeLiturgical,
+		MorningPsalms: []string{"46"},
+		EveningPsalms: []string{"47"},
 	}
 	if err := db.CreateDay(ctx, day); err != nil {
 		t.Fatalf("create day: %v", err)
@@ -285,11 +338,11 @@ func TestCreateReading(t *testing.T) {
 
 	// Create a reading
 	reading := &Reading{
-		DayID:         day.ID,
-		ReadingType:   ReadingTypeMorningPsalm,
-		Position:      1,
-		Reference:     "Pss. 46; 47",
-		IsAlternative: false,
+		LectionaryDayID: day.ID,
+		YearCycle:       1,
+		ReadingType:     ReadingTypeFirst,
+		Position:        1,
+		Reference:       "Isaiah 42:1–9",
 	}
 
 	err := db.CreateReading(ctx, reading)
@@ -307,8 +360,11 @@ func TestCreateReading(t *testing.T) {
 		t.Fatalf("GetReadingByID() error = %v", err)
 	}
 
-	if retrieved.Reference != "Pss. 46; 47" {
-		t.Errorf("retrieved reading reference = %q, want %q", retrieved.Reference, "Pss. 46; 47")
+	if retrieved.Reference != "Isaiah 42:1–9" {
+		t.Errorf("retrieved reading reference = %q, want %q", retrieved.Reference, "Isaiah 42:1–9")
+	}
+	if retrieved.YearCycle != 1 {
+		t.Errorf("retrieved reading year_cycle = %d, want 1", retrieved.YearCycle)
 	}
 }
 
@@ -321,17 +377,26 @@ func TestGetDailyReadings(t *testing.T) {
 	seedTestData(t, db)
 	ctx := context.Background()
 
-	daily, err := db.GetDailyReadings(ctx, "2025-01-01")
+	daily, err := db.GetDailyReadings(ctx, "1st Week of Advent", "Sunday", 1)
 	if err != nil {
 		t.Fatalf("GetDailyReadings() error = %v", err)
 	}
 
-	if daily.Day.Date != "2025-01-01" {
-		t.Errorf("GetDailyReadings() day.date = %q, want %q", daily.Day.Date, "2025-01-01")
+	if daily.Period != "1st Week of Advent" {
+		t.Errorf("GetDailyReadings() period = %q, want %q", daily.Period, "1st Week of Advent")
+	}
+	if daily.DayIdentifier != "Sunday" {
+		t.Errorf("GetDailyReadings() day_identifier = %q, want %q", daily.DayIdentifier, "Sunday")
+	}
+	if daily.YearCycle != 1 {
+		t.Errorf("GetDailyReadings() year_cycle = %d, want 1", daily.YearCycle)
 	}
 
-	if len(daily.Readings) != 5 {
-		t.Errorf("GetDailyReadings() returned %d readings, want 5", len(daily.Readings))
+	if len(daily.Readings) != 3 {
+		t.Errorf("GetDailyReadings() returned %d readings, want 3", len(daily.Readings))
+	}
+	if len(daily.MorningPsalms) != 2 {
+		t.Errorf("GetDailyReadings() morning_psalms = %v, want 2 psalms", daily.MorningPsalms)
 	}
 }
 
@@ -339,7 +404,7 @@ func TestGetDailyReadings_NotFound(t *testing.T) {
 	db := testDB(t)
 	ctx := context.Background()
 
-	_, err := db.GetDailyReadings(ctx, "9999-12-31")
+	_, err := db.GetDailyReadings(ctx, "Non-existent Period", "Monday", 1)
 	if err != ErrNotFound {
 		t.Errorf("GetDailyReadings() error = %v, want ErrNotFound", err)
 	}
@@ -348,169 +413,15 @@ func TestGetDailyReadings_NotFound(t *testing.T) {
 // -----------------------------------------------------------------
 // Progress tests
 // -----------------------------------------------------------------
-
-func TestMarkReadingComplete(t *testing.T) {
-	db := testDB(t)
-	seedTestData(t, db)
-	ctx := context.Background()
-
-	// Get a reading
-	day, _ := db.GetDayByDate(ctx, "2025-01-01")
-	readings, _ := db.GetReadingsByDayID(ctx, day.ID)
-	reading := readings[0]
-
-	// Mark it complete
-	notes := "Great psalm!"
-	progress, err := db.MarkReadingComplete(ctx, "test-user", reading.ID, &notes)
-	if err != nil {
-		t.Fatalf("MarkReadingComplete() error = %v", err)
-	}
-
-	if progress.ID == 0 {
-		t.Error("MarkReadingComplete() did not set ID")
-	}
-	if progress.UserID != "test-user" {
-		t.Errorf("progress.UserID = %q, want %q", progress.UserID, "test-user")
-	}
-	if progress.Notes == nil || *progress.Notes != "Great psalm!" {
-		t.Errorf("progress.Notes = %v, want %q", progress.Notes, "Great psalm!")
-	}
-}
-
-func TestMarkReadingComplete_Duplicate(t *testing.T) {
-	db := testDB(t)
-	seedTestData(t, db)
-	ctx := context.Background()
-
-	day, _ := db.GetDayByDate(ctx, "2025-01-01")
-	readings, _ := db.GetReadingsByDayID(ctx, day.ID)
-	reading := readings[0]
-
-	// Mark complete first time
-	_, err := db.MarkReadingComplete(ctx, "test-user", reading.ID, nil)
-	if err != nil {
-		t.Fatalf("first MarkReadingComplete() error = %v", err)
-	}
-
-	// Try to mark again
-	_, err = db.MarkReadingComplete(ctx, "test-user", reading.ID, nil)
-	if err != ErrDuplicate {
-		t.Errorf("second MarkReadingComplete() error = %v, want ErrDuplicate", err)
-	}
-}
-
-func TestUnmarkReadingComplete(t *testing.T) {
-	db := testDB(t)
-	seedTestData(t, db)
-	ctx := context.Background()
-
-	day, _ := db.GetDayByDate(ctx, "2025-01-01")
-	readings, _ := db.GetReadingsByDayID(ctx, day.ID)
-	reading := readings[0]
-
-	// Mark then unmark
-	db.MarkReadingComplete(ctx, "test-user", reading.ID, nil)
-
-	err := db.UnmarkReadingComplete(ctx, "test-user", reading.ID)
-	if err != nil {
-		t.Fatalf("UnmarkReadingComplete() error = %v", err)
-	}
-
-	// Verify it's gone
-	progress, _ := db.GetProgressForReadings(ctx, "test-user", []int64{reading.ID})
-	if _, exists := progress[reading.ID]; exists {
-		t.Error("UnmarkReadingComplete() did not remove progress")
-	}
-}
-
-func TestUnmarkReadingComplete_NotFound(t *testing.T) {
-	db := testDB(t)
-	ctx := context.Background()
-
-	err := db.UnmarkReadingComplete(ctx, "test-user", 99999)
-	if err != ErrNotFound {
-		t.Errorf("UnmarkReadingComplete() error = %v, want ErrNotFound", err)
-	}
-}
-
-func TestGetUserProgress(t *testing.T) {
-	db := testDB(t)
-	seedTestData(t, db)
-	ctx := context.Background()
-
-	day, _ := db.GetDayByDate(ctx, "2025-01-01")
-	readings, _ := db.GetReadingsByDayID(ctx, day.ID)
-
-	// Mark several readings
-	for i := 0; i < 3; i++ {
-		db.MarkReadingComplete(ctx, "test-user", readings[i].ID, nil)
-	}
-
-	// Get progress
-	progress, err := db.GetUserProgress(ctx, "test-user", 10, 0)
-	if err != nil {
-		t.Fatalf("GetUserProgress() error = %v", err)
-	}
-
-	if len(progress) != 3 {
-		t.Errorf("GetUserProgress() returned %d records, want 3", len(progress))
-	}
-}
-
-func TestGetProgressForReadings(t *testing.T) {
-	db := testDB(t)
-	seedTestData(t, db)
-	ctx := context.Background()
-
-	day, _ := db.GetDayByDate(ctx, "2025-01-01")
-	readings, _ := db.GetReadingsByDayID(ctx, day.ID)
-
-	// Mark first reading complete
-	db.MarkReadingComplete(ctx, "test-user", readings[0].ID, nil)
-
-	// Get progress for first two readings
-	readingIDs := []int64{readings[0].ID, readings[1].ID}
-	progress, err := db.GetProgressForReadings(ctx, "test-user", readingIDs)
-	if err != nil {
-		t.Fatalf("GetProgressForReadings() error = %v", err)
-	}
-
-	// First should exist, second should not
-	if _, exists := progress[readings[0].ID]; !exists {
-		t.Error("GetProgressForReadings() missing progress for reading 0")
-	}
-	if _, exists := progress[readings[1].ID]; exists {
-		t.Error("GetProgressForReadings() has unexpected progress for reading 1")
-	}
-}
-
-func TestGetUserStats(t *testing.T) {
-	db := testDB(t)
-	seedTestData(t, db)
-	ctx := context.Background()
-
-	day, _ := db.GetDayByDate(ctx, "2025-01-01")
-	readings, _ := db.GetReadingsByDayID(ctx, day.ID)
-
-	// Mark 2 of 5 readings complete
-	db.MarkReadingComplete(ctx, "test-user", readings[0].ID, nil)
-	db.MarkReadingComplete(ctx, "test-user", readings[1].ID, nil)
-
-	stats, err := db.GetUserStats(ctx, "test-user")
-	if err != nil {
-		t.Fatalf("GetUserStats() error = %v", err)
-	}
-
-	if stats.TotalReadings != 5 {
-		t.Errorf("stats.TotalReadings = %d, want 5", stats.TotalReadings)
-	}
-	if stats.CompletedReadings != 2 {
-		t.Errorf("stats.CompletedReadings = %d, want 2", stats.CompletedReadings)
-	}
-	if stats.CompletionPercent != 40.0 {
-		t.Errorf("stats.CompletionPercent = %f, want 40.0", stats.CompletionPercent)
-	}
-}
+// Note: Progress tracking methods have been removed from the current
+// implementation. These tests are commented out but kept for reference
+// in case progress tracking is re-implemented in the future.
+//
+// func TestMarkReadingComplete(t *testing.T) { ... }
+// func TestUnmarkReadingComplete(t *testing.T) { ... }
+// func TestGetUserProgress(t *testing.T) { ... }
+// func TestGetProgressForReadings(t *testing.T) { ... }
+// func TestGetUserStats(t *testing.T) { ... }
 
 // -----------------------------------------------------------------
 // Model validation tests
@@ -521,10 +432,8 @@ func TestReadingType_IsValid(t *testing.T) {
 		rt   ReadingType
 		want bool
 	}{
-		{ReadingTypeMorningPsalm, true},
-		{ReadingTypeEveningPsalm, true},
-		{ReadingTypeOldTestament, true},
-		{ReadingTypeEpistle, true},
+		{ReadingTypeFirst, true},
+		{ReadingTypeSecond, true},
 		{ReadingTypeGospel, true},
 		{"invalid", false},
 		{"", false},
@@ -539,27 +448,22 @@ func TestReadingType_IsValid(t *testing.T) {
 	}
 }
 
-func TestSeason_IsValid(t *testing.T) {
+func TestPeriodType_IsValid(t *testing.T) {
 	tests := []struct {
-		s    Season
+		pt   PeriodType
 		want bool
 	}{
-		{SeasonAdvent, true},
-		{SeasonChristmas, true},
-		{SeasonEpiphany, true},
-		{SeasonLent, true},
-		{SeasonHolyWeek, true},
-		{SeasonEaster, true},
-		{SeasonPentecost, true},
-		{SeasonOrdinary, true},
+		{PeriodTypeLiturgical, true},
+		{PeriodTypeDated, true},
+		{PeriodTypeFixed, true},
 		{"invalid", false},
 		{"", false},
 	}
 
 	for _, tt := range tests {
-		t.Run(string(tt.s), func(t *testing.T) {
-			if got := tt.s.IsValid(); got != tt.want {
-				t.Errorf("Season(%q).IsValid() = %v, want %v", tt.s, got, tt.want)
+		t.Run(string(tt.pt), func(t *testing.T) {
+			if got := tt.pt.IsValid(); got != tt.want {
+				t.Errorf("PeriodType(%q).IsValid() = %v, want %v", tt.pt, got, tt.want)
 			}
 		})
 	}
@@ -575,11 +479,12 @@ func TestWithTx(t *testing.T) {
 
 	// Successful transaction
 	err := db.WithTx(ctx, func(tx *Tx) error {
-		day := &LiturgicalDay{
-			Date:      "2025-06-01",
-			Weekday:   0,
-			YearCycle: 1,
-			Season:    string(SeasonOrdinary),
+		day := &LectionaryDay{
+			Period:        "10th Week of Ordinary Time",
+			DayIdentifier: "Sunday",
+			PeriodType:    PeriodTypeLiturgical,
+			MorningPsalms: []string{"24"},
+			EveningPsalms: []string{"25"},
 		}
 		return tx.CreateDay(ctx, day)
 	})
@@ -588,7 +493,7 @@ func TestWithTx(t *testing.T) {
 	}
 
 	// Verify day was created
-	day, err := db.GetDayByDate(ctx, "2025-06-01")
+	day, err := db.GetDayByPosition(ctx, "10th Week of Ordinary Time", "Sunday")
 	if err != nil {
 		t.Errorf("day not created: %v", err)
 	}
@@ -603,11 +508,12 @@ func TestWithTx_Rollback(t *testing.T) {
 
 	// Failed transaction should rollback
 	err := db.WithTx(ctx, func(tx *Tx) error {
-		day := &LiturgicalDay{
-			Date:      "2025-06-02",
-			Weekday:   1,
-			YearCycle: 1,
-			Season:    string(SeasonOrdinary),
+		day := &LectionaryDay{
+			Period:        "11th Week of Ordinary Time",
+			DayIdentifier: "Monday",
+			PeriodType:    PeriodTypeLiturgical,
+			MorningPsalms: []string{"24"},
+			EveningPsalms: []string{"25"},
 		}
 		if err := tx.CreateDay(ctx, day); err != nil {
 			return err
@@ -620,7 +526,7 @@ func TestWithTx_Rollback(t *testing.T) {
 	}
 
 	// Verify day was NOT created
-	_, err = db.GetDayByDate(ctx, "2025-06-02")
+	_, err = db.GetDayByPosition(ctx, "11th Week of Ordinary Time", "Monday")
 	if err != ErrNotFound {
 		t.Errorf("day should not exist after rollback, got error: %v", err)
 	}
