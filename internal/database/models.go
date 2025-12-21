@@ -2,40 +2,73 @@
 package database
 
 import (
+	"encoding/json"
 	"time"
 )
 
-// LiturgicalDay represents a single day in the lectionary calendar.
-// Each day belongs to a liturgical season and may have special observances.
-type LiturgicalDay struct {
-	ID             int64     `json:"id"`
-	Date           string    `json:"date"`             // ISO 8601 format: YYYY-MM-DD
-	Weekday        int       `json:"weekday"`          // 0=Sunday through 6=Saturday
-	YearCycle      int       `json:"year_cycle"`       // 1 or 2 (two-year cycle)
-	Season         string    `json:"season"`           // advent, christmas, lent, etc.
-	SpecialDayName *string   `json:"special_day_name"` // nullable: "Easter", "Ash Wednesday", etc.
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+// =============================================================================
+// Core Domain Types
+// =============================================================================
+
+// PeriodType categorizes how a lectionary period relates to the calendar.
+// This affects how we compute dates for a given position.
+type PeriodType string
+
+const (
+	// PeriodTypeLiturgical represents weeks relative to moveable feasts.
+	// Examples: "1st Week of Advent", "Holy Week", "3rd Week of Easter"
+	// Date computation requires knowing Easter date for the year.
+	PeriodTypeLiturgical PeriodType = "liturgical_week"
+
+	// PeriodTypeDated represents weeks anchored to calendar date ranges.
+	// Examples: "Week following Sun. between Feb. 11 and 17"
+	// These occur in the Epiphany→Lent and Pentecost→Advent transitions.
+	PeriodTypeDated PeriodType = "dated_week"
+
+	// PeriodTypeFixed represents specific calendar dates.
+	// Examples: Christmas Day (Dec 25), Epiphany (Jan 6)
+	// These always fall on the same date regardless of Easter.
+	PeriodTypeFixed PeriodType = "fixed_days"
+)
+
+// ValidPeriodTypes returns all valid period types.
+func ValidPeriodTypes() []PeriodType {
+	return []PeriodType{
+		PeriodTypeLiturgical,
+		PeriodTypeDated,
+		PeriodTypeFixed,
+	}
+}
+
+// IsValid checks if a period type is valid.
+func (pt PeriodType) IsValid() bool {
+	for _, valid := range ValidPeriodTypes() {
+		if pt == valid {
+			return true
+		}
+	}
+	return false
 }
 
 // ReadingType defines the category of a scripture reading.
 type ReadingType string
 
 const (
-	ReadingTypeMorningPsalm ReadingType = "morning_psalm"
-	ReadingTypeEveningPsalm ReadingType = "evening_psalm"
-	ReadingTypeOldTestament ReadingType = "old_testament"
-	ReadingTypeEpistle      ReadingType = "epistle"
-	ReadingTypeGospel       ReadingType = "gospel"
+	// ReadingTypeFirst is the first scripture reading (typically OT).
+	ReadingTypeFirst ReadingType = "first"
+
+	// ReadingTypeSecond is the second scripture reading (typically Epistle).
+	ReadingTypeSecond ReadingType = "second"
+
+	// ReadingTypeGospel is the gospel reading.
+	ReadingTypeGospel ReadingType = "gospel"
 )
 
 // ValidReadingTypes returns all valid reading types.
 func ValidReadingTypes() []ReadingType {
 	return []ReadingType{
-		ReadingTypeMorningPsalm,
-		ReadingTypeEveningPsalm,
-		ReadingTypeOldTestament,
-		ReadingTypeEpistle,
+		ReadingTypeFirst,
+		ReadingTypeSecond,
 		ReadingTypeGospel,
 	}
 }
@@ -50,17 +83,68 @@ func (rt ReadingType) IsValid() bool {
 	return false
 }
 
-// Reading represents a single scripture reading assigned to a day.
-// Each day has multiple readings (psalms, OT, epistle, gospel).
+// =============================================================================
+// Database Models
+// =============================================================================
+
+// LectionaryDay represents a position in the 2-year lectionary cycle.
+// This is NOT tied to specific calendar dates - dates are computed at runtime.
+//
+// The combination of Period + DayIdentifier uniquely identifies a position.
+// Examples:
+//   - Period="1st Week of Advent", DayIdentifier="Sunday"
+//   - Period="Christmas Season", DayIdentifier="December 25"
+type LectionaryDay struct {
+	ID            int64      `json:"id"`
+	Period        string     `json:"period"`         // "1st Week of Advent", "Holy Week", etc.
+	DayIdentifier string     `json:"day_identifier"` // "Sunday", "Monday", or "December 25"
+	PeriodType    PeriodType `json:"period_type"`    // liturgical_week, dated_week, fixed_days
+	SpecialName   *string    `json:"special_name"`   // "Christmas Day", "Epiphany", etc. (nullable)
+	MorningPsalms []string   `json:"morning_psalms"` // ["24", "150"]
+	EveningPsalms []string   `json:"evening_psalms"` // ["25", "110"]
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+}
+
+// MorningPsalmsJSON returns the morning psalms as a JSON string for database storage.
+func (ld *LectionaryDay) MorningPsalmsJSON() string {
+	if ld.MorningPsalms == nil {
+		return "[]"
+	}
+	b, _ := json.Marshal(ld.MorningPsalms)
+	return string(b)
+}
+
+// EveningPsalmsJSON returns the evening psalms as a JSON string for database storage.
+func (ld *LectionaryDay) EveningPsalmsJSON() string {
+	if ld.EveningPsalms == nil {
+		return "[]"
+	}
+	b, _ := json.Marshal(ld.EveningPsalms)
+	return string(b)
+}
+
+// ParsePsalmsJSON parses a JSON array string into a slice of psalm references.
+func ParsePsalmsJSON(jsonStr string) ([]string, error) {
+	if jsonStr == "" || jsonStr == "[]" {
+		return []string{}, nil
+	}
+	var psalms []string
+	err := json.Unmarshal([]byte(jsonStr), &psalms)
+	return psalms, err
+}
+
+// Reading represents a single scripture reading assigned to a lectionary position.
+// Readings are specific to a year cycle (1 or 2).
 type Reading struct {
-	ID            int64       `json:"id"`
-	DayID         int64       `json:"day_id"`
-	ReadingType   ReadingType `json:"reading_type"`
-	Position      int         `json:"position"`       // Order within type (1, 2, etc.)
-	Reference     string      `json:"reference"`      // e.g., "Gen. 17:1–12a"
-	IsAlternative bool        `json:"is_alternative"` // True if marked with "or"
-	CreatedAt     time.Time   `json:"created_at"`
-	UpdatedAt     time.Time   `json:"updated_at"`
+	ID              int64       `json:"id"`
+	LectionaryDayID int64       `json:"lectionary_day_id"`
+	YearCycle       int         `json:"year_cycle"`   // 1 or 2
+	ReadingType     ReadingType `json:"reading_type"` // first, second, gospel
+	Position        int         `json:"position"`     // Order within type (usually 1)
+	Reference       string      `json:"reference"`    // "Isaiah 1:1-9"
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
 }
 
 // ReadingProgress tracks a user's completion of a specific reading.
@@ -74,28 +158,38 @@ type ReadingProgress struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-// -----------------------------------------------------------------
-// Composite types for API responses
-// -----------------------------------------------------------------
+// =============================================================================
+// API Response Types
+// =============================================================================
 
-// DailyReadings combines a liturgical day with all its readings.
-// This is the primary response type for the readings endpoints.
+// DailyReadings is the primary response for "give me readings for a date".
+// It combines the position information with the appropriate year's readings.
 type DailyReadings struct {
-	Day      LiturgicalDay `json:"day"`
-	Readings []Reading     `json:"readings"`
+	// Position information (from lectionary_days)
+	Period        string   `json:"period"`
+	DayIdentifier string   `json:"day_identifier"`
+	SpecialName   *string  `json:"special_name,omitempty"`
+	MorningPsalms []string `json:"morning_psalms"`
+	EveningPsalms []string `json:"evening_psalms"`
+
+	// Which year cycle was used for this response
+	YearCycle int `json:"year_cycle"`
+
+	// The scripture readings for this year cycle
+	Readings []Reading `json:"readings"`
 }
 
 // ReadingWithProgress combines a reading with its completion status.
 type ReadingWithProgress struct {
 	Reading   Reading          `json:"reading"`
-	Progress  *ReadingProgress `json:"progress,omitempty"` // nil if not completed
+	Progress  *ReadingProgress `json:"progress,omitempty"`
 	Completed bool             `json:"completed"`
 }
 
-// DailyReadingsWithProgress combines daily readings with progress info.
+// DailyReadingsWithProgress extends DailyReadings with progress information.
 type DailyReadingsWithProgress struct {
-	Day      LiturgicalDay         `json:"day"`
-	Readings []ReadingWithProgress `json:"readings"`
+	DailyReadings
+	ReadingsWithProgress []ReadingWithProgress `json:"readings_with_progress"`
 }
 
 // ProgressStats contains statistics about a user's reading progress.
@@ -103,48 +197,52 @@ type ProgressStats struct {
 	TotalReadings     int     `json:"total_readings"`
 	CompletedReadings int     `json:"completed_readings"`
 	CompletionPercent float64 `json:"completion_percent"`
-	CurrentStreak     int     `json:"current_streak"` // Consecutive days
+	CurrentStreak     int     `json:"current_streak"`
 	LongestStreak     int     `json:"longest_streak"`
 }
 
-// -----------------------------------------------------------------
-// Season constants and helpers
-// -----------------------------------------------------------------
+// =============================================================================
+// Import Types (for loading JSON data)
+// =============================================================================
 
-// Season represents a liturgical season.
-type Season string
-
-const (
-	SeasonAdvent    Season = "advent"
-	SeasonChristmas Season = "christmas"
-	SeasonEpiphany  Season = "epiphany"
-	SeasonLent      Season = "lent"
-	SeasonHolyWeek  Season = "holy_week"
-	SeasonEaster    Season = "easter"
-	SeasonPentecost Season = "pentecost"
-	SeasonOrdinary  Season = "ordinary"
-)
-
-// ValidSeasons returns all valid liturgical seasons.
-func ValidSeasons() []Season {
-	return []Season{
-		SeasonAdvent,
-		SeasonChristmas,
-		SeasonEpiphany,
-		SeasonLent,
-		SeasonHolyWeek,
-		SeasonEaster,
-		SeasonPentecost,
-		SeasonOrdinary,
-	}
+// ImportReading represents a reading in the import JSON format.
+type ImportReading struct {
+	Position   int      `json:"position"`
+	Label      string   `json:"label"` // "first", "second", "gospel"
+	References []string `json:"references"`
 }
 
-// IsValid checks if a season is valid.
-func (s Season) IsValid() bool {
-	for _, valid := range ValidSeasons() {
-		if s == valid {
-			return true
-		}
-	}
-	return false
+// ImportYearData represents readings for a single year in the import JSON.
+type ImportYearData struct {
+	Readings []ImportReading `json:"readings"`
+}
+
+// ImportPsalms represents the psalms structure in import JSON.
+type ImportPsalms struct {
+	Morning []string `json:"morning"`
+	Evening []string `json:"evening"`
+}
+
+// ImportPosition represents a single position in the import JSON.
+type ImportPosition struct {
+	Period        string          `json:"period"`
+	DayIdentifier string          `json:"day_identifier"`
+	SpecialName   *string         `json:"special_name"`
+	PeriodType    string          `json:"period_type"`
+	Psalms        ImportPsalms    `json:"psalms"`
+	Year1         *ImportYearData `json:"year_1"`
+	Year2         *ImportYearData `json:"year_2"`
+}
+
+// ImportData represents the full import JSON structure.
+type ImportData struct {
+	Metadata struct {
+		GeneratedAt    string `json:"generated_at"`
+		Source         string `json:"source"`
+		SchemaVersion  string `json:"schema_version"`
+		TotalPositions int    `json:"total_positions"`
+		Year1Complete  int    `json:"year_1_complete"`
+		Year2Complete  int    `json:"year_2_complete"`
+	} `json:"metadata"`
+	DailyLectionary []ImportPosition `json:"daily_lectionary"`
 }

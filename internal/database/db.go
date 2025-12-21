@@ -14,17 +14,11 @@ import (
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
 
-// Note: migrations are embedded from the migrations package
-// For now, we'll read them from the filesystem or embed them differently
-
-// migrationsSQL contains the initial schema migration
-// In a production app, you'd use go:embed with proper paths or a migration library
-var migrationsSQL = map[int]string{
-	1: initialSchemaMigration,
-}
+// =============================================================================
+// Database Connection
+// =============================================================================
 
 // DB wraps the standard sql.DB with lectionary-specific methods.
-// It provides a repository interface for all database operations.
 type DB struct {
 	*sql.DB
 	logger *slog.Logger
@@ -39,21 +33,22 @@ type Config struct {
 }
 
 // DefaultConfig returns sensible defaults for SQLite.
+//
+// Why these values?
+//   - MaxOpenConns=1: SQLite only allows one writer at a time. Multiple connections
+//     can cause "database is locked" errors under write load.
+//   - WAL mode (set in DSN): Allows concurrent readers while writing.
+//   - Busy timeout (set in DSN): Waits up to 5s if database is locked.
 func DefaultConfig(path string) Config {
 	return Config{
 		Path:            path,
-		MaxOpenConns:    1, // SQLite handles one writer at a time
+		MaxOpenConns:    1,
 		MaxIdleConns:    1,
 		ConnMaxLifetime: time.Hour,
 	}
 }
 
 // Open creates a new database connection with SQLite-optimized settings.
-//
-// Key SQLite settings enabled:
-// - WAL mode: Better concurrent read performance
-// - Foreign keys: Enforces referential integrity
-// - Busy timeout: Waits up to 5s if database is locked
 //
 // The caller is responsible for calling Close() when done.
 func Open(cfg Config, logger *slog.Logger) (*DB, error) {
@@ -70,7 +65,9 @@ func Open(cfg Config, logger *slog.Logger) (*DB, error) {
 	}
 
 	// Build connection string with SQLite pragmas
-	// These are applied per-connection via the DSN
+	// _journal_mode=WAL: Better concurrent read performance
+	// _foreign_keys=ON: Enforce referential integrity
+	// _busy_timeout=5000: Wait up to 5s if database is locked
 	dsn := fmt.Sprintf("%s?_journal_mode=WAL&_foreign_keys=ON&_busy_timeout=5000",
 		cfg.Path)
 
@@ -93,7 +90,6 @@ func Open(cfg Config, logger *slog.Logger) (*DB, error) {
 		return nil, fmt.Errorf("ping database: %w", err)
 	}
 
-	// Log connection info
 	logger.Info("database connected",
 		slog.String("path", cfg.Path),
 		slog.Int("max_open_conns", cfg.MaxOpenConns),
@@ -111,11 +107,31 @@ func (db *DB) Close() error {
 	return db.DB.Close()
 }
 
+// Health checks if the database connection is healthy.
+func (db *DB) Health(ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
+		return fmt.Errorf("database ping failed: %w", err)
+	}
+
+	var result int
+	if err := db.QueryRowContext(ctx, "SELECT 1").Scan(&result); err != nil {
+		return fmt.Errorf("database query failed: %w", err)
+	}
+
+	return nil
+}
+
+// =============================================================================
+// Migrations
+// =============================================================================
+
 // Migrate runs all pending database migrations.
-// Migrations are defined in code and run in order.
 //
 // This uses a simple forward-only migration strategy:
-// 1. Check which have been applied (via schema_migrations table)
+// 1. Check which migrations have been applied (via schema_migrations table)
 // 2. Apply any new ones in order
 //
 // Returns the number of migrations applied.
@@ -130,7 +146,6 @@ func (db *DB) Migrate(ctx context.Context) (int, error) {
 	defer tx.Rollback() // No-op if committed
 
 	// Ensure schema_migrations table exists
-	// We do this outside the embedded migrations so it's always available
 	_, err = tx.ExecContext(ctx, `
 		CREATE TABLE IF NOT EXISTS schema_migrations (
 			version INTEGER PRIMARY KEY,
@@ -140,6 +155,7 @@ func (db *DB) Migrate(ctx context.Context) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("create schema_migrations table: %w", err)
 	}
+	db.logger.Info("schema_migrations ensured (inside tx)")
 
 	// Get already applied versions
 	applied := make(map[int]bool)
@@ -174,18 +190,15 @@ func (db *DB) Migrate(ctx context.Context) (int, error) {
 			slog.Int("version", version),
 		)
 
-		// Get migration content
 		content, ok := migrationsSQL[version]
 		if !ok {
 			return count, fmt.Errorf("migration %d not found", version)
 		}
 
-		// Execute migration
 		if _, err := tx.ExecContext(ctx, content); err != nil {
 			return count, fmt.Errorf("execute migration %d: %w", version, err)
 		}
 
-		// Record migration
 		_, err = tx.ExecContext(ctx,
 			"INSERT INTO schema_migrations (version) VALUES (?)",
 			version,
@@ -197,7 +210,6 @@ func (db *DB) Migrate(ctx context.Context) (int, error) {
 		count++
 	}
 
-	// Commit transaction
 	if err := tx.Commit(); err != nil {
 		return count, fmt.Errorf("commit migrations: %w", err)
 	}
@@ -210,29 +222,9 @@ func (db *DB) Migrate(ctx context.Context) (int, error) {
 	return count, nil
 }
 
-// Health checks if the database connection is healthy.
-// Returns an error if the database is unreachable.
-func (db *DB) Health(ctx context.Context) error {
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-	defer cancel()
-
-	if err := db.PingContext(ctx); err != nil {
-		return fmt.Errorf("database ping failed: %w", err)
-	}
-
-	// Quick query to verify database is operational
-	var result int
-	err := db.QueryRowContext(ctx, "SELECT 1").Scan(&result)
-	if err != nil {
-		return fmt.Errorf("database query failed: %w", err)
-	}
-
-	return nil
-}
-
-// -----------------------------------------------------------------
-// Transaction helpers
-// -----------------------------------------------------------------
+// =============================================================================
+// Transaction Helpers
+// =============================================================================
 
 // Tx represents a database transaction with helper methods.
 type Tx struct {
@@ -278,9 +270,9 @@ func (db *DB) WithTx(ctx context.Context, fn func(*Tx) error) error {
 	return nil
 }
 
-// -----------------------------------------------------------------
-// Error types
-// -----------------------------------------------------------------
+// =============================================================================
+// Error Types
+// =============================================================================
 
 // ErrNotFound is returned when a requested record doesn't exist.
 var ErrNotFound = errors.New("record not found")
