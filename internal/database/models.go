@@ -48,6 +48,38 @@ type ReadingStats struct {
 }
 
 // =============================================================================
+// Progress Tracking Models (Date-Based)
+// =============================================================================
+
+// ReadingProgress tracks a user's completion of a daily reading.
+type ReadingProgress struct {
+	ID          int64     `json:"id"`
+	UserID      string    `json:"user_id"`
+	ReadingDate string    `json:"reading_date"` // YYYY-MM-DD
+	Notes       *string   `json:"notes,omitempty"`
+	CompletedAt time.Time `json:"completed_at"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// ProgressStats contains statistics about a user's reading progress.
+type ProgressStats struct {
+	TotalDays         int     `json:"total_days"`                    // Total days in database
+	CompletedDays     int     `json:"completed_days"`                // Days user has completed
+	CompletionPercent float64 `json:"completion_percent"`            // Percentage completed
+	CurrentStreak     int     `json:"current_streak"`                // Consecutive days (ending today/yesterday)
+	LongestStreak     int     `json:"longest_streak"`                // Best streak ever
+	LastCompletedDate *string `json:"last_completed_date,omitempty"` // Most recent completion (YYYY-MM-DD)
+}
+
+// ReadingWithProgress combines a daily reading with its completion status.
+type ReadingWithProgress struct {
+	Reading   *DailyReading    `json:"reading"`
+	Progress  *ReadingProgress `json:"progress,omitempty"`
+	Completed bool             `json:"completed"`
+}
+
+// =============================================================================
 // JSON Helper Functions
 // =============================================================================
 

@@ -4,6 +4,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -273,13 +274,13 @@ func (db *DB) WithTx(ctx context.Context, fn func(*Tx) error) error {
 // Error Types
 // =============================================================================
 
-// // ErrNotFound is returned when a requested record doesn't exist.
-// var ErrNotFound = errors.New("record not found")
+// ErrNotFound is returned when a requested record doesn't exist.
+var ErrNotFound = errors.New("record not found")
 
-// // ErrDuplicate is returned when a unique constraint is violated.
-// var ErrDuplicate = errors.New("duplicate record")
+// ErrDuplicate is returned when a unique constraint is violated.
+var ErrDuplicate = errors.New("duplicate record")
 
-// // IsNotFound checks if an error is a "not found" error.
-// func IsNotFound(err error) bool {
-// 	return errors.Is(err, ErrNotFound) || errors.Is(err, sql.ErrNoRows)
-// }
+// IsNotFound checks if an error is a "not found" error.
+func IsNotFound(err error) bool {
+	return errors.Is(err, ErrNotFound) || errors.Is(err, sql.ErrNoRows)
+}

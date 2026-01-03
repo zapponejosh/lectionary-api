@@ -5411,6 +5411,3354 @@
         "Evening": "Psalm 105; 130"
       },
       "scraped_at": "2026-01-03T12:38:50.928183"
+    },
+    "2026-03-28": {
+      "date": "2026-03-28",
+      "url": "https://pcusa.org/daily/devotion/2026/03/28",
+      "readings": {
+        "Morning": "Psalm 43; 149",
+        "First Reading": "Exodus 10:21-11:8",
+        "Second Reading": "2 Corinthians 4:13-18",
+        "Gospel": "Mark 10:46-52",
+        "Evening": "Psalm 31; 143"
+      },
+      "scraped_at": "2026-01-03T12:38:54.187814"
+    },
+    "2026-03-29": {
+      "date": "2026-03-29",
+      "url": "https://pcusa.org/daily/devotion/2026/03/29",
+      "readings": {
+        "Morning": "Psalm 84; 150",
+        "First Reading": "Zechariah 9:9-12",
+        "Second Reading": "1 Timothy 6:12-16",
+        "Gospel": "Zechariah 12:9-11, 13:1, 7-9",
+        "Evening": "Psalm 42; 32"
+      },
+      "scraped_at": "2026-01-03T12:38:55.999668"
+    },
+    "2026-03-30": {
+      "date": "2026-03-30",
+      "url": "https://pcusa.org/daily/devotion/2026/03/30",
+      "readings": {
+        "Morning": "Psalm 119:73-80; 145",
+        "First Reading": "Lamentation 1:1-2, 6-12",
+        "Second Reading": "2 Corinthians 1:1-7",
+        "Gospel": "Mark 11:12-25",
+        "Evening": "Psalm 121; 6"
+      },
+      "scraped_at": "2026-01-03T12:38:59.011880"
+    },
+    "2026-03-31": {
+      "date": "2026-03-31",
+      "url": "https://pcusa.org/daily/devotion/2026/03/31",
+      "readings": {
+        "Morning": "Psalm 34; 146",
+        "First Reading": "Lamentations 1:17-22",
+        "Second Reading": "2 Corinthians 1:8-22",
+        "Gospel": "Mark 11:27-33",
+        "Evening": "Psalm 25; 91"
+      },
+      "scraped_at": "2026-01-03T12:39:02.092154"
+    },
+    "2026-04-01": {
+      "date": "2026-04-01",
+      "url": "https://pcusa.org/daily/devotion/2026/04/01",
+      "readings": {
+        "Morning": "Psalm 5; 147:1-11",
+        "First Reading": "Lamentations 2:1-9",
+        "Second Reading": "2 Corinthians 1:23-2:11",
+        "Gospel": "Mark 12:1-11",
+        "Evening": "Psalm 27; 51"
+      },
+      "scraped_at": "2026-01-03T12:39:04.233674"
+    },
+    "2026-04-02": {
+      "date": "2026-04-02",
+      "url": "https://pcusa.org/daily/devotion/2026/04/02",
+      "readings": {
+        "Morning": "Psalm 27; 147:12-20",
+        "First Reading": "Lamentations 2:10-18",
+        "Second Reading": "1 Corinthians 10:14-17; 11:27-32",
+        "Gospel": "Mark 14:12-25",
+        "Evening": "Psalm 126; 102"
+      },
+      "scraped_at": "2026-01-03T12:39:08.110404"
+    },
+    "2026-04-03": {
+      "date": "2026-04-03",
+      "url": "https://pcusa.org/daily/devotion/2026/04/03",
+      "readings": {
+        "Morning": "Psalm 22; 148",
+        "First Reading": "Lamentations 3:1-9, 19-33",
+        "Second Reading": "1 Peter 1:10-20",
+        "Gospel": "John 13:36-38",
+        "Evening": "Psalm 105; 130"
+      },
+      "scraped_at": "2026-01-03T12:39:11.526235"
+    },
+    "2026-04-04": {
+      "date": "2026-04-04",
+      "url": "https://pcusa.org/daily/devotion/2026/04/04",
+      "readings": {
+        "Morning": "Psalm 43; 149",
+        "First Reading": "Lamentations 3:37-58",
+        "Second Reading": "Hebrews 4:1-16",
+        "Gospel": "Romans 8:1-11",
+        "Evening": "Psalm 31; 143"
+      },
+      "scraped_at": "2026-01-03T12:39:14.571324"
+    },
+    "2026-04-05": {
+      "date": "2026-04-05",
+      "url": "https://pcusa.org/daily/devotion/2026/04/05",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Exodus 12:1-14",
+        "Second Reading": "John 1:1-18",
+        "Gospel": "Luke 24:13-35",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:39:17.219025"
+    },
+    "2026-04-06": {
+      "date": "2026-04-06",
+      "url": "https://pcusa.org/daily/devotion/2026/04/06",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Exodus 12:14-27",
+        "Second Reading": "1 Corinthians 15:1-11",
+        "Gospel": "Mark 16:1-8",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:39:20.434412"
+    },
+    "2026-04-07": {
+      "date": "2026-04-07",
+      "url": "https://pcusa.org/daily/devotion/2026/04/07",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "Exodus 12:28-39",
+        "Second Reading": "1 Corinthians 15:12-28",
+        "Gospel": "Mark 16:9-20",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:39:22.704340"
+    },
+    "2026-04-08": {
+      "date": "2026-04-08",
+      "url": "https://pcusa.org/daily/devotion/2026/04/08",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Exodus 12:40-51",
+        "Second Reading": "1 Corinthians (15:29) 30-41",
+        "Gospel": "Matthew 28:1-16",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:39:25.312848"
+    },
+    "2026-04-09": {
+      "date": "2026-04-09",
+      "url": "https://pcusa.org/daily/devotion/2026/04/09",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Exodus 13:3-10",
+        "Second Reading": "1 Corinthians 15:41-50",
+        "Gospel": "Matthew 28:16-20",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:39:27.996034"
+    },
+    "2026-04-10": {
+      "date": "2026-04-10",
+      "url": "https://pcusa.org/daily/devotion/2026/04/10",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "Exodus 13:1-2, 11-16",
+        "Second Reading": "1 Corinthians 15:51-58",
+        "Gospel": "Luke 24:1-12",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:39:31.578383"
+    },
+    "2026-04-11": {
+      "date": "2026-04-11",
+      "url": "https://pcusa.org/daily/devotion/2026/04/11",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Exodus 13:17-14:4",
+        "Second Reading": "2 Corinthians 4:16-5:10",
+        "Gospel": "Mark 12:18-27",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:39:33.655053"
+    },
+    "2026-04-12": {
+      "date": "2026-04-12",
+      "url": "https://pcusa.org/daily/devotion/2026/04/12",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Exodus 14:5-22",
+        "Second Reading": "1 John 1:1-7",
+        "Gospel": "John 14:1-7",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:39:37.299393"
+    },
+    "2026-04-13": {
+      "date": "2026-04-13",
+      "url": "https://pcusa.org/daily/devotion/2026/04/13",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Exodus 14:21-31",
+        "Second Reading": "1 Peter 1:1-12",
+        "Gospel": "John (14:1-7) 8-17",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:39:41.029436"
+    },
+    "2026-04-14": {
+      "date": "2026-04-14",
+      "url": "https://pcusa.org/daily/devotion/2026/04/14",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "Exodus 15:1-21",
+        "Second Reading": "1 Peter 1:13-25",
+        "Gospel": "John 14:18-31",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:39:44.458781"
+    },
+    "2026-04-15": {
+      "date": "2026-04-15",
+      "url": "https://pcusa.org/daily/devotion/2026/04/15",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Exodus 15:22-16:10",
+        "Second Reading": "1 Peter 2:1-10",
+        "Gospel": "John 15:1-11",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:39:47.285369"
+    },
+    "2026-04-16": {
+      "date": "2026-04-16",
+      "url": "https://pcusa.org/daily/devotion/2026/04/16",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Exodus 16:10-22",
+        "Second Reading": "1 Peter 2:11-3:12",
+        "Gospel": "John 15:12-27",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:39:49.694342"
+    },
+    "2026-04-17": {
+      "date": "2026-04-17",
+      "url": "https://pcusa.org/daily/devotion/2026/04/17",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "Exodus 16:23-36",
+        "Second Reading": "1 Peter 3:13-4:6",
+        "Gospel": "John 16:1-15",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:39:52.350412"
+    },
+    "2026-04-18": {
+      "date": "2026-04-18",
+      "url": "https://pcusa.org/daily/devotion/2026/04/18",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Exodus 17:1-16",
+        "Second Reading": "1 Peter 4:7-19",
+        "Gospel": "John 16:16-33",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:39:55.868912"
+    },
+    "2026-04-19": {
+      "date": "2026-04-19",
+      "url": "https://pcusa.org/daily/devotion/2026/04/19",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Exodus 18:1-12",
+        "Second Reading": "1 John 2:7-17",
+        "Gospel": "Mark 16:9-20",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:39:58.436142"
+    },
+    "2026-04-20": {
+      "date": "2026-04-20",
+      "url": "https://pcusa.org/daily/devotion/2026/04/20",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Exodus 18:13-27",
+        "Second Reading": "1 Peter 5:1-14",
+        "Gospel": "Matthew (1:1-17) 3:1-6",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:40:00.642026"
+    },
+    "2026-04-21": {
+      "date": "2026-04-21",
+      "url": "https://pcusa.org/daily/devotion/2026/04/21",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "Exodus 19:1-16",
+        "Second Reading": "Colossians 1:1-14",
+        "Gospel": "Matthew 3:7-12",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:40:02.674584"
+    },
+    "2026-04-22": {
+      "date": "2026-04-22",
+      "url": "https://pcusa.org/daily/devotion/2026/04/22",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Exodus 19:16-25",
+        "Second Reading": "Colossians 1:15-23",
+        "Gospel": "Matthew 3:13-17",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:40:06.513455"
+    },
+    "2026-04-23": {
+      "date": "2026-04-23",
+      "url": "https://pcusa.org/daily/devotion/2026/04/23",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Exodus 20:1-21",
+        "Second Reading": "Colossians 1:24-2:7",
+        "Gospel": "Matthew 4:1-11",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:40:09.546015"
+    },
+    "2026-04-24": {
+      "date": "2026-04-24",
+      "url": "https://pcusa.org/daily/devotion/2026/04/24",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "Exodus 24:1-18",
+        "Second Reading": "Colossians 2:8-23",
+        "Gospel": "Matthew 4:12-17",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:40:11.866310"
+    },
+    "2026-04-25": {
+      "date": "2026-04-25",
+      "url": "https://pcusa.org/daily/devotion/2026/04/25",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Exodus 25:1-22",
+        "Second Reading": "Colossians 3:1-17",
+        "Gospel": "Matthew 4:18-25",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:40:15.014259"
+    },
+    "2026-04-26": {
+      "date": "2026-04-26",
+      "url": "https://pcusa.org/daily/devotion/2026/04/26",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Exodus 28:1-4, 30-38",
+        "Second Reading": "1 John 2:18-29",
+        "Gospel": "Mark 6:30-44",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:40:18.031025"
+    },
+    "2026-04-27": {
+      "date": "2026-04-27",
+      "url": "https://pcusa.org/daily/devotion/2026/04/27",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Exodus 32:1-20",
+        "Second Reading": "Colossians 3:18-4:6 (4:7-18)",
+        "Gospel": "Matthew 5:1-10",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:40:20.249833"
+    },
+    "2026-04-28": {
+      "date": "2026-04-28",
+      "url": "https://pcusa.org/daily/devotion/2026/04/28",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "Exodus 32:21-34",
+        "Second Reading": "1 Thessalonians 1:1-10",
+        "Gospel": "Matthew 5:11-16",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:40:22.225345"
+    },
+    "2026-04-29": {
+      "date": "2026-04-29",
+      "url": "https://pcusa.org/daily/devotion/2026/04/29",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Exodus 33:1-23",
+        "Second Reading": "1 Thessalonians 2:1-12",
+        "Gospel": "Matthew 5:17-20",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:40:25.818331"
+    },
+    "2026-04-30": {
+      "date": "2026-04-30",
+      "url": "https://pcusa.org/daily/devotion/2026/04/30",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Exodus 34:1-17",
+        "Second Reading": "1 Thessalonians 2:13-20",
+        "Gospel": "Matthew 5:21-26",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:40:29.371620"
+    },
+    "2026-05-01": {
+      "date": "2026-05-01",
+      "url": "https://pcusa.org/daily/devotion/2026/05/01",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "Exodus 34:18-35",
+        "Second Reading": "1 Thessalonians 3:1-13",
+        "Gospel": "Matthew 5:27-37",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:40:32.774409"
+    },
+    "2026-05-02": {
+      "date": "2026-05-02",
+      "url": "https://pcusa.org/daily/devotion/2026/05/02",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Exodus 40:18-38",
+        "Second Reading": "1 Thessalonians 4:1-12",
+        "Gospel": "Matthew 5:38-48",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:40:35.649556"
+    },
+    "2026-05-03": {
+      "date": "2026-05-03",
+      "url": "https://pcusa.org/daily/devotion/2026/05/03",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Leviticus 8:1-13, 30-36",
+        "Second Reading": "Hebrews 12:1-14",
+        "Gospel": "Luke 4:16-30",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:40:38.266360"
+    },
+    "2026-05-04": {
+      "date": "2026-05-04",
+      "url": "https://pcusa.org/daily/devotion/2026/05/04",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Leviticus 16:1-19",
+        "Second Reading": "1 Thessalonians 4:13-18",
+        "Gospel": "Matthew 6:1-6, 16-18",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:40:42.045165"
+    },
+    "2026-05-05": {
+      "date": "2026-05-05",
+      "url": "https://pcusa.org/daily/devotion/2026/05/05",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "Leviticus 16:20-34",
+        "Second Reading": "1 Thessalonians 5:1-11",
+        "Gospel": "Matthew 6:7-15",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:40:45.826190"
+    },
+    "2026-05-06": {
+      "date": "2026-05-06",
+      "url": "https://pcusa.org/daily/devotion/2026/05/06",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Leviticus 19:1-18",
+        "Second Reading": "1 Thessalonians 5:12-28",
+        "Gospel": "Matthew 6:19-24",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:40:48.349497"
+    },
+    "2026-05-07": {
+      "date": "2026-05-07",
+      "url": "https://pcusa.org/daily/devotion/2026/05/07",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Leviticus 19:26-37",
+        "Second Reading": "2 Thessalonians 1:1-12",
+        "Gospel": "Matthew 6:25-34",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:40:51.688938"
+    },
+    "2026-05-08": {
+      "date": "2026-05-08",
+      "url": "https://pcusa.org/daily/devotion/2026/05/08",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "Leviticus 23:1-22",
+        "Second Reading": "2 Thessalonians 2:1-17",
+        "Gospel": "Matthew 7:1-12",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:40:55.057230"
+    },
+    "2026-05-09": {
+      "date": "2026-05-09",
+      "url": "https://pcusa.org/daily/devotion/2026/05/09",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Leviticus 23:23-44",
+        "Second Reading": "2 Thessalonians 3:1-18",
+        "Gospel": "Matthew 7:13-21",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:40:57.462661"
+    },
+    "2026-05-10": {
+      "date": "2026-05-10",
+      "url": "https://pcusa.org/daily/devotion/2026/05/10",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Leviticus 25:1-17",
+        "Second Reading": "James 1:2-8, 16-18",
+        "Gospel": "Luke 12:13-21",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:41:01.316005"
+    },
+    "2026-05-11": {
+      "date": "2026-05-11",
+      "url": "https://pcusa.org/daily/devotion/2026/05/11",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Leviticus 25:35-55",
+        "Second Reading": "Colossians 1:9-14",
+        "Gospel": "Matthew 13:1-16",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:41:04.816964"
+    },
+    "2026-05-12": {
+      "date": "2026-05-12",
+      "url": "https://pcusa.org/daily/devotion/2026/05/12",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "Leviticus 26:1-20",
+        "Second Reading": "1 Timothy 2:1-6",
+        "Gospel": "Matthew 13:18-23",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:41:07.305304"
+    },
+    "2026-05-13": {
+      "date": "2026-05-13",
+      "url": "https://pcusa.org/daily/devotion/2026/05/13",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Leviticus 26:27-42",
+        "Second Reading": "Ephesians 1:1-10",
+        "Gospel": "Matthew 22:41-46",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:41:09.112972"
+    },
+    "2026-05-14": {
+      "date": "2026-05-14",
+      "url": "https://pcusa.org/daily/devotion/2026/05/14",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Daniel 7:9-14",
+        "Second Reading": "Hebrews 2:5-18",
+        "Gospel": "Matthew 28:16-20",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:41:11.893485"
+    },
+    "2026-05-15": {
+      "date": "2026-05-15",
+      "url": "https://pcusa.org/daily/devotion/2026/05/15",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "1 Samuel 2:1-10",
+        "Second Reading": "Ephesians 2:1-10",
+        "Gospel": "Matthew 7:22-27",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:41:14.772640"
+    },
+    "2026-05-16": {
+      "date": "2026-05-16",
+      "url": "https://pcusa.org/daily/devotion/2026/05/16",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Numbers 11:16-17, 24-29",
+        "Second Reading": "Ephesians 2:11-22",
+        "Gospel": "Matthew 7:28-8:4",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:41:18.089613"
+    },
+    "2026-05-17": {
+      "date": "2026-05-17",
+      "url": "https://pcusa.org/daily/devotion/2026/05/17",
+      "readings": {
+        "Morning": "Psalm 93; 150",
+        "First Reading": "Exodus 3:1-12",
+        "Second Reading": "Hebrews 12:18-29",
+        "Gospel": "Luke 10:17-24",
+        "Evening": "Psalm 136; 117"
+      },
+      "scraped_at": "2026-01-03T12:41:20.930844"
+    },
+    "2026-05-18": {
+      "date": "2026-05-18",
+      "url": "https://pcusa.org/daily/devotion/2026/05/18",
+      "readings": {
+        "Morning": "Psalm 97; 145",
+        "First Reading": "Joshua 1:1-9",
+        "Second Reading": "Ephesians 3:1-13",
+        "Gospel": "Matthew 8:5-17",
+        "Evening": "Psalm 124; 115"
+      },
+      "scraped_at": "2026-01-03T12:41:23.386443"
+    },
+    "2026-05-19": {
+      "date": "2026-05-19",
+      "url": "https://pcusa.org/daily/devotion/2026/05/19",
+      "readings": {
+        "Morning": "Psalm 98; 146",
+        "First Reading": "1 Samuel 16:1-13a",
+        "Second Reading": "Ephesians 3:14-21",
+        "Gospel": "Matthew 8:18-27",
+        "Evening": "Psalm 66; 116"
+      },
+      "scraped_at": "2026-01-03T12:41:26.294697"
+    },
+    "2026-05-20": {
+      "date": "2026-05-20",
+      "url": "https://pcusa.org/daily/devotion/2026/05/20",
+      "readings": {
+        "Morning": "Psalm 99; 147:1-11",
+        "First Reading": "Isaiah 4:2-6",
+        "Second Reading": "Ephesians 4:1-16",
+        "Gospel": "Matthew 8:28-34",
+        "Evening": "Psalm 9; 118"
+      },
+      "scraped_at": "2026-01-03T12:41:28.651454"
+    },
+    "2026-05-21": {
+      "date": "2026-05-21",
+      "url": "https://pcusa.org/daily/devotion/2026/05/21",
+      "readings": {
+        "Morning": "Psalm 47; 147:12-20",
+        "First Reading": "Zechariah 4:1-14",
+        "Second Reading": "Ephesians 4:17-32",
+        "Gospel": "Matthew 9:1-8",
+        "Evening": "Psalm 68; 113"
+      },
+      "scraped_at": "2026-01-03T12:41:31.244183"
+    },
+    "2026-05-22": {
+      "date": "2026-05-22",
+      "url": "https://pcusa.org/daily/devotion/2026/05/22",
+      "readings": {
+        "Morning": "Psalm 96; 148",
+        "First Reading": "Jeremiah 31:27-34",
+        "Second Reading": "Ephesians 5:1-32",
+        "Gospel": "Matthew 9:9-17",
+        "Evening": "Psalm 49; 138"
+      },
+      "scraped_at": "2026-01-03T12:41:34.683548"
+    },
+    "2026-05-23": {
+      "date": "2026-05-23",
+      "url": "https://pcusa.org/daily/devotion/2026/05/23",
+      "readings": {
+        "Morning": "Psalm 92; 149",
+        "First Reading": "Ezekiel 36:22-27",
+        "Second Reading": "Ephesians 6:1-24",
+        "Gospel": "Matthew 9:18-26",
+        "Evening": "Psalm 23; 114"
+      },
+      "scraped_at": "2026-01-03T12:41:37.065211"
+    },
+    "2026-05-24": {
+      "date": "2026-05-24",
+      "url": "https://pcusa.org/daily/devotion/2026/05/24",
+      "readings": {
+        "Morning": "Psalm 104; 150",
+        "First Reading": "Deuteronomy 16:9-12",
+        "Second Reading": "Acts 4:18-21, 23-33",
+        "Gospel": "John 4:19-26",
+        "Evening": "Psalm 29; 33"
+      },
+      "scraped_at": "2026-01-03T12:41:40.355501"
+    },
+    "2026-05-25": {
+      "date": "2026-05-25",
+      "url": "https://pcusa.org/daily/devotion/2026/05/25",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Proverbs 10:1-12",
+        "Second Reading": "1 Timothy 1:1-17",
+        "Gospel": "Matthew 12:22-32",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:41:43.856092"
+    },
+    "2026-05-26": {
+      "date": "2026-05-26",
+      "url": "https://pcusa.org/daily/devotion/2026/05/26",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Proverbs 15:16-33",
+        "Second Reading": "1 Timothy 1:18-2:15",
+        "Gospel": "Matthew 12:33-42",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:41:47.264806"
+    },
+    "2026-05-27": {
+      "date": "2026-05-27",
+      "url": "https://pcusa.org/daily/devotion/2026/05/27",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Proverbs 17:1-20",
+        "Second Reading": "1 Timothy 3:1-16",
+        "Gospel": "Matthew 12:43-50",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:41:50.456202"
+    },
+    "2026-05-28": {
+      "date": "2026-05-28",
+      "url": "https://pcusa.org/daily/devotion/2026/05/28",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Proverbs 21:30-22:6",
+        "Second Reading": "1 Timothy 4:1-16",
+        "Gospel": "Matthew 13:24-30",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:41:54.283742"
+    },
+    "2026-05-29": {
+      "date": "2026-05-29",
+      "url": "https://pcusa.org/daily/devotion/2026/05/29",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Proverbs 23:19-21, 29-24:2",
+        "Second Reading": "1 Timothy 5:17-22 (23-25)",
+        "Gospel": "Matthew 13:31-35",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:41:58.169237"
+    },
+    "2026-05-30": {
+      "date": "2026-05-30",
+      "url": "https://pcusa.org/daily/devotion/2026/05/30",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Proverbs 25:15-28",
+        "Second Reading": "1 Timothy 6:6-21",
+        "Gospel": "Matthew 13:36-43",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:42:01.817260"
+    },
+    "2026-05-31": {
+      "date": "2026-05-31",
+      "url": "https://pcusa.org/daily/devotion/2026/05/31",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Job 38:1-11; 42:1-6",
+        "Second Reading": "Revelation 19:4-16",
+        "Gospel": "John 1:29-34",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:42:05.481058"
+    },
+    "2026-06-01": {
+      "date": "2026-06-01",
+      "url": "https://pcusa.org/daily/devotion/2026/06/01",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Ecclesiastes 2:1-15",
+        "Second Reading": "Galatians 1:1-17",
+        "Gospel": "Matthew 13:44-52",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:42:07.751777"
+    },
+    "2026-06-02": {
+      "date": "2026-06-02",
+      "url": "https://pcusa.org/daily/devotion/2026/06/02",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Ecclesiastes 2:16-26",
+        "Second Reading": "Galatians 1:18-2:10",
+        "Gospel": "Matthew 13:53-58",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:42:11.249405"
+    },
+    "2026-06-03": {
+      "date": "2026-06-03",
+      "url": "https://pcusa.org/daily/devotion/2026/06/03",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Ecclesiastes 3:1-15",
+        "Second Reading": "Galatians 2:11-21",
+        "Gospel": "Matthew 14:1-12",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:42:14.284333"
+    },
+    "2026-06-04": {
+      "date": "2026-06-04",
+      "url": "https://pcusa.org/daily/devotion/2026/06/04",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Ecclesiastes 3:16-4:3",
+        "Second Reading": "Galatians 3:1-14",
+        "Gospel": "Matthew 14:13-21",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:42:17.232788"
+    },
+    "2026-06-05": {
+      "date": "2026-06-05",
+      "url": "https://pcusa.org/daily/devotion/2026/06/05",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Ecclesiastes 5:1-7",
+        "Second Reading": "Galatians 3:15-22",
+        "Gospel": "Matthew 14:22-36",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:42:20.059500"
+    },
+    "2026-06-06": {
+      "date": "2026-06-06",
+      "url": "https://pcusa.org/daily/devotion/2026/06/06",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Ecclesiastes 5:8-20",
+        "Second Reading": "Galatians 3:23-4:11",
+        "Gospel": "Matthew 15:1-20",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:42:22.065685"
+    },
+    "2026-06-07": {
+      "date": "2026-06-07",
+      "url": "https://pcusa.org/daily/devotion/2026/06/07",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Job 38:1-11, 42:1-5",
+        "Second Reading": "Revelation 19:4-16",
+        "Gospel": "John 1:29-34",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:42:26.875504"
+    },
+    "2026-06-08": {
+      "date": "2026-06-08",
+      "url": "https://pcusa.org/daily/devotion/2026/06/08",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Ecclesiastes 7:1-14",
+        "Second Reading": "Galatians 4:12-20",
+        "Gospel": "Matthew 15:21-28",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:42:29.188233"
+    },
+    "2026-06-09": {
+      "date": "2026-06-09",
+      "url": "https://pcusa.org/daily/devotion/2026/06/09",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Ecclesiastes 8:14-9:10",
+        "Second Reading": "Galatians 4:21-31",
+        "Gospel": "Matthew 15:29-39",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:42:32.763899"
+    },
+    "2026-06-10": {
+      "date": "2026-06-10",
+      "url": "https://pcusa.org/daily/devotion/2026/06/10",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Ecclesiastes 9:11-18",
+        "Second Reading": "Galatians 5:1-15",
+        "Gospel": "Matthew 16:1-12",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:42:36.873098"
+    },
+    "2026-06-11": {
+      "date": "2026-06-11",
+      "url": "https://pcusa.org/daily/devotion/2026/06/11",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Ecclesiastes 11:1-8",
+        "Second Reading": "Galatians 5:16-24",
+        "Gospel": "Matthew 16:13-20",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:42:39.572531"
+    },
+    "2026-06-12": {
+      "date": "2026-06-12",
+      "url": "https://pcusa.org/daily/devotion/2026/06/12",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Ecclesiastes 11:9-12:14",
+        "Second Reading": "Galatians 5:25-6:10",
+        "Gospel": "Matthew 16:21-28",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:42:42.768677"
+    },
+    "2026-06-13": {
+      "date": "2026-06-13",
+      "url": "https://pcusa.org/daily/devotion/2026/06/13",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Numbers 3:1-13",
+        "Second Reading": "Galatians 6:11-18",
+        "Gospel": "Matthew 17:1-13",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:42:45.185505"
+    },
+    "2026-06-14": {
+      "date": "2026-06-14",
+      "url": "https://pcusa.org/daily/devotion/2026/06/14",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Numbers 6:22-27",
+        "Second Reading": "Acts 13:1-12",
+        "Gospel": "Luke 12:41-48",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:42:48.243382"
+    },
+    "2026-06-15": {
+      "date": "2026-06-15",
+      "url": "https://pcusa.org/daily/devotion/2026/06/15",
+      "readings": {
+        "Morning": "Psalm 5; 145",
+        "First Reading": "Numbers 9:15-23, 10:29-36",
+        "Second Reading": "Romans 1:1-15",
+        "Gospel": "Matthew 17:14-21",
+        "Evening": "Psalm 82; 29"
+      },
+      "scraped_at": "2026-01-03T12:42:51.320838"
+    },
+    "2026-06-16": {
+      "date": "2026-06-16",
+      "url": "https://pcusa.org/daily/devotion/2026/06/16",
+      "readings": {
+        "Morning": "Psalm 42; 146",
+        "First Reading": "Numbers 11:1-23",
+        "Second Reading": "Romans 1:16-25",
+        "Gospel": "Matthew 17:22-27",
+        "Evening": "Psalm 102; 133"
+      },
+      "scraped_at": "2026-01-03T12:42:54.529904"
+    },
+    "2026-06-17": {
+      "date": "2026-06-17",
+      "url": "https://pcusa.org/daily/devotion/2026/06/17",
+      "readings": {
+        "Morning": "Psalm 89:1-18; 147:1-11",
+        "First Reading": "Numbers 11:24-33 (34-35)",
+        "Second Reading": "Romans 1:28-2:11",
+        "Gospel": "Matthew 18:1-9",
+        "Evening": "Psalm 1; 33"
+      },
+      "scraped_at": "2026-01-03T12:42:57.956537"
+    },
+    "2026-06-18": {
+      "date": "2026-06-18",
+      "url": "https://pcusa.org/daily/devotion/2026/06/18",
+      "readings": {
+        "Morning": "Psalm 97; 147:12-20",
+        "First Reading": "Numbers 12:1-16",
+        "Second Reading": "Romans 2:12-24",
+        "Gospel": "Matthew 18:10-20",
+        "Evening": "Psalm 16; 62"
+      },
+      "scraped_at": "2026-01-03T12:43:00.395697"
+    },
+    "2026-06-19": {
+      "date": "2026-06-19",
+      "url": "https://pcusa.org/daily/devotion/2026/06/19",
+      "readings": {
+        "Morning": "Psalm 51; 148",
+        "First Reading": "Numbers 13:1-3, 21-30",
+        "Second Reading": "Romans 2:25-3:8",
+        "Gospel": "Matthew 18:21-35",
+        "Evening": "Psalm 142; 65"
+      },
+      "scraped_at": "2026-01-03T12:43:03.702739"
+    },
+    "2026-06-20": {
+      "date": "2026-06-20",
+      "url": "https://pcusa.org/daily/devotion/2026/06/20",
+      "readings": {
+        "Morning": "Psalm 104; 149",
+        "First Reading": "Numbers 13:31-14:25",
+        "Second Reading": "Romans 3:9-20",
+        "Gospel": "Matthew 19:1-12",
+        "Evening": "Psalm 138; 98"
+      },
+      "scraped_at": "2026-01-03T12:43:07.724028"
+    },
+    "2026-06-21": {
+      "date": "2026-06-21",
+      "url": "https://pcusa.org/daily/devotion/2026/06/21",
+      "readings": {
+        "Morning": "Psalm 19; 150",
+        "First Reading": "Numbers 14:26-45",
+        "Second Reading": "Acts 15:1-12",
+        "Gospel": "Luke 12:49-56",
+        "Evening": "Psalm 81; 113"
+      },
+      "scraped_at": "2026-01-03T12:43:10.372350"
+    },
+    "2026-06-22": {
+      "date": "2026-06-22",
+      "url": "https://pcusa.org/daily/devotion/2026/06/22",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Numbers 16:1-19",
+        "Second Reading": "Romans 3:21-31",
+        "Gospel": "Matthew 19:13-22",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:43:12.491867"
+    },
+    "2026-06-23": {
+      "date": "2026-06-23",
+      "url": "https://pcusa.org/daily/devotion/2026/06/23",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Numbers 16:20-35",
+        "Second Reading": "Romans 4:1-12",
+        "Gospel": "Matthew 19:23-30",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:43:15.791334"
+    },
+    "2026-06-24": {
+      "date": "2026-06-24",
+      "url": "https://pcusa.org/daily/devotion/2026/06/24",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Numbers 16:36-50",
+        "Second Reading": "Romans 4:13-25",
+        "Gospel": "Matthew 20:1-16",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:43:18.918415"
+    },
+    "2026-06-25": {
+      "date": "2026-06-25",
+      "url": "https://pcusa.org/daily/devotion/2026/06/25",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Numbers 17:1-11",
+        "Second Reading": "Romans 5:1-11",
+        "Gospel": "Matthew 20:17-28",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:43:22.442657"
+    },
+    "2026-06-26": {
+      "date": "2026-06-26",
+      "url": "https://pcusa.org/daily/devotion/2026/06/26",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Numbers 20:1-13",
+        "Second Reading": "Romans 5:12-21",
+        "Gospel": "Matthew 20:29-34",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:43:25.516413"
+    },
+    "2026-06-27": {
+      "date": "2026-06-27",
+      "url": "https://pcusa.org/daily/devotion/2026/06/27",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Numbers 20:14-29",
+        "Second Reading": "Romans 6:1-11",
+        "Gospel": "Matthew 21:1-11",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:43:28.871929"
+    },
+    "2026-06-28": {
+      "date": "2026-06-28",
+      "url": "https://pcusa.org/daily/devotion/2026/06/28",
+      "readings": {
+        "Morning": "Psalm 67; 150",
+        "First Reading": "Numbers 21:4-9, 21-35",
+        "Second Reading": "Acts (17:12-21) 17:23-24",
+        "Gospel": "Luke 13:10-17",
+        "Evening": "Psalm 46; 93"
+      },
+      "scraped_at": "2026-01-03T12:43:31.947325"
+    },
+    "2026-06-29": {
+      "date": "2026-06-29",
+      "url": "https://pcusa.org/daily/devotion/2026/06/29",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Numbers 22:1-21",
+        "Second Reading": "Romans 6:12-23",
+        "Gospel": "Matthew 21:12-22",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:43:35.237662"
+    },
+    "2026-06-30": {
+      "date": "2026-06-30",
+      "url": "https://pcusa.org/daily/devotion/2026/06/30",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Numbers 22:21-38",
+        "Second Reading": "Romans 7:1-12",
+        "Gospel": "Matthew 21:23-32",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:43:38.123914"
+    },
+    "2026-07-01": {
+      "date": "2026-07-01",
+      "url": "https://pcusa.org/daily/devotion/2026/07/01",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Numbers 22:41-23:12",
+        "Second Reading": "Romans 7:13-25",
+        "Gospel": "Matthew 21:33-46",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:43:40.408156"
+    },
+    "2026-07-02": {
+      "date": "2026-07-02",
+      "url": "https://pcusa.org/daily/devotion/2026/07/02",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Numbers 23:11-26",
+        "Second Reading": "Romans 8:1-11",
+        "Gospel": "Matthew 22:1-14",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:43:43.865128"
+    },
+    "2026-07-03": {
+      "date": "2026-07-03",
+      "url": "https://pcusa.org/daily/devotion/2026/07/03",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Numbers 24:1-13",
+        "Second Reading": "Romans 8:12-17",
+        "Gospel": "Matthew 22:15-22",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:43:46.693104"
+    },
+    "2026-07-04": {
+      "date": "2026-07-04",
+      "url": "https://pcusa.org/daily/devotion/2026/07/04",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Numbers 24:12-25",
+        "Second Reading": "Romans 8:18-25",
+        "Gospel": "Matthew 22:23-40",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:43:49.514756"
+    },
+    "2026-07-05": {
+      "date": "2026-07-05",
+      "url": "https://pcusa.org/daily/devotion/2026/07/05",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Numbers 27:12-23",
+        "Second Reading": "Acts 19:11-20",
+        "Gospel": "Mark 1:14-20",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:43:52.146251"
+    },
+    "2026-07-06": {
+      "date": "2026-07-06",
+      "url": "https://pcusa.org/daily/devotion/2026/07/06",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Numbers 32:1-6, 16-27",
+        "Second Reading": "Romans 8:26-30",
+        "Gospel": "Matthew 23:1-12",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:43:54.300094"
+    },
+    "2026-07-07": {
+      "date": "2026-07-07",
+      "url": "https://pcusa.org/daily/devotion/2026/07/07",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Numbers 35:1-3, 9-15, 30-34",
+        "Second Reading": "Romans 8:31-39",
+        "Gospel": "Matthew 23:13-26",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:43:57.528676"
+    },
+    "2026-07-08": {
+      "date": "2026-07-08",
+      "url": "https://pcusa.org/daily/devotion/2026/07/08",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Deuteronomy 1:1-18",
+        "Second Reading": "Romans 9:1-18",
+        "Gospel": "Matthew 23:27-39",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:44:00.990666"
+    },
+    "2026-07-09": {
+      "date": "2026-07-09",
+      "url": "https://pcusa.org/daily/devotion/2026/07/09",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Deuteronomy 3:18-28",
+        "Second Reading": "Romans 9:19-33",
+        "Gospel": "Matthew 24:1-14",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:44:04.209408"
+    },
+    "2026-07-10": {
+      "date": "2026-07-10",
+      "url": "https://pcusa.org/daily/devotion/2026/07/10",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Deuteronomy 31:7-13, 31:24-32:4",
+        "Second Reading": "Romans 10:1-13",
+        "Gospel": "Matthew 24:15-31",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:44:07.238587"
+    },
+    "2026-07-11": {
+      "date": "2026-07-11",
+      "url": "https://pcusa.org/daily/devotion/2026/07/11",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Deuteronomy 34:1-12",
+        "Second Reading": "Romans 10:14-21",
+        "Gospel": "Matthew 24:32-51",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:44:10.429256"
+    },
+    "2026-07-12": {
+      "date": "2026-07-12",
+      "url": "https://pcusa.org/daily/devotion/2026/07/12",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Joshua 1:1-18",
+        "Second Reading": "Acts 21:3-15",
+        "Gospel": "Mark 1:21-27",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:44:14.138874"
+    },
+    "2026-07-13": {
+      "date": "2026-07-13",
+      "url": "https://pcusa.org/daily/devotion/2026/07/13",
+      "readings": {
+        "Morning": "Psalm 5; 145",
+        "First Reading": "Joshua 2:1-14",
+        "Second Reading": "Romans 11:1-12",
+        "Gospel": "Matthew 25:1-13",
+        "Evening": "Psalm 82; 29"
+      },
+      "scraped_at": "2026-01-03T12:44:17.066560"
+    },
+    "2026-07-14": {
+      "date": "2026-07-14",
+      "url": "https://pcusa.org/daily/devotion/2026/07/14",
+      "readings": {
+        "Morning": "Psalm 42; 146",
+        "First Reading": "Joshua 2:15-24",
+        "Second Reading": "Romans 11:13-24",
+        "Gospel": "Matthew 25:14-30",
+        "Evening": "Psalm 102; 133"
+      },
+      "scraped_at": "2026-01-03T12:44:19.366646"
+    },
+    "2026-07-15": {
+      "date": "2026-07-15",
+      "url": "https://pcusa.org/daily/devotion/2026/07/15",
+      "readings": {
+        "Morning": "Psalm 89:1-18; 147:1-11",
+        "First Reading": "Joshua 3:1-13",
+        "Second Reading": "Romans 11:25-36",
+        "Gospel": "Matthew 25:31-46",
+        "Evening": "Psalm 1; 33"
+      },
+      "scraped_at": "2026-01-03T12:44:22.370878"
+    },
+    "2026-07-16": {
+      "date": "2026-07-16",
+      "url": "https://pcusa.org/daily/devotion/2026/07/16",
+      "readings": {
+        "Morning": "Psalm 97; 147:12-20",
+        "First Reading": "Joshua 3:14-4:7",
+        "Second Reading": "Romans 12:1-8",
+        "Gospel": "Matthew 26:1-16",
+        "Evening": "Psalm 16; 62"
+      },
+      "scraped_at": "2026-01-03T12:44:24.562996"
+    },
+    "2026-07-17": {
+      "date": "2026-07-17",
+      "url": "https://pcusa.org/daily/devotion/2026/07/17",
+      "readings": {
+        "Morning": "Psalm 51; 148",
+        "First Reading": "Joshua 4:19-5:1, 10-15",
+        "Second Reading": "Romans 12:9-21",
+        "Gospel": "Matthew 26:17-25",
+        "Evening": "Psalm 142; 65"
+      },
+      "scraped_at": "2026-01-03T12:44:27.932491"
+    },
+    "2026-07-18": {
+      "date": "2026-07-18",
+      "url": "https://pcusa.org/daily/devotion/2026/07/18",
+      "readings": {
+        "Morning": "Psalm 104; 149",
+        "First Reading": "Joshua 6:1-14",
+        "Second Reading": "Romans 13:1-7",
+        "Gospel": "Matthew 26:26-35",
+        "Evening": "Psalm 138; 98"
+      },
+      "scraped_at": "2026-01-03T12:44:31.112961"
+    },
+    "2026-07-19": {
+      "date": "2026-07-19",
+      "url": "https://pcusa.org/daily/devotion/2026/07/19",
+      "readings": {
+        "Morning": "Psalm 19; 150",
+        "First Reading": "Joshua 6:15-27",
+        "Second Reading": "Acts 22:30-23:11",
+        "Gospel": "Mark 2:1-12",
+        "Evening": "Psalm 81; 113"
+      },
+      "scraped_at": "2026-01-03T12:44:34.733354"
+    },
+    "2026-07-20": {
+      "date": "2026-07-20",
+      "url": "https://pcusa.org/daily/devotion/2026/07/20",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Joshua 7:1-13",
+        "Second Reading": "Romans 13:8-14",
+        "Gospel": "Matthew 26:36-46",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:44:37.347417"
+    },
+    "2026-07-21": {
+      "date": "2026-07-21",
+      "url": "https://pcusa.org/daily/devotion/2026/07/21",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Joshua 8:1-22",
+        "Second Reading": "Romans 14:1-12",
+        "Gospel": "Matthew 26:47-56",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:44:40.003732"
+    },
+    "2026-07-22": {
+      "date": "2026-07-22",
+      "url": "https://pcusa.org/daily/devotion/2026/07/22",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Joshua 8:30-35",
+        "Second Reading": "Romans 14:13-23",
+        "Gospel": "Matthew 26:57-68",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:44:43.182068"
+    },
+    "2026-07-23": {
+      "date": "2026-07-23",
+      "url": "https://pcusa.org/daily/devotion/2026/07/23",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Joshua 9:3-21",
+        "Second Reading": "Romans 15:1-13",
+        "Gospel": "Matthew 26:69-75",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:44:45.817262"
+    },
+    "2026-07-24": {
+      "date": "2026-07-24",
+      "url": "https://pcusa.org/daily/devotion/2026/07/24",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Joshua 9:22-10:15",
+        "Second Reading": "Romans 15:14-24",
+        "Gospel": "Matthew 27:1-10",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:44:48.360021"
+    },
+    "2026-07-25": {
+      "date": "2026-07-25",
+      "url": "https://pcusa.org/daily/devotion/2026/07/25",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Joshua 23:1-16",
+        "Second Reading": "Romans 15:25-33",
+        "Gospel": "Matthew 27:11-23",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:44:51.396031"
+    },
+    "2026-07-26": {
+      "date": "2026-07-26",
+      "url": "https://pcusa.org/daily/devotion/2026/07/26",
+      "readings": {
+        "Morning": "Psalm 67; 150",
+        "First Reading": "Joshua 24:1-15",
+        "Second Reading": "Acts 28:23-31",
+        "Gospel": "Mark 2:23-28",
+        "Evening": "Psalm 46; 93"
+      },
+      "scraped_at": "2026-01-03T12:44:54.640660"
+    },
+    "2026-07-27": {
+      "date": "2026-07-27",
+      "url": "https://pcusa.org/daily/devotion/2026/07/27",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Joshua 24:16-33",
+        "Second Reading": "Romans 16:1-16",
+        "Gospel": "Matthew 27:24-31",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:44:57.727928"
+    },
+    "2026-07-28": {
+      "date": "2026-07-28",
+      "url": "https://pcusa.org/daily/devotion/2026/07/28",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Judges 2:1-5, 11-23",
+        "Second Reading": "Romans 16:17-27",
+        "Gospel": "Matthew 27:32-44",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:45:00.783199"
+    },
+    "2026-07-29": {
+      "date": "2026-07-29",
+      "url": "https://pcusa.org/daily/devotion/2026/07/29",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Judges 3:12-30",
+        "Second Reading": "Acts 1:1-14",
+        "Gospel": "Matthew 27:45-54",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:45:04.357508"
+    },
+    "2026-07-30": {
+      "date": "2026-07-30",
+      "url": "https://pcusa.org/daily/devotion/2026/07/30",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Judges 4:4-23",
+        "Second Reading": "Acts 1:15-26",
+        "Gospel": "Matthew 27:55-66",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:45:07.949702"
+    },
+    "2026-07-31": {
+      "date": "2026-07-31",
+      "url": "https://pcusa.org/daily/devotion/2026/07/31",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Judges 5:1-18",
+        "Second Reading": "Acts 2:1-21",
+        "Gospel": "Matthew 28:1-10",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:45:10.210818"
+    },
+    "2026-08-01": {
+      "date": "2026-08-01",
+      "url": "https://pcusa.org/daily/devotion/2026/08/01",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Judges 5:19-31",
+        "Second Reading": "Acts 2:22-36",
+        "Gospel": "Matthew 28:11-20",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:45:13.564886"
+    },
+    "2026-08-02": {
+      "date": "2026-08-02",
+      "url": "https://pcusa.org/daily/devotion/2026/08/02",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Judges 6:1-24",
+        "Second Reading": "2 Corinthians 9:6-15",
+        "Gospel": "Mark 3:20-30",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:45:17.533161"
+    },
+    "2026-08-03": {
+      "date": "2026-08-03",
+      "url": "https://pcusa.org/daily/devotion/2026/08/03",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Judges 6:25-40",
+        "Second Reading": "Acts 2:37-47",
+        "Gospel": "John 1:1-18",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:45:19.816927"
+    },
+    "2026-08-04": {
+      "date": "2026-08-04",
+      "url": "https://pcusa.org/daily/devotion/2026/08/04",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Judges 7:1-18",
+        "Second Reading": "Acts 3:1-11",
+        "Gospel": "John 1:19-28",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:45:23.662940"
+    },
+    "2026-08-05": {
+      "date": "2026-08-05",
+      "url": "https://pcusa.org/daily/devotion/2026/08/05",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Judges 7:19-8:12",
+        "Second Reading": "Acts 3:12-26",
+        "Gospel": "John 1:29-42",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:45:27.481148"
+    },
+    "2026-08-06": {
+      "date": "2026-08-06",
+      "url": "https://pcusa.org/daily/devotion/2026/08/06",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Judges 8:22-35",
+        "Second Reading": "Acts 4:1-12",
+        "Gospel": "John 1:43-51",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:45:31.329492"
+    },
+    "2026-08-07": {
+      "date": "2026-08-07",
+      "url": "https://pcusa.org/daily/devotion/2026/08/07",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Judges 9:1-16, 19-21",
+        "Second Reading": "Acts 4:13-31",
+        "Gospel": "John 2:1-12",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:45:35.036052"
+    },
+    "2026-08-08": {
+      "date": "2026-08-08",
+      "url": "https://pcusa.org/daily/devotion/2026/08/08",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Judges 9:22-25, 50-57",
+        "Second Reading": "Acts 4:32-5:11",
+        "Gospel": "John 2:13-25",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:45:37.779818"
+    },
+    "2026-08-09": {
+      "date": "2026-08-09",
+      "url": "https://pcusa.org/daily/devotion/2026/08/09",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Judges 11:1-11, 29-40",
+        "Second Reading": "2 Corinthians 11:21b-31",
+        "Gospel": "Mark 4:35-41",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:45:41.752934"
+    },
+    "2026-08-10": {
+      "date": "2026-08-10",
+      "url": "https://pcusa.org/daily/devotion/2026/08/10",
+      "readings": {
+        "Morning": "Psalm 5; 145",
+        "First Reading": "Judges 12:1-7",
+        "Second Reading": "Acts 5:12-26",
+        "Gospel": "John 3:1-21",
+        "Evening": "Psalm 82; 29"
+      },
+      "scraped_at": "2026-01-03T12:45:45.496983"
+    },
+    "2026-08-11": {
+      "date": "2026-08-11",
+      "url": "https://pcusa.org/daily/devotion/2026/08/11",
+      "readings": {
+        "Morning": "Psalm 42; 146",
+        "First Reading": "Judges 13:1-15",
+        "Second Reading": "Acts 5:27-42",
+        "Gospel": "John 3:22-36",
+        "Evening": "Psalm 102; 133"
+      },
+      "scraped_at": "2026-01-03T12:45:48.323801"
+    },
+    "2026-08-12": {
+      "date": "2026-08-12",
+      "url": "https://pcusa.org/daily/devotion/2026/08/12",
+      "readings": {
+        "Morning": "Psalm 89:1-18; 147:1-11",
+        "First Reading": "Judges 13:15-24",
+        "Second Reading": "Acts 6:1-15",
+        "Gospel": "John 4:1-26",
+        "Evening": "Psalm 1; 33"
+      },
+      "scraped_at": "2026-01-03T12:45:51.329433"
+    },
+    "2026-08-13": {
+      "date": "2026-08-13",
+      "url": "https://pcusa.org/daily/devotion/2026/08/13",
+      "readings": {
+        "Morning": "Psalm 97; 147:12-20",
+        "First Reading": "Judges 14:1-19",
+        "Second Reading": "Acts 6:15-7:16",
+        "Gospel": "John 4:27-42",
+        "Evening": "Psalm 16; 62"
+      },
+      "scraped_at": "2026-01-03T12:45:53.352257"
+    },
+    "2026-08-14": {
+      "date": "2026-08-14",
+      "url": "https://pcusa.org/daily/devotion/2026/08/14",
+      "readings": {
+        "Morning": "Psalm 51; 148",
+        "First Reading": "Judges 14:20-15:20",
+        "Second Reading": "Acts 7:17-29",
+        "Gospel": "John 4:43-54",
+        "Evening": "Psalm 142; 65"
+      },
+      "scraped_at": "2026-01-03T12:45:56.184109"
+    },
+    "2026-08-15": {
+      "date": "2026-08-15",
+      "url": "https://pcusa.org/daily/devotion/2026/08/15",
+      "readings": {
+        "Morning": "Psalm 104; 149",
+        "First Reading": "Judges 16:1-14",
+        "Second Reading": "Acts 7:30-43",
+        "Gospel": "John 5:1-18",
+        "Evening": "Psalm 138; 98"
+      },
+      "scraped_at": "2026-01-03T12:45:58.643552"
+    },
+    "2026-08-16": {
+      "date": "2026-08-16",
+      "url": "https://pcusa.org/daily/devotion/2026/08/16",
+      "readings": {
+        "Morning": "Psalm 19; 150",
+        "First Reading": "Judges 16:15-31",
+        "Second Reading": "2 Corinthians 13:1-11",
+        "Gospel": "Mark 5:25-34",
+        "Evening": "Psalm 81; 113"
+      },
+      "scraped_at": "2026-01-03T12:46:00.695369"
+    },
+    "2026-08-17": {
+      "date": "2026-08-17",
+      "url": "https://pcusa.org/daily/devotion/2026/08/17",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Judges 17:1-13",
+        "Second Reading": "Acts 7:44-8:1a",
+        "Gospel": "John 5:19-29",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:46:03.549681"
+    },
+    "2026-08-18": {
+      "date": "2026-08-18",
+      "url": "https://pcusa.org/daily/devotion/2026/08/18",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Judges 18:1-15",
+        "Second Reading": "Acts 8:1-13",
+        "Gospel": "John 5:30-47",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:46:05.959170"
+    },
+    "2026-08-19": {
+      "date": "2026-08-19",
+      "url": "https://pcusa.org/daily/devotion/2026/08/19",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Judges 18:16-31",
+        "Second Reading": "Acts 8:14-25",
+        "Gospel": "John 6:1-15",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:46:09.169683"
+    },
+    "2026-08-20": {
+      "date": "2026-08-20",
+      "url": "https://pcusa.org/daily/devotion/2026/08/20",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Job 1:1-22",
+        "Second Reading": "Acts 8:26-40",
+        "Gospel": "John 6:16-27",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:46:12.339480"
+    },
+    "2026-08-21": {
+      "date": "2026-08-21",
+      "url": "https://pcusa.org/daily/devotion/2026/08/21",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Job 2:1-13",
+        "Second Reading": "Acts 9:1-9",
+        "Gospel": "John 6:27-40",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:46:14.864353"
+    },
+    "2026-08-22": {
+      "date": "2026-08-22",
+      "url": "https://pcusa.org/daily/devotion/2026/08/22",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Job 3:1-26",
+        "Second Reading": "Acts 9:10-19a",
+        "Gospel": "John 6:41-51",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:46:18.035063"
+    },
+    "2026-08-23": {
+      "date": "2026-08-23",
+      "url": "https://pcusa.org/daily/devotion/2026/08/23",
+      "readings": {
+        "Morning": "Psalm 67; 150",
+        "First Reading": "Job 4:1-6, 12-21",
+        "Second Reading": "Revelation 4:1-11",
+        "Gospel": "Mark 6:1-6a",
+        "Evening": "Psalm 46; 93"
+      },
+      "scraped_at": "2026-01-03T12:46:20.627257"
+    },
+    "2026-08-24": {
+      "date": "2026-08-24",
+      "url": "https://pcusa.org/daily/devotion/2026/08/24",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Job 4:1, 5:1-11, 17-21, 26-27",
+        "Second Reading": "Acts 9:19b-31",
+        "Gospel": "John 6:52-59",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:46:23.169667"
+    },
+    "2026-08-25": {
+      "date": "2026-08-25",
+      "url": "https://pcusa.org/daily/devotion/2026/08/25",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Job 6:1-4, 8-15, 21",
+        "Second Reading": "Acts 9:32-43",
+        "Gospel": "John 6:60-71",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:46:26.680710"
+    },
+    "2026-08-26": {
+      "date": "2026-08-26",
+      "url": "https://pcusa.org/daily/devotion/2026/08/26",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Job 6:1, 7:1-21",
+        "Second Reading": "Acts 10:1-16",
+        "Gospel": "John 7:1-13",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:46:29.357738"
+    },
+    "2026-08-27": {
+      "date": "2026-08-27",
+      "url": "https://pcusa.org/daily/devotion/2026/08/27",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Job 8:1-10, 20-22",
+        "Second Reading": "Acts 10:17-33",
+        "Gospel": "John 7:14-36",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:46:31.942242"
+    },
+    "2026-08-28": {
+      "date": "2026-08-28",
+      "url": "https://pcusa.org/daily/devotion/2026/08/28",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Job 9:1-15, 32-35",
+        "Second Reading": "Acts 10:34-48",
+        "Gospel": "John 7:37-52",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:46:34.361534"
+    },
+    "2026-08-29": {
+      "date": "2026-08-29",
+      "url": "https://pcusa.org/daily/devotion/2026/08/29",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Job 9:1, 10:1-9, 16-22",
+        "Second Reading": "Acts 11:1-18",
+        "Gospel": "John 8:12-20",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:46:37.249077"
+    },
+    "2026-08-30": {
+      "date": "2026-08-30",
+      "url": "https://pcusa.org/daily/devotion/2026/08/30",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Job 11:1-9, 13-20",
+        "Second Reading": "Revelation 5:1-14",
+        "Gospel": "Matthew 5:1-12",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:46:40.172904"
+    },
+    "2026-08-31": {
+      "date": "2026-08-31",
+      "url": "https://pcusa.org/daily/devotion/2026/08/31",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Job 12:1-6, 13-25",
+        "Second Reading": "Acts 11:19-30",
+        "Gospel": "John 8:21-32",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:46:43.064021"
+    },
+    "2026-09-01": {
+      "date": "2026-09-01",
+      "url": "https://pcusa.org/daily/devotion/2026/09/01",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Job 12:1, 13:3-17, 21-27",
+        "Second Reading": "Acts 12:1-17",
+        "Gospel": "John 8:33-47",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:46:45.480698"
+    },
+    "2026-09-02": {
+      "date": "2026-09-02",
+      "url": "https://pcusa.org/daily/devotion/2026/09/02",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Job 12:1, 14:1-22",
+        "Second Reading": "Acts 12:18-25",
+        "Gospel": "John 8:47-59",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:46:48.815262"
+    },
+    "2026-09-03": {
+      "date": "2026-09-03",
+      "url": "https://pcusa.org/daily/devotion/2026/09/03",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Job 16:16-22, 17:1, 17:13-16",
+        "Second Reading": "Acts 13:1-12",
+        "Gospel": "John 9:1-17",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:46:52.012437"
+    },
+    "2026-09-04": {
+      "date": "2026-09-04",
+      "url": "https://pcusa.org/daily/devotion/2026/09/04",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Job 19:1-7, 14-27",
+        "Second Reading": "Acts 13:13-25",
+        "Gospel": "John 9:18-41",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:46:55.057186"
+    },
+    "2026-09-05": {
+      "date": "2026-09-05",
+      "url": "https://pcusa.org/daily/devotion/2026/09/05",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Job 22:1-4, 22:21-23:7",
+        "Second Reading": "Acts 13:26-43",
+        "Gospel": "John 10:1-18",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:46:56.994553"
+    },
+    "2026-09-06": {
+      "date": "2026-09-06",
+      "url": "https://pcusa.org/daily/devotion/2026/09/06",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Job 25:1-6, Job 27:1-6",
+        "Second Reading": "Revelation 14:1-7, 13",
+        "Gospel": "Matthew 5:13-20",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:46:59.562591"
+    },
+    "2026-09-07": {
+      "date": "2026-09-07",
+      "url": "https://pcusa.org/daily/devotion/2026/09/07",
+      "readings": {
+        "Morning": "Psalm 5; 145",
+        "First Reading": "Job 32:1-10, 32:19-33:1, 33:19-28",
+        "Second Reading": "Acts 13:44-52",
+        "Gospel": "John 10:19-30",
+        "Evening": "Psalm 82; 29"
+      },
+      "scraped_at": "2026-01-03T12:47:03.408937"
+    },
+    "2026-09-08": {
+      "date": "2026-09-08",
+      "url": "https://pcusa.org/daily/devotion/2026/09/08",
+      "readings": {
+        "Morning": "Psalm 42; 146",
+        "First Reading": "Job 29:1-20",
+        "Second Reading": "Acts 14:1-18",
+        "Gospel": "John 10:31-42",
+        "Evening": "Psalm 102; 133"
+      },
+      "scraped_at": "2026-01-03T12:47:06.284237"
+    },
+    "2026-09-09": {
+      "date": "2026-09-09",
+      "url": "https://pcusa.org/daily/devotion/2026/09/09",
+      "readings": {
+        "Morning": "Psalm 89:1-18; 147:1-11",
+        "First Reading": "Job 29:1, 30:1-2, 16-31",
+        "Second Reading": "Acts 14:19-28",
+        "Gospel": "John 11:1-16",
+        "Evening": "Psalm 1; 33"
+      },
+      "scraped_at": "2026-01-03T12:47:09.378283"
+    },
+    "2026-09-10": {
+      "date": "2026-09-10",
+      "url": "https://pcusa.org/daily/devotion/2026/09/10",
+      "readings": {
+        "Morning": "Psalm 97; 147:12-20",
+        "First Reading": "Job 29:1, 31:1-23",
+        "Second Reading": "Acts 15:1-11",
+        "Gospel": "John 11:17-29",
+        "Evening": "Psalm 16; 62"
+      },
+      "scraped_at": "2026-01-03T12:47:13.025877"
+    },
+    "2026-09-11": {
+      "date": "2026-09-11",
+      "url": "https://pcusa.org/daily/devotion/2026/09/11",
+      "readings": {
+        "Morning": "Psalm 51; 148",
+        "First Reading": "Job 29:1, 31:24-40",
+        "Second Reading": "Acts 15:12-21",
+        "Gospel": "John 11:30-44",
+        "Evening": "Psalm 142; 65"
+      },
+      "scraped_at": "2026-01-03T12:47:16.845566"
+    },
+    "2026-09-12": {
+      "date": "2026-09-12",
+      "url": "https://pcusa.org/daily/devotion/2026/09/12",
+      "readings": {
+        "Morning": "Psalm 104; 149",
+        "First Reading": "Job 38:1-17",
+        "Second Reading": "Acts 15:22-35",
+        "Gospel": "John 11:45-54",
+        "Evening": "Psalm 138; 98"
+      },
+      "scraped_at": "2026-01-03T12:47:19.810430"
+    },
+    "2026-09-13": {
+      "date": "2026-09-13",
+      "url": "https://pcusa.org/daily/devotion/2026/09/13",
+      "readings": {
+        "Morning": "Psalm 19; 150",
+        "First Reading": "Job 38:1, 18-41",
+        "Second Reading": "Revelation 18:1-8",
+        "Gospel": "Matthew 5:21-26",
+        "Evening": "Psalm 81; 113"
+      },
+      "scraped_at": "2026-01-03T12:47:21.904320"
+    },
+    "2026-09-14": {
+      "date": "2026-09-14",
+      "url": "https://pcusa.org/daily/devotion/2026/09/14",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Job 40:1-24",
+        "Second Reading": "Acts 15:36-16:5",
+        "Gospel": "John 11:55-12:8",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:47:25.215986"
+    },
+    "2026-09-15": {
+      "date": "2026-09-15",
+      "url": "https://pcusa.org/daily/devotion/2026/09/15",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Job 40:1, 41:1-11",
+        "Second Reading": "Acts 16:6-15",
+        "Gospel": "John 12:9-19",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:47:27.464410"
+    },
+    "2026-09-16": {
+      "date": "2026-09-16",
+      "url": "https://pcusa.org/daily/devotion/2026/09/16",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Job 42:1-17",
+        "Second Reading": "Acts 16:16-24",
+        "Gospel": "John 12:20-26",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:47:30.168711"
+    },
+    "2026-09-17": {
+      "date": "2026-09-17",
+      "url": "https://pcusa.org/daily/devotion/2026/09/17",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Job 28:1-28",
+        "Second Reading": "Acts 16:25-40",
+        "Gospel": "John 12:27-36a",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:47:33.665118"
+    },
+    "2026-09-18": {
+      "date": "2026-09-18",
+      "url": "https://pcusa.org/daily/devotion/2026/09/18",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Esther 1:1-4, 10-19",
+        "Second Reading": "Acts 17:1-15",
+        "Gospel": "John 12:36b-43",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:47:35.509467"
+    },
+    "2026-09-19": {
+      "date": "2026-09-19",
+      "url": "https://pcusa.org/daily/devotion/2026/09/19",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Esther 2:5-8, 15-23",
+        "Second Reading": "Acts 17:16-34",
+        "Gospel": "John 12:44-50",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:47:37.912021"
+    },
+    "2026-09-20": {
+      "date": "2026-09-20",
+      "url": "https://pcusa.org/daily/devotion/2026/09/20",
+      "readings": {
+        "Morning": "Psalm 67; 150",
+        "First Reading": "Esther 3:1-4:3",
+        "Second Reading": "James 1:19-27",
+        "Gospel": "Matthew 6:1-6, 16-18",
+        "Evening": "Psalm 46; 93"
+      },
+      "scraped_at": "2026-01-03T12:47:41.225425"
+    },
+    "2026-09-21": {
+      "date": "2026-09-21",
+      "url": "https://pcusa.org/daily/devotion/2026/09/21",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Esther 4:4-17",
+        "Second Reading": "Acts 18:1-11",
+        "Gospel": "Luke 1:1-4, 3:1-14",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:47:44.370155"
+    },
+    "2026-09-22": {
+      "date": "2026-09-22",
+      "url": "https://pcusa.org/daily/devotion/2026/09/22",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Esther 5:1-14",
+        "Second Reading": "Acts 18:12-28",
+        "Gospel": "Luke 3:15-22",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:47:47.086529"
+    },
+    "2026-09-23": {
+      "date": "2026-09-23",
+      "url": "https://pcusa.org/daily/devotion/2026/09/23",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Esther 6:1-14",
+        "Second Reading": "Acts 19:1-10",
+        "Gospel": "Luke 4:1-13",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:47:50.416055"
+    },
+    "2026-09-24": {
+      "date": "2026-09-24",
+      "url": "https://pcusa.org/daily/devotion/2026/09/24",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Esther 7:1-10",
+        "Second Reading": "Acts 19:11-20",
+        "Gospel": "Luke 4:14-30",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:47:53.418587"
+    },
+    "2026-09-25": {
+      "date": "2026-09-25",
+      "url": "https://pcusa.org/daily/devotion/2026/09/25",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Esther 8:1-8, 15-17",
+        "Second Reading": "Acts 19:21-41",
+        "Gospel": "Luke 4:31-37",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:47:56.468148"
+    },
+    "2026-09-26": {
+      "date": "2026-09-26",
+      "url": "https://pcusa.org/daily/devotion/2026/09/26",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Esther 9:1-32",
+        "Second Reading": "Acts 20:1-16",
+        "Gospel": "Luke 4:38-44",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:47:59.462786"
+    },
+    "2026-09-27": {
+      "date": "2026-09-27",
+      "url": "https://pcusa.org/daily/devotion/2026/09/27",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Hosea 1:1-2:1",
+        "Second Reading": "James 3:1-13",
+        "Gospel": "Matthew 13:44-52",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:48:01.634763"
+    },
+    "2026-09-28": {
+      "date": "2026-09-28",
+      "url": "https://pcusa.org/daily/devotion/2026/09/28",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Hosea 2:2-15",
+        "Second Reading": "Acts 20:17-38",
+        "Gospel": "Luke 5:1-11",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:48:03.703923"
+    },
+    "2026-09-29": {
+      "date": "2026-09-29",
+      "url": "https://pcusa.org/daily/devotion/2026/09/29",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Hosea 2:16-23",
+        "Second Reading": "Acts 21:1-14",
+        "Gospel": "Luke 5:12-26",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:48:06.786967"
+    },
+    "2026-09-30": {
+      "date": "2026-09-30",
+      "url": "https://pcusa.org/daily/devotion/2026/09/30",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Hosea 3:1-5",
+        "Second Reading": "Acts 21:15-26",
+        "Gospel": "Luke 5:27-39",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:48:09.066390"
+    },
+    "2026-10-01": {
+      "date": "2026-10-01",
+      "url": "https://pcusa.org/daily/devotion/2026/10/01",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Hosea 4:1-10",
+        "Second Reading": "Acts 21:27-36",
+        "Gospel": "Luke 6:1-11",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:48:11.946283"
+    },
+    "2026-10-02": {
+      "date": "2026-10-02",
+      "url": "https://pcusa.org/daily/devotion/2026/10/02",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Hosea 4:11-19",
+        "Second Reading": "Acts 21:37-22:16",
+        "Gospel": "Luke 6:12-26",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:48:14.697900"
+    },
+    "2026-10-03": {
+      "date": "2026-10-03",
+      "url": "https://pcusa.org/daily/devotion/2026/10/03",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Hosea 5:1-7",
+        "Second Reading": "Acts 22:17-29",
+        "Gospel": "Luke 6:27-38",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:48:17.896843"
+    },
+    "2026-10-04": {
+      "date": "2026-10-04",
+      "url": "https://pcusa.org/daily/devotion/2026/10/04",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Hosea 5:8-6:6",
+        "Second Reading": "1 Corinthians 2:6-16",
+        "Gospel": "Matthew 14:1-12",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:48:21.985321"
+    },
+    "2026-10-05": {
+      "date": "2026-10-05",
+      "url": "https://pcusa.org/daily/devotion/2026/10/05",
+      "readings": {
+        "Morning": "Psalm 5; 145",
+        "First Reading": "Hosea 6:7-7:7",
+        "Second Reading": "Acts 22:30-23:11",
+        "Gospel": "Luke 6:39-49",
+        "Evening": "Psalm 82; 29"
+      },
+      "scraped_at": "2026-01-03T12:48:25.241847"
+    },
+    "2026-10-06": {
+      "date": "2026-10-06",
+      "url": "https://pcusa.org/daily/devotion/2026/10/06",
+      "readings": {
+        "Morning": "Psalm 42; 146",
+        "First Reading": "Hosea 7:8-16",
+        "Second Reading": "Acts 23:12-24",
+        "Gospel": "Luke 7:1-17",
+        "Evening": "Psalm 102; 133"
+      },
+      "scraped_at": "2026-01-03T12:48:28.342603"
+    },
+    "2026-10-07": {
+      "date": "2026-10-07",
+      "url": "https://pcusa.org/daily/devotion/2026/10/07",
+      "readings": {
+        "Morning": "Psalm 89:1-18; 147:1-11",
+        "First Reading": "Hosea 8:1-14",
+        "Second Reading": "Acts 23:23-35",
+        "Gospel": "Luke 7:18-35",
+        "Evening": "Psalm 1; 33"
+      },
+      "scraped_at": "2026-01-03T12:48:31.460732"
+    },
+    "2026-10-08": {
+      "date": "2026-10-08",
+      "url": "https://pcusa.org/daily/devotion/2026/10/08",
+      "readings": {
+        "Morning": "Psalm 97; 147:12-20",
+        "First Reading": "Hosea 9:1-9",
+        "Second Reading": "Acts 24:1-23",
+        "Gospel": "Luke 7:36-50",
+        "Evening": "Psalm 16; 62"
+      },
+      "scraped_at": "2026-01-03T12:48:34.698069"
+    },
+    "2026-10-09": {
+      "date": "2026-10-09",
+      "url": "https://pcusa.org/daily/devotion/2026/10/09",
+      "readings": {
+        "Morning": "Psalm 51; 148",
+        "First Reading": "Hosea 9:10-17",
+        "Second Reading": "Acts 24:24-25:12",
+        "Gospel": "Luke 8:1-15",
+        "Evening": "Psalm 142; 65"
+      },
+      "scraped_at": "2026-01-03T12:48:38.455799"
+    },
+    "2026-10-10": {
+      "date": "2026-10-10",
+      "url": "https://pcusa.org/daily/devotion/2026/10/10",
+      "readings": {
+        "Morning": "Psalm 104; 149",
+        "First Reading": "Hosea 10:1-15",
+        "Second Reading": "Acts 25:13-27",
+        "Gospel": "Luke 8:16-25",
+        "Evening": "Psalm 138; 98"
+      },
+      "scraped_at": "2026-01-03T12:48:41.471649"
+    },
+    "2026-10-11": {
+      "date": "2026-10-11",
+      "url": "https://pcusa.org/daily/devotion/2026/10/11",
+      "readings": {
+        "Morning": "Psalm 19; 150",
+        "First Reading": "Hosea 11:1-11",
+        "Second Reading": "1 Corinthians 4:9-16",
+        "Gospel": "Matthew 15:21-28",
+        "Evening": "Psalm 81; 113"
+      },
+      "scraped_at": "2026-01-03T12:48:45.231927"
+    },
+    "2026-10-12": {
+      "date": "2026-10-12",
+      "url": "https://pcusa.org/daily/devotion/2026/10/12",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Hosea 11:12-12:1",
+        "Second Reading": "Acts 26:1-23",
+        "Gospel": "Luke 8:26-39",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:48:48.413683"
+    },
+    "2026-10-13": {
+      "date": "2026-10-13",
+      "url": "https://pcusa.org/daily/devotion/2026/10/13",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Hosea 12:2-14",
+        "Second Reading": "Acts 26:24-27:8",
+        "Gospel": "Luke 8:40-56",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:48:50.579779"
+    },
+    "2026-10-14": {
+      "date": "2026-10-14",
+      "url": "https://pcusa.org/daily/devotion/2026/10/14",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Hosea 13:1-3",
+        "Second Reading": "Acts 27:9-26",
+        "Gospel": "Luke 9:1-17",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:48:54.213861"
+    },
+    "2026-10-15": {
+      "date": "2026-10-15",
+      "url": "https://pcusa.org/daily/devotion/2026/10/15",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Hosea 13:4-8",
+        "Second Reading": "Acts 27:27-44",
+        "Gospel": "Luke 9:18-27",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:48:56.919423"
+    },
+    "2026-10-16": {
+      "date": "2026-10-16",
+      "url": "https://pcusa.org/daily/devotion/2026/10/16",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Hosea 13:9-16",
+        "Second Reading": "Acts 28:1-16",
+        "Gospel": "Luke 9:28-36",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:48:59.922705"
+    },
+    "2026-10-17": {
+      "date": "2026-10-17",
+      "url": "https://pcusa.org/daily/devotion/2026/10/17",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Hosea 14:1-9",
+        "Second Reading": "Acts 28:17-31",
+        "Gospel": "Luke 9:37-50",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:49:02.083615"
+    },
+    "2026-10-18": {
+      "date": "2026-10-18",
+      "url": "https://pcusa.org/daily/devotion/2026/10/18",
+      "readings": {
+        "Morning": "Psalm 67; 150",
+        "First Reading": "Micah 1:1-9",
+        "Second Reading": "1 Corinthians 10:1-13",
+        "Gospel": "Matthew 16:13-20",
+        "Evening": "Psalm 46; 93"
+      },
+      "scraped_at": "2026-01-03T12:49:05.204875"
+    },
+    "2026-10-19": {
+      "date": "2026-10-19",
+      "url": "https://pcusa.org/daily/devotion/2026/10/19",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Micah 2:1-13",
+        "Second Reading": "Revelation 7:1-8",
+        "Gospel": "Luke 9:51-62",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:49:07.272108"
+    },
+    "2026-10-20": {
+      "date": "2026-10-20",
+      "url": "https://pcusa.org/daily/devotion/2026/10/20",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Micah 3:1-8",
+        "Second Reading": "Revelation 7:9-17",
+        "Gospel": "Luke 10:1-16",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:49:10.072109"
+    },
+    "2026-10-21": {
+      "date": "2026-10-21",
+      "url": "https://pcusa.org/daily/devotion/2026/10/21",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Micah 3:9-4:5",
+        "Second Reading": "Revelation 8:1-13",
+        "Gospel": "Luke 10:17-24",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:49:13.061904"
+    },
+    "2026-10-22": {
+      "date": "2026-10-22",
+      "url": "https://pcusa.org/daily/devotion/2026/10/22",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Micah 5:1-4, 10-15",
+        "Second Reading": "Revelation 9:1-12",
+        "Gospel": "Luke 10:25-37",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:49:15.228895"
+    },
+    "2026-10-23": {
+      "date": "2026-10-23",
+      "url": "https://pcusa.org/daily/devotion/2026/10/23",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Micah 6:1-8",
+        "Second Reading": "Revelation 9:13-21",
+        "Gospel": "Luke 10:38-42",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:49:17.433143"
+    },
+    "2026-10-24": {
+      "date": "2026-10-24",
+      "url": "https://pcusa.org/daily/devotion/2026/10/24",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Micah 7:1-7",
+        "Second Reading": "Revelation 10:1-11",
+        "Gospel": "Luke 11:1-13",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:49:20.549376"
+    },
+    "2026-10-25": {
+      "date": "2026-10-25",
+      "url": "https://pcusa.org/daily/devotion/2026/10/25",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Jonah 1:1-17a",
+        "Second Reading": "1 Corinthians 10:15-24",
+        "Gospel": "Matthew 18:15-20",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:49:22.772512"
+    },
+    "2026-10-26": {
+      "date": "2026-10-26",
+      "url": "https://pcusa.org/daily/devotion/2026/10/26",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Jonah 1:17-2:10",
+        "Second Reading": "Revelation 11:1-14",
+        "Gospel": "Luke 11:14-26",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:49:25.361848"
+    },
+    "2026-10-27": {
+      "date": "2026-10-27",
+      "url": "https://pcusa.org/daily/devotion/2026/10/27",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Jonah 3:1-4:11",
+        "Second Reading": "Revelation 11:14-19",
+        "Gospel": "Luke 11:27-36",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:49:28.048819"
+    },
+    "2026-10-28": {
+      "date": "2026-10-28",
+      "url": "https://pcusa.org/daily/devotion/2026/10/28",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Nahum 1:1-14",
+        "Second Reading": "Revelation 12:1-6",
+        "Gospel": "Luke 11:37-52",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:49:31.215727"
+    },
+    "2026-10-29": {
+      "date": "2026-10-29",
+      "url": "https://pcusa.org/daily/devotion/2026/10/29",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Nahum 1:15-2:12",
+        "Second Reading": "Revelation 12:7-17",
+        "Gospel": "Luke 11:53-12:12",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:49:34.034321"
+    },
+    "2026-10-30": {
+      "date": "2026-10-30",
+      "url": "https://pcusa.org/daily/devotion/2026/10/30",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Nahum 2:13-3:7",
+        "Second Reading": "Revelation 13:1-10",
+        "Gospel": "Luke 12:13-31",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:49:36.699675"
+    },
+    "2026-10-31": {
+      "date": "2026-10-31",
+      "url": "https://pcusa.org/daily/devotion/2026/10/31",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Nahum 3:8-19",
+        "Second Reading": "Revelation 13:11-18",
+        "Gospel": "Luke 12:32-48",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:49:39.050700"
+    },
+    "2026-11-01": {
+      "date": "2026-11-01",
+      "url": "https://pcusa.org/daily/devotion/2026/11/01",
+      "readings": {
+        "Morning": "Psalm 103; 150",
+        "First Reading": "Zephaniah 1:1-6",
+        "Second Reading": "1 Corinthians 12:27-13:13",
+        "Gospel": "Matthew 18:21-35",
+        "Evening": "Psalm 117; 139"
+      },
+      "scraped_at": "2026-01-03T12:49:42.881949"
+    },
+    "2026-11-02": {
+      "date": "2026-11-02",
+      "url": "https://pcusa.org/daily/devotion/2026/11/02",
+      "readings": {
+        "Morning": "Psalm 5; 145",
+        "First Reading": "Zephaniah 1:7-13",
+        "Second Reading": "Revelation 14:1-13",
+        "Gospel": "Luke 12:49-59",
+        "Evening": "Psalm 82; 29"
+      },
+      "scraped_at": "2026-01-03T12:49:45.127514"
+    },
+    "2026-11-03": {
+      "date": "2026-11-03",
+      "url": "https://pcusa.org/daily/devotion/2026/11/03",
+      "readings": {
+        "Morning": "Psalm 42; 146",
+        "First Reading": "Zephaniah 1:14-18",
+        "Second Reading": "Revelation 14:14-15:8",
+        "Gospel": "Luke 13:1-9",
+        "Evening": "Psalm 102; 133"
+      },
+      "scraped_at": "2026-01-03T12:49:48.341881"
+    },
+    "2026-11-04": {
+      "date": "2026-11-04",
+      "url": "https://pcusa.org/daily/devotion/2026/11/04",
+      "readings": {
+        "Morning": "Psalm 89:1-18; 147:1-11",
+        "First Reading": "Zephaniah 2:1-15",
+        "Second Reading": "Revelation 16:1-11",
+        "Gospel": "Luke 13:10-17",
+        "Evening": "Psalm 1; 33"
+      },
+      "scraped_at": "2026-01-03T12:49:51.928049"
+    },
+    "2026-11-05": {
+      "date": "2026-11-05",
+      "url": "https://pcusa.org/daily/devotion/2026/11/05",
+      "readings": {
+        "Morning": "Psalm 97; 147:12-20",
+        "First Reading": "Zephaniah 3:1-7",
+        "Second Reading": "Revelation 16:12-21",
+        "Gospel": "Luke 13:18-30",
+        "Evening": "Psalm 16; 62"
+      },
+      "scraped_at": "2026-01-03T12:49:55.895388"
+    },
+    "2026-11-06": {
+      "date": "2026-11-06",
+      "url": "https://pcusa.org/daily/devotion/2026/11/06",
+      "readings": {
+        "Morning": "Psalm 51; 148",
+        "First Reading": "Zephaniah 3:8-13",
+        "Second Reading": "Revelation 17:1-18",
+        "Gospel": "Luke 13:31-35",
+        "Evening": "Psalm 142; 65"
+      },
+      "scraped_at": "2026-01-03T12:49:59.755577"
+    },
+    "2026-11-07": {
+      "date": "2026-11-07",
+      "url": "https://pcusa.org/daily/devotion/2026/11/07",
+      "readings": {
+        "Morning": "Psalm 104; 149",
+        "First Reading": "Zephaniah 3:14-20",
+        "Second Reading": "Revelation 18:1-14",
+        "Gospel": "Luke 14:1-11",
+        "Evening": "Psalm 138; 98"
+      },
+      "scraped_at": "2026-01-03T12:50:02.320769"
+    },
+    "2026-11-08": {
+      "date": "2026-11-08",
+      "url": "https://pcusa.org/daily/devotion/2026/11/08",
+      "readings": {
+        "Morning": "Psalm 19; 150",
+        "First Reading": "Joel 1:1-13",
+        "Second Reading": "1 Corinthians 14:1-12",
+        "Gospel": "Matthew 20:1-16",
+        "Evening": "Psalm 81; 113"
+      },
+      "scraped_at": "2026-01-03T12:50:05.435785"
+    },
+    "2026-11-09": {
+      "date": "2026-11-09",
+      "url": "https://pcusa.org/daily/devotion/2026/11/09",
+      "readings": {
+        "Morning": "Psalm 135; 145",
+        "First Reading": "Joel 1:15-2:2",
+        "Second Reading": "Revelation 18:15-24",
+        "Gospel": "Luke 14:12-24",
+        "Evening": "Psalm 97; 112"
+      },
+      "scraped_at": "2026-01-03T12:50:08.450710"
+    },
+    "2026-11-10": {
+      "date": "2026-11-10",
+      "url": "https://pcusa.org/daily/devotion/2026/11/10",
+      "readings": {
+        "Morning": "Psalm 123; 146",
+        "First Reading": "Joel 2:3-11",
+        "Second Reading": "Revelation 19:1-10",
+        "Gospel": "Luke 14:25-35",
+        "Evening": "Psalm 30; 86"
+      },
+      "scraped_at": "2026-01-03T12:50:11.598929"
+    },
+    "2026-11-11": {
+      "date": "2026-11-11",
+      "url": "https://pcusa.org/daily/devotion/2026/11/11",
+      "readings": {
+        "Morning": "Psalm 15; 147:1-11",
+        "First Reading": "Joel 2:12-19",
+        "Second Reading": "Revelation 19:11-21",
+        "Gospel": "Luke 15:1-10",
+        "Evening": "Psalm 48; 4"
+      },
+      "scraped_at": "2026-01-03T12:50:15.471990"
+    },
+    "2026-11-12": {
+      "date": "2026-11-12",
+      "url": "https://pcusa.org/daily/devotion/2026/11/12",
+      "readings": {
+        "Morning": "Psalm 36; 147:12-20",
+        "First Reading": "Joel 2:21-27",
+        "Second Reading": "James 1:1-15",
+        "Gospel": "Luke 15:1-2, 11-32",
+        "Evening": "Psalm 80; 27"
+      },
+      "scraped_at": "2026-01-03T12:50:18.452367"
+    },
+    "2026-11-13": {
+      "date": "2026-11-13",
+      "url": "https://pcusa.org/daily/devotion/2026/11/13",
+      "readings": {
+        "Morning": "Psalm 130; 148",
+        "First Reading": "Joel 2:28-3:8",
+        "Second Reading": "James 1:16-27",
+        "Gospel": "Luke 16:1-9",
+        "Evening": "Psalm 32; 139"
+      },
+      "scraped_at": "2026-01-03T12:50:20.893116"
+    },
+    "2026-11-14": {
+      "date": "2026-11-14",
+      "url": "https://pcusa.org/daily/devotion/2026/11/14",
+      "readings": {
+        "Morning": "Psalm 56; 149",
+        "First Reading": "Joel 3:9-17",
+        "Second Reading": "James 2:1-13",
+        "Gospel": "Luke 16:10-17 (18)",
+        "Evening": "Psalm 118; 111"
+      },
+      "scraped_at": "2026-01-03T12:50:23.759770"
+    },
+    "2026-11-15": {
+      "date": "2026-11-15",
+      "url": "https://pcusa.org/daily/devotion/2026/11/15",
+      "readings": {
+        "Morning": "Psalm 67; 150",
+        "First Reading": "Habakkuk 1:1-4 (5-11) 12-2:1",
+        "Second Reading": "Philippians 3:13-4:1",
+        "Gospel": "Matthew 23:13-24",
+        "Evening": "Psalm 46; 93"
+      },
+      "scraped_at": "2026-01-03T12:50:26.978639"
+    },
+    "2026-11-16": {
+      "date": "2026-11-16",
+      "url": "https://pcusa.org/daily/devotion/2026/11/16",
+      "readings": {
+        "Morning": "Psalm 57; 145",
+        "First Reading": "Habakkuk 2:1-4, 9-20",
+        "Second Reading": "James 2:14-26",
+        "Gospel": "Luke 16:19-31",
+        "Evening": "Psalm 85; 47"
+      },
+      "scraped_at": "2026-01-03T12:50:28.976251"
+    },
+    "2026-11-17": {
+      "date": "2026-11-17",
+      "url": "https://pcusa.org/daily/devotion/2026/11/17",
+      "readings": {
+        "Morning": "Psalm 54; 146",
+        "First Reading": "Habakkuk 3:1-10 (11-15) 16-18",
+        "Second Reading": "James 3:1-12",
+        "Gospel": "Luke 17:1-10",
+        "Evening": "Psalm 28; 99"
+      },
+      "scraped_at": "2026-01-03T12:50:30.914571"
+    },
+    "2026-11-18": {
+      "date": "2026-11-18",
+      "url": "https://pcusa.org/daily/devotion/2026/11/18",
+      "readings": {
+        "Morning": "Psalm 65; 147:1-11",
+        "First Reading": "Malachi 1:1, 6-14",
+        "Second Reading": "James 3:13-4:12",
+        "Gospel": "Luke 17:11-19",
+        "Evening": "Psalm 125; 91"
+      },
+      "scraped_at": "2026-01-03T12:50:34.162821"
+    },
+    "2026-11-19": {
+      "date": "2026-11-19",
+      "url": "https://pcusa.org/daily/devotion/2026/11/19",
+      "readings": {
+        "Morning": "Psalm 143; 147:12-20",
+        "First Reading": "Malachi 2:1-16",
+        "Second Reading": "James 4:13-5:6",
+        "Gospel": "Luke 17:20-37",
+        "Evening": "Psalm 81; 116"
+      },
+      "scraped_at": "2026-01-03T12:50:37.943669"
+    },
+    "2026-11-20": {
+      "date": "2026-11-20",
+      "url": "https://pcusa.org/daily/devotion/2026/11/20",
+      "readings": {
+        "Morning": "Psalm 88; 148",
+        "First Reading": "Malachi 3:1-12",
+        "Second Reading": "James 5:7-12",
+        "Gospel": "Luke 18:1-8",
+        "Evening": "Psalm 6; 20"
+      },
+      "scraped_at": "2026-01-03T12:50:40.962038"
+    },
+    "2026-11-21": {
+      "date": "2026-11-21",
+      "url": "https://pcusa.org/daily/devotion/2026/11/21",
+      "readings": {
+        "Morning": "Psalm 122; 149",
+        "First Reading": "Malachi 3:13-4:6",
+        "Second Reading": "James 5:13-20",
+        "Gospel": "Luke 18:9-14",
+        "Evening": "Psalm 100; 63"
+      },
+      "scraped_at": "2026-01-03T12:50:44.226178"
+    },
+    "2026-11-22": {
+      "date": "2026-11-22",
+      "url": "https://pcusa.org/daily/devotion/2026/11/22",
+      "readings": {
+        "Morning": "Psalm 108; 150",
+        "First Reading": "Zechariah 9:9-16",
+        "Second Reading": "1 Peter 3:13-22",
+        "Gospel": "Matthew 21:1-13",
+        "Evening": "Psalm 66; 23"
+      },
+      "scraped_at": "2026-01-03T12:50:47.264718"
+    },
+    "2026-11-23": {
+      "date": "2026-11-23",
+      "url": "https://pcusa.org/daily/devotion/2026/11/23",
+      "readings": {
+        "Morning": "Psalm 62; 145",
+        "First Reading": "Zechariah 10:1-12",
+        "Second Reading": "Galatians 6:1-10",
+        "Gospel": "Luke 18:15-30",
+        "Evening": "Psalm 73; 9"
+      },
+      "scraped_at": "2026-01-03T12:50:50.821425"
+    },
+    "2026-11-24": {
+      "date": "2026-11-24",
+      "url": "https://pcusa.org/daily/devotion/2026/11/24",
+      "readings": {
+        "Morning": "Psalm 12; 146",
+        "First Reading": "Zechariah 11:4-17",
+        "Second Reading": "1 Corinthians 3:10-23",
+        "Gospel": "Luke 18:31-43",
+        "Evening": "Psalm 36; 7"
+      },
+      "scraped_at": "2026-01-03T12:50:52.819031"
+    },
+    "2026-11-25": {
+      "date": "2026-11-25",
+      "url": "https://pcusa.org/daily/devotion/2026/11/25",
+      "readings": {
+        "Morning": "Psalm 96; 147:1-11",
+        "First Reading": "Zechariah 12:1-10",
+        "Second Reading": "Ephesians 1:3-14",
+        "Gospel": "Luke 19:1-10",
+        "Evening": "Psalm 132; 134"
+      },
+      "scraped_at": "2026-01-03T12:50:55.324572"
+    },
+    "2026-11-26": {
+      "date": "2026-11-26",
+      "url": "https://pcusa.org/daily/devotion/2026/11/26",
+      "readings": {
+        "Morning": "Psalm 116; 147:12-20",
+        "First Reading": "Zechariah 13:1-9",
+        "Second Reading": "Ephesians 1:15-23",
+        "Gospel": "Luke 19:11-27",
+        "Evening": "Psalm 26; 130"
+      },
+      "scraped_at": "2026-01-03T12:50:57.680682"
+    },
+    "2026-11-27": {
+      "date": "2026-11-27",
+      "url": "https://pcusa.org/daily/devotion/2026/11/27",
+      "readings": {
+        "Morning": "Psalm 84; 148",
+        "First Reading": "Zechariah 14:1-11",
+        "Second Reading": "Romans 15:7-13",
+        "Gospel": "Luke 19:28-40",
+        "Evening": "Psalm 25; 40"
+      },
+      "scraped_at": "2026-01-03T12:50:59.954283"
+    },
+    "2026-11-28": {
+      "date": "2026-11-28",
+      "url": "https://pcusa.org/daily/devotion/2026/11/28",
+      "readings": {
+        "Morning": "Psalm 63; 149",
+        "First Reading": "Zechariah 14:12-21",
+        "Second Reading": "Philippians 2:1-11",
+        "Gospel": "Luke 19:41-48",
+        "Evening": "Psalm 125; 90"
+      },
+      "scraped_at": "2026-01-03T12:51:02.948344"
+    },
+    "2026-11-29": {
+      "date": "2026-11-29",
+      "url": "https://pcusa.org/daily/devotion/2026/11/29",
+      "readings": {
+        "Morning": "Psalm 24; 150",
+        "First Reading": "Isaiah 1:1-9",
+        "Second Reading": "2 Peter 3:1-10",
+        "Gospel": "Matthew 25:1-13",
+        "Evening": "Psalm 25; 110"
+      },
+      "scraped_at": "2026-01-03T12:51:06.007890"
+    },
+    "2026-11-30": {
+      "date": "2026-11-30",
+      "url": "https://pcusa.org/daily/devotion/2026/11/30",
+      "readings": {
+        "Morning": "Psalm 122; 145",
+        "First Reading": "Isaiah 1:10-20",
+        "Second Reading": "1 Thessalonians 1:1-10",
+        "Gospel": "Luke 20:1-8",
+        "Evening": "Psalm 40; 67"
+      },
+      "scraped_at": "2026-01-03T12:51:08.364774"
+    },
+    "2026-12-01": {
+      "date": "2026-12-01",
+      "url": "https://pcusa.org/daily/devotion/2026/12/01",
+      "readings": {
+        "Morning": "Psalm 33; 146",
+        "First Reading": "Isaiah 1:21-31",
+        "Second Reading": "1 Thessalonians 2:1-12",
+        "Gospel": "Luke 20:9-18",
+        "Evening": "Psalm 85; 94"
+      },
+      "scraped_at": "2026-01-03T12:51:10.835335"
+    },
+    "2026-12-02": {
+      "date": "2026-12-02",
+      "url": "https://pcusa.org/daily/devotion/2026/12/02",
+      "readings": {
+        "Morning": "Psalm 50; 147:1-11",
+        "First Reading": "Isaiah 2:1-4",
+        "Second Reading": "1 Thessalonians 2:13-20",
+        "Gospel": "Luke 20:19-26",
+        "Evening": "Psalm 53; 17"
+      },
+      "scraped_at": "2026-01-03T12:51:13.595529"
+    },
+    "2026-12-03": {
+      "date": "2026-12-03",
+      "url": "https://pcusa.org/daily/devotion/2026/12/03",
+      "readings": {
+        "Morning": "Psalm 18:1-20; 147:12-20",
+        "First Reading": "Isaiah 2:5-22",
+        "Second Reading": "1 Thessalonians 3:1-13",
+        "Gospel": "Luke 20:27-40",
+        "Evening": "Psalm 126; 62"
+      },
+      "scraped_at": "2026-01-03T12:51:17.302193"
+    },
+    "2026-12-04": {
+      "date": "2026-12-04",
+      "url": "https://pcusa.org/daily/devotion/2026/12/04",
+      "readings": {
+        "Morning": "Psalm 102; 148",
+        "First Reading": "Isaiah 3:1-4:1",
+        "Second Reading": "1 Thessalonians 4:1-12",
+        "Gospel": "Luke 20:41-21:4",
+        "Evening": "Psalm 130; 16"
+      },
+      "scraped_at": "2026-01-03T12:51:19.769265"
+    },
+    "2026-12-05": {
+      "date": "2026-12-05",
+      "url": "https://pcusa.org/daily/devotion/2026/12/05",
+      "readings": {
+        "Morning": "Psalm 90; 149",
+        "First Reading": "Isaiah 4:2-6",
+        "Second Reading": "1 Thessalonians 4:13-18",
+        "Gospel": "Luke 21:5-19",
+        "Evening": "Psalm 80; 72"
+      },
+      "scraped_at": "2026-01-03T12:51:22.215680"
+    },
+    "2026-12-06": {
+      "date": "2026-12-06",
+      "url": "https://pcusa.org/daily/devotion/2026/12/06",
+      "readings": {
+        "Morning": "Psalm 24; 150",
+        "First Reading": "Isaiah 5:1-7",
+        "Second Reading": "2 Peter 3:11-18",
+        "Gospel": "Luke 7:28-35",
+        "Evening": "Psalm 25; 110"
+      },
+      "scraped_at": "2026-01-03T12:51:24.576883"
+    },
+    "2026-12-07": {
+      "date": "2026-12-07",
+      "url": "https://pcusa.org/daily/devotion/2026/12/07",
+      "readings": {
+        "Morning": "Psalm 122; 145",
+        "First Reading": "Isaiah 5:8-17",
+        "Second Reading": "1 Thessalonians 5:1-11",
+        "Gospel": "Luke 21:20-28",
+        "Evening": "Psalm 40; 67"
+      },
+      "scraped_at": "2026-01-03T12:51:27.076969"
+    },
+    "2026-12-08": {
+      "date": "2026-12-08",
+      "url": "https://pcusa.org/daily/devotion/2026/12/08",
+      "readings": {
+        "Morning": "Psalm 33; 146",
+        "First Reading": "Isaiah 5:18-25",
+        "Second Reading": "1 Thessalonians 5:12-28",
+        "Gospel": "Luke 21:29-38",
+        "Evening": "Psalm 85; 94"
+      },
+      "scraped_at": "2026-01-03T12:51:29.712154"
+    },
+    "2026-12-09": {
+      "date": "2026-12-09",
+      "url": "https://pcusa.org/daily/devotion/2026/12/09",
+      "readings": {
+        "Morning": "Psalm 50; 147:1-11",
+        "First Reading": "Isaiah 6:1-13",
+        "Second Reading": "2 Thessalonians 1:1-12",
+        "Gospel": "John 7:53-8:11",
+        "Evening": "Psalm 53; 17"
+      },
+      "scraped_at": "2026-01-03T12:51:32.221659"
+    },
+    "2026-12-10": {
+      "date": "2026-12-10",
+      "url": "https://pcusa.org/daily/devotion/2026/12/10",
+      "readings": {
+        "Morning": "Psalm 18:1-20; 147:12-20",
+        "First Reading": "Isaiah 7:1-9",
+        "Second Reading": "2 Thessalonians 2:1-12",
+        "Gospel": "Luke 22:1-13",
+        "Evening": "Psalm 126; 62"
+      },
+      "scraped_at": "2026-01-03T12:51:35.304715"
+    },
+    "2026-12-11": {
+      "date": "2026-12-11",
+      "url": "https://pcusa.org/daily/devotion/2026/12/11",
+      "readings": {
+        "Morning": "Psalm 102; 148",
+        "First Reading": "Isaiah 7:10-25",
+        "Second Reading": "2 Thessalonians 2:13-3:5",
+        "Gospel": "Luke 22:14-30",
+        "Evening": "Psalm 130; 16"
+      },
+      "scraped_at": "2026-01-03T12:51:37.396114"
+    },
+    "2026-12-12": {
+      "date": "2026-12-12",
+      "url": "https://pcusa.org/daily/devotion/2026/12/12",
+      "readings": {
+        "Morning": "Psalm 90; 149",
+        "First Reading": "Isaiah 8:1-15",
+        "Second Reading": "2 Thessalonians 3:6-18",
+        "Gospel": "Luke 22:31-38",
+        "Evening": "Psalm 80; 72"
+      },
+      "scraped_at": "2026-01-03T12:51:41.015088"
+    },
+    "2026-12-13": {
+      "date": "2026-12-13",
+      "url": "https://pcusa.org/daily/devotion/2026/12/13",
+      "readings": {
+        "Morning": "Psalm 24; 150",
+        "First Reading": "Isaiah 13:1-13",
+        "Second Reading": "Hebrews 12:18-29",
+        "Gospel": "John 3:22-30",
+        "Evening": "Psalm 25; 110"
+      },
+      "scraped_at": "2026-01-03T12:51:44.950104"
+    },
+    "2026-12-14": {
+      "date": "2026-12-14",
+      "url": "https://pcusa.org/daily/devotion/2026/12/14",
+      "readings": {
+        "Morning": "Psalm 122; 145",
+        "First Reading": "Isaiah 8:16-9:1",
+        "Second Reading": "2 Peter 1:1-11",
+        "Gospel": "Luke 22:39-53",
+        "Evening": "Psalm 40; 67"
+      },
+      "scraped_at": "2026-01-03T12:51:48.797987"
+    },
+    "2026-12-15": {
+      "date": "2026-12-15",
+      "url": "https://pcusa.org/daily/devotion/2026/12/15",
+      "readings": {
+        "Morning": "Psalm 33; 146",
+        "First Reading": "Isaiah 9:2-7",
+        "Second Reading": "2 Peter 1:12-21",
+        "Gospel": "Luke 22:54-69",
+        "Evening": "Psalm 85; 94"
+      },
+      "scraped_at": "2026-01-03T12:51:52.688839"
+    },
+    "2026-12-16": {
+      "date": "2026-12-16",
+      "url": "https://pcusa.org/daily/devotion/2026/12/16",
+      "readings": {
+        "Morning": "Psalm 50; 147:1-11",
+        "First Reading": "Isaiah 9:8-17",
+        "Second Reading": "2 Peter 2:1-10a",
+        "Gospel": "Mark 1:1-8",
+        "Evening": "Psalm 53; 17"
+      },
+      "scraped_at": "2026-01-03T12:51:55.890267"
+    },
+    "2026-12-17": {
+      "date": "2026-12-17",
+      "url": "https://pcusa.org/daily/devotion/2026/12/17",
+      "readings": {
+        "Morning": "Psalm 18:1-20; 147:12-20",
+        "First Reading": "Isaiah 9:18-10:4",
+        "Second Reading": "2 Peter 2:10b-16",
+        "Gospel": "Matthew 3:1-12",
+        "Evening": "Psalm 126; 62"
+      },
+      "scraped_at": "2026-01-03T12:51:58.789511"
+    },
+    "2026-12-18": {
+      "date": "2026-12-18",
+      "url": "https://pcusa.org/daily/devotion/2026/12/18",
+      "readings": {
+        "Morning": "Psalm 102; 148",
+        "First Reading": "Isaiah 11:1-9",
+        "Second Reading": "Ephesians 6:10-20",
+        "Gospel": "John 3:16-21",
+        "Evening": "Psalm 130; 16"
+      },
+      "scraped_at": "2026-01-03T12:52:01.238871"
+    },
+    "2026-12-19": {
+      "date": "2026-12-19",
+      "url": "https://pcusa.org/daily/devotion/2026/12/19",
+      "readings": {
+        "Morning": "Psalm 90; 149",
+        "First Reading": "Isaiah 11:10-16",
+        "Second Reading": "Revelation 20:1-10",
+        "Gospel": "John 5:30-47",
+        "Evening": "Psalm 80; 72"
+      },
+      "scraped_at": "2026-01-03T12:52:03.315475"
+    },
+    "2026-12-20": {
+      "date": "2026-12-20",
+      "url": "https://pcusa.org/daily/devotion/2026/12/20",
+      "readings": {
+        "Morning": "Psalm 24; 150",
+        "First Reading": "Isaiah 28:9-22",
+        "Second Reading": "Revelation 20:11-21:8",
+        "Gospel": "Luke 1:5-25",
+        "Evening": "Psalm 25; 110"
+      },
+      "scraped_at": "2026-01-03T12:52:07.315833"
+    },
+    "2026-12-21": {
+      "date": "2026-12-21",
+      "url": "https://pcusa.org/daily/devotion/2026/12/21",
+      "readings": {
+        "Morning": "Psalm 122; 145",
+        "First Reading": "Isaiah 29:9-24",
+        "Second Reading": "Revelation 21:9-21",
+        "Gospel": "Luke 1:26-38",
+        "Evening": "Psalm 40; 67"
+      },
+      "scraped_at": "2026-01-03T12:52:10.860484"
+    },
+    "2026-12-22": {
+      "date": "2026-12-22",
+      "url": "https://pcusa.org/daily/devotion/2026/12/22",
+      "readings": {
+        "Morning": "Psalm 33; 146",
+        "First Reading": "Isaiah 31:1-9",
+        "Second Reading": "Revelation 21:22-22:5",
+        "Gospel": "Luke 1:39-48a (48b-56)",
+        "Evening": "Psalm 85; 94"
+      },
+      "scraped_at": "2026-01-03T12:52:13.022577"
+    },
+    "2026-12-23": {
+      "date": "2026-12-23",
+      "url": "https://pcusa.org/daily/devotion/2026/12/23",
+      "readings": {
+        "Morning": "Psalm 50; 147:1-11",
+        "First Reading": "Isaiah 33:17-22",
+        "Second Reading": "Revelation 22:6-11, 18-20",
+        "Gospel": "Luke 1:57-66",
+        "Evening": "Psalm 53; 17"
+      },
+      "scraped_at": "2026-01-03T12:52:15.632532"
+    },
+    "2026-12-24": {
+      "date": "2026-12-24",
+      "url": "https://pcusa.org/daily/devotion/2026/12/24",
+      "readings": {
+        "Morning": "Psalm 18:1-20; 147:12-20",
+        "First Reading": "Isaiah 35:1-10",
+        "Second Reading": "Revelation 22:12-17, 21",
+        "Gospel": "Luke 1:67-80",
+        "Evening": "Psalm 126; 62"
+      },
+      "scraped_at": "2026-01-03T12:52:18.786688"
+    },
+    "2026-12-25": {
+      "date": "2026-12-25",
+      "url": "https://pcusa.org/daily/devotion/2026/12/25",
+      "readings": {
+        "Morning": "Psalm 2; 148",
+        "First Reading": "Zechariah 2:10-13",
+        "Second Reading": "1 John 4:7-16",
+        "Gospel": "John 3:31-36",
+        "Evening": "Psalm 98; 96"
+      },
+      "scraped_at": "2026-01-03T12:52:21.190848"
+    },
+    "2026-12-26": {
+      "date": "2026-12-26",
+      "url": "https://pcusa.org/daily/devotion/2026/12/26",
+      "readings": {
+        "Morning": "Psalm 116; 149",
+        "First Reading": "2 Chronicles 24:17-22",
+        "Second Reading": "Acts 6:1-7",
+        "Gospel": "Acts 7:59-8:8",
+        "Evening": "Psalm 119:1-24; 27"
+      },
+      "scraped_at": "2026-01-03T12:52:24.721822"
+    },
+    "2026-12-27": {
+      "date": "2026-12-27",
+      "url": "https://pcusa.org/daily/devotion/2026/12/27",
+      "readings": {
+        "Morning": "Psalm 34; 150",
+        "First Reading": "Isaiah 62:6-7, 10-12",
+        "Second Reading": "Hebrews 2:10-18",
+        "Gospel": "Matthew 1:18-25",
+        "Evening": "Psalm 19; 121"
+      },
+      "scraped_at": "2026-01-03T12:52:28.339460"
+    },
+    "2026-12-28": {
+      "date": "2026-12-28",
+      "url": "https://pcusa.org/daily/devotion/2026/12/28",
+      "readings": {
+        "Morning": "Psalm 2; 145",
+        "First Reading": "Isaiah 49:13-23",
+        "Second Reading": "Isaiah 54:1-13",
+        "Gospel": "Matthew 18:1-14",
+        "Evening": "Psalm 110; 111"
+      },
+      "scraped_at": "2026-01-03T12:52:32.156962"
+    },
+    "2026-12-29": {
+      "date": "2026-12-29",
+      "url": "https://pcusa.org/daily/devotion/2026/12/29",
+      "readings": {
+        "Morning": "Psalm 96; 146",
+        "First Reading": "Isaiah 12:1-6",
+        "Second Reading": "Revelation 1:1-8",
+        "Gospel": "John 7:37-52",
+        "Evening": "Psalm 132; 97"
+      },
+      "scraped_at": "2026-01-03T12:52:35.023945"
+    },
+    "2026-12-30": {
+      "date": "2026-12-30",
+      "url": "https://pcusa.org/daily/devotion/2026/12/30",
+      "readings": {
+        "Morning": "Psalm 93; 147:1-11",
+        "First Reading": "Isaiah 25:1-9",
+        "Second Reading": "Revelation 1:19-20",
+        "Gospel": "John 7:53-8:11",
+        "Evening": "Psalm 89:1-18; 89:19-52"
+      },
+      "scraped_at": "2026-01-03T12:52:37.152900"
+    },
+    "2026-12-31": {
+      "date": "2026-12-31",
+      "url": "https://pcusa.org/daily/devotion/2026/12/31",
+      "readings": {
+        "Morning": "Psalm 98; 147:12-20",
+        "First Reading": "Isaiah 26:1-6",
+        "Second Reading": "2 Corinthians 5:16-6:2",
+        "Gospel": "John 8:12-19",
+        "Evening": "Psalm 45; 96"
+      },
+      "scraped_at": "2026-01-03T12:52:41.059340"
     }
   },
   "failed": {},
@@ -5418,5 +8766,5 @@
     "start": "2025-01-01",
     "end": "2026-12-31"
   },
-  "last_updated": "2026-01-03T12:38:50.928257"
+  "last_updated": "2026-01-03T12:52:41.060220"
 }

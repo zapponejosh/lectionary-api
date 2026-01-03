@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -12,15 +13,15 @@ import (
 // Error Types
 // =============================================================================
 
-var (
-	// ErrNotFound is returned when a requested record doesn't exist
-	ErrNotFound = errors.New("not found")
-)
+// var (
+// 	// ErrNotFound is returned when a requested record doesn't exist
+// 	ErrNotFound = errors.New("not found")
+// )
 
-// IsNotFound checks if an error is a not-found error
-func IsNotFound(err error) bool {
-	return errors.Is(err, ErrNotFound)
-}
+// // IsNotFound checks if an error is a not-found error
+// func IsNotFound(err error) bool {
+// 	return errors.Is(err, ErrNotFound)
+// }
 
 // =============================================================================
 // Helper Functions
@@ -441,4 +442,312 @@ func (db *DB) GetRecentScrapeLogs(ctx context.Context, limit int) ([]ScrapeLogEn
 	}
 
 	return logs, nil
+}
+
+// =============================================================================
+// Progress Tracking Queries (Date-Based)
+// =============================================================================
+
+// CreateProgress marks a reading as completed for a user.
+// Returns ErrDuplicate if the user has already completed this date.
+func (db *DB) CreateProgress(ctx context.Context, progress *ReadingProgress) error {
+	query := `
+		INSERT INTO reading_progress (user_id, reading_date, notes, completed_at)
+		VALUES (?, ?, ?, ?)
+	`
+
+	completedAtStr := progress.CompletedAt.Format("2006-01-02 15:04:05")
+
+	result, err := db.ExecContext(ctx, query,
+		progress.UserID,
+		progress.ReadingDate,
+		progress.Notes,
+		completedAtStr,
+	)
+	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint") {
+			return ErrDuplicate
+		}
+		if strings.Contains(err.Error(), "FOREIGN KEY constraint") {
+			return fmt.Errorf("reading date not found in database")
+		}
+		return fmt.Errorf("insert progress: %w", err)
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("get last insert id: %w", err)
+	}
+
+	progress.ID = id
+	progress.CreatedAt = time.Now()
+	progress.UpdatedAt = time.Now()
+
+	return nil
+}
+
+// GetProgressByUser retrieves a user's reading progress with pagination.
+// Results are ordered by completion date (most recent first).
+func (db *DB) GetProgressByUser(ctx context.Context, userID string, limit, offset int) ([]ReadingProgress, error) {
+	query := `
+		SELECT id, user_id, reading_date, notes, completed_at, created_at, updated_at
+		FROM reading_progress
+		WHERE user_id = ?
+		ORDER BY completed_at DESC
+		LIMIT ? OFFSET ?
+	`
+
+	rows, err := db.QueryContext(ctx, query, userID, limit, offset)
+	if err != nil {
+		return nil, fmt.Errorf("query progress by user: %w", err)
+	}
+	defer rows.Close()
+
+	var progressList []ReadingProgress
+
+	for rows.Next() {
+		var p ReadingProgress
+		var notes sql.NullString
+		var completedAtStr, createdAtStr, updatedAtStr sql.NullString
+
+		if err := rows.Scan(
+			&p.ID,
+			&p.UserID,
+			&p.ReadingDate,
+			&notes,
+			&completedAtStr,
+			&createdAtStr,
+			&updatedAtStr,
+		); err != nil {
+			return nil, fmt.Errorf("scan progress: %w", err)
+		}
+
+		// Handle nullable notes
+		if notes.Valid {
+			p.Notes = &notes.String
+		}
+
+		// Parse timestamps
+		if t := parseTimestamp(completedAtStr); t != nil {
+			p.CompletedAt = *t
+		}
+		if t := parseTimestamp(createdAtStr); t != nil {
+			p.CreatedAt = *t
+		}
+		if t := parseTimestamp(updatedAtStr); t != nil {
+			p.UpdatedAt = *t
+		}
+
+		progressList = append(progressList, p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate progress: %w", err)
+	}
+
+	return progressList, nil
+}
+
+// GetProgressByDate retrieves a progress entry for a specific user and date.
+// Returns ErrNotFound if no progress exists for that date.
+func (db *DB) GetProgressByDate(ctx context.Context, userID string, date string) (*ReadingProgress, error) {
+	query := `
+		SELECT id, user_id, reading_date, notes, completed_at, created_at, updated_at
+		FROM reading_progress
+		WHERE user_id = ? AND reading_date = ?
+	`
+
+	var p ReadingProgress
+	var notes sql.NullString
+	var completedAtStr, createdAtStr, updatedAtStr sql.NullString
+
+	err := db.QueryRowContext(ctx, query, userID, date).Scan(
+		&p.ID,
+		&p.UserID,
+		&p.ReadingDate,
+		&notes,
+		&completedAtStr,
+		&createdAtStr,
+		&updatedAtStr,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("query progress by date: %w", err)
+	}
+
+	// Handle nullable notes
+	if notes.Valid {
+		p.Notes = &notes.String
+	}
+
+	// Parse timestamps
+	if t := parseTimestamp(completedAtStr); t != nil {
+		p.CompletedAt = *t
+	}
+	if t := parseTimestamp(createdAtStr); t != nil {
+		p.CreatedAt = *t
+	}
+	if t := parseTimestamp(updatedAtStr); t != nil {
+		p.UpdatedAt = *t
+	}
+
+	return &p, nil
+}
+
+// DeleteProgress removes a progress entry by date.
+// Returns ErrNotFound if no progress exists for that date.
+func (db *DB) DeleteProgress(ctx context.Context, userID string, date string) error {
+	query := `
+		DELETE FROM reading_progress 
+		WHERE user_id = ? AND reading_date = ?
+	`
+
+	result, err := db.ExecContext(ctx, query, userID, date)
+	if err != nil {
+		return fmt.Errorf("delete progress: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return ErrNotFound
+	}
+
+	return nil
+}
+
+// GetProgressStats calculates reading statistics for a user.
+func (db *DB) GetProgressStats(ctx context.Context, userID string) (*ProgressStats, error) {
+	// Get total days available in database
+	totalQuery := `SELECT COUNT(*) FROM daily_readings`
+	var totalDays int
+	if err := db.QueryRowContext(ctx, totalQuery).Scan(&totalDays); err != nil {
+		return nil, fmt.Errorf("count total days: %w", err)
+	}
+
+	// Get completed days count
+	completedQuery := `
+		SELECT COUNT(*)
+		FROM reading_progress
+		WHERE user_id = ?
+	`
+	var completedDays int
+	if err := db.QueryRowContext(ctx, completedQuery, userID).Scan(&completedDays); err != nil {
+		return nil, fmt.Errorf("count completed days: %w", err)
+	}
+
+	// Calculate completion percentage
+	completionPercent := 0.0
+	if totalDays > 0 {
+		completionPercent = (float64(completedDays) / float64(totalDays)) * 100.0
+	}
+
+	// Get last completed date
+	var lastCompletedDate *string
+	lastDateQuery := `
+		SELECT reading_date
+		FROM reading_progress
+		WHERE user_id = ?
+		ORDER BY completed_at DESC
+		LIMIT 1
+	`
+	var dateStr string
+	err := db.QueryRowContext(ctx, lastDateQuery, userID).Scan(&dateStr)
+	if err == nil {
+		lastCompletedDate = &dateStr
+	} else if err != sql.ErrNoRows {
+		return nil, fmt.Errorf("get last completed date: %w", err)
+	}
+
+	// Calculate current and longest streaks
+	currentStreak, longestStreak := db.calculateStreaks(ctx, userID)
+
+	stats := &ProgressStats{
+		TotalDays:         totalDays,
+		CompletedDays:     completedDays,
+		CompletionPercent: completionPercent,
+		CurrentStreak:     currentStreak,
+		LongestStreak:     longestStreak,
+		LastCompletedDate: lastCompletedDate,
+	}
+
+	return stats, nil
+}
+
+// calculateStreaks calculates current and longest reading streaks.
+// Current streak: consecutive days ending today or yesterday.
+// Longest streak: best streak in history.
+func (db *DB) calculateStreaks(ctx context.Context, userID string) (current, longest int) {
+	query := `
+		SELECT DATE(reading_date) as date
+		FROM reading_progress
+		WHERE user_id = ?
+		ORDER BY date DESC
+	`
+
+	rows, err := db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return 0, 0
+	}
+	defer rows.Close()
+
+	var dates []string
+	for rows.Next() {
+		var date string
+		if err := rows.Scan(&date); err != nil {
+			continue
+		}
+		dates = append(dates, date)
+	}
+
+	if len(dates) == 0 {
+		return 0, 0
+	}
+
+	// Calculate current streak (must end today or yesterday)
+	today := time.Now().Format("2006-01-02")
+	yesterday := time.Now().AddDate(0, 0, -1).Format("2006-01-02")
+
+	currentStreak := 0
+	if dates[0] == today || dates[0] == yesterday {
+		expectedDate, _ := time.Parse("2006-01-02", dates[0])
+		currentStreak = 1
+
+		for i := 1; i < len(dates); i++ {
+			dateTime, _ := time.Parse("2006-01-02", dates[i])
+			expectedDate = expectedDate.AddDate(0, 0, -1)
+
+			if dates[i] == expectedDate.Format("2006-01-02") {
+				currentStreak++
+			} else {
+				break
+			}
+		}
+	}
+
+	// Calculate longest streak
+	longestStreak := currentStreak
+	streak := 1
+
+	for i := 1; i < len(dates); i++ {
+		prevDate, _ := time.Parse("2006-01-02", dates[i-1])
+		expectedDate := prevDate.AddDate(0, 0, -1)
+
+		if dates[i] == expectedDate.Format("2006-01-02") {
+			streak++
+			if streak > longestStreak {
+				longestStreak = streak
+			}
+		} else {
+			streak = 1
+		}
+	}
+
+	return currentStreak, longestStreak
 }
