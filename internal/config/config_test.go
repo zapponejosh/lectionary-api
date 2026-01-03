@@ -6,7 +6,6 @@ import (
 )
 
 func TestLoad_Defaults(t *testing.T) {
-	// Clear any existing env vars that might interfere
 	clearEnv()
 
 	cfg, err := Load()
@@ -14,7 +13,6 @@ func TestLoad_Defaults(t *testing.T) {
 		t.Fatalf("Load() with defaults failed: %v", err)
 	}
 
-	// Check defaults are applied
 	if cfg.Port != 8080 {
 		t.Errorf("Port = %d, want 8080", cfg.Port)
 	}
@@ -32,11 +30,10 @@ func TestLoad_Defaults(t *testing.T) {
 func TestLoad_FromEnv(t *testing.T) {
 	clearEnv()
 
-	// Set custom values
 	os.Setenv("PORT", "3000")
 	os.Setenv("ENV", "production")
 	os.Setenv("DATABASE_PATH", "/data/test.db")
-	os.Setenv("API_KEY", "secret-key-123")
+	os.Setenv("ADMIN_API_KEY", "admin-secure-key-32-characters-long")
 	os.Setenv("LOG_LEVEL", "debug")
 	os.Setenv("LOG_FORMAT", "json")
 	defer clearEnv()
@@ -55,8 +52,8 @@ func TestLoad_FromEnv(t *testing.T) {
 	if cfg.DatabasePath != "/data/test.db" {
 		t.Errorf("DatabasePath = %q, want %q", cfg.DatabasePath, "/data/test.db")
 	}
-	if cfg.APIKey != "secret-key-123" {
-		t.Errorf("APIKey = %q, want %q", cfg.APIKey, "secret-key-123")
+	if cfg.AdminAPIKey != "admin-secure-key-32-characters-long" {
+		t.Errorf("AdminAPIKey = %q, want %q", cfg.AdminAPIKey, "admin-secure-key-32-characters-long")
 	}
 	if cfg.LogLevel != "debug" {
 		t.Errorf("LogLevel = %q, want %q", cfg.LogLevel, "debug")
@@ -67,7 +64,6 @@ func TestLoad_FromEnv(t *testing.T) {
 }
 
 func TestConfig_Validate(t *testing.T) {
-	// Table-driven tests for validation
 	tests := []struct {
 		name    string
 		config  Config
@@ -79,7 +75,7 @@ func TestConfig_Validate(t *testing.T) {
 				Port:         8080,
 				Env:          EnvDevelopment,
 				DatabasePath: "./data/test.db",
-				APIKey:       "", // OK in development
+				AdminAPIKey:  "", // OK in development
 				LogLevel:     "info",
 				LogFormat:    "text",
 			},
@@ -91,19 +87,31 @@ func TestConfig_Validate(t *testing.T) {
 				Port:         8080,
 				Env:          EnvProduction,
 				DatabasePath: "/data/lectionary.db",
-				APIKey:       "required-in-prod",
+				AdminAPIKey:  "admin-this-is-a-secure-key-with-32-plus-characters",
 				LogLevel:     "info",
 				LogFormat:    "json",
 			},
 			wantErr: false,
 		},
 		{
-			name: "production requires API key",
+			name: "production requires admin API key",
 			config: Config{
 				Port:         8080,
 				Env:          EnvProduction,
 				DatabasePath: "/data/lectionary.db",
-				APIKey:       "", // Missing!
+				AdminAPIKey:  "", // Missing!
+				LogLevel:     "info",
+				LogFormat:    "json",
+			},
+			wantErr: true,
+		},
+		{
+			name: "admin API key too short",
+			config: Config{
+				Port:         8080,
+				Env:          EnvProduction,
+				DatabasePath: "/data/lectionary.db",
+				AdminAPIKey:  "short", // Less than 32 chars
 				LogLevel:     "info",
 				LogFormat:    "json",
 			},
@@ -214,7 +222,7 @@ func TestConfig_IsProduction(t *testing.T) {
 // clearEnv removes all config-related environment variables
 func clearEnv() {
 	vars := []string{
-		"PORT", "ENV", "DATABASE_PATH", "API_KEY",
+		"PORT", "ENV", "DATABASE_PATH", "ADMIN_API_KEY",
 		"LOG_LEVEL", "LOG_FORMAT",
 	}
 	for _, v := range vars {
