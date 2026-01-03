@@ -222,7 +222,7 @@ func (h *Handlers) GetRangeReadings(w http.ResponseWriter, r *http.Request) {
 // Query params: limit (default 50, max 100), offset (default 0)
 func (h *Handlers) GetProgress(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userID := GetUserID(r, h.cfg)
+	userID := GetUserID(r)
 
 	// Parse pagination parameters
 	limit := 50 // default
@@ -274,7 +274,7 @@ func (h *Handlers) GetProgress(w http.ResponseWriter, r *http.Request) {
 // Request body: {"date": "YYYY-MM-DD", "notes": "optional notes"}
 func (h *Handlers) CreateProgress(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userID := GetUserID(r, h.cfg)
+	userID := GetUserID(r)
 
 	// Parse request body
 	var req struct {
@@ -354,7 +354,7 @@ func (h *Handlers) CreateProgress(w http.ResponseWriter, r *http.Request) {
 // Path parameter {id} is actually the date (YYYY-MM-DD)
 func (h *Handlers) DeleteProgress(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userID := GetUserID(r, h.cfg)
+	userID := GetUserID(r)
 
 	// Get date from path parameter
 	// Note: routes.go uses {id} but we're treating it as a date
@@ -407,7 +407,7 @@ func (h *Handlers) DeleteProgress(w http.ResponseWriter, r *http.Request) {
 // Includes: total days, completed days, completion %, current streak, longest streak
 func (h *Handlers) GetProgressStats(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	userID := GetUserID(r, h.cfg)
+	userID := GetUserID(r)
 
 	h.logger.Debug("fetching progress stats",
 		slog.String("user_id", userID),
