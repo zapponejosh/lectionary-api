@@ -720,7 +720,6 @@ func (db *DB) calculateStreaks(ctx context.Context, userID string) (current, lon
 		currentStreak = 1
 
 		for i := 1; i < len(dates); i++ {
-			dateTime, _ := time.Parse("2006-01-02", dates[i])
 			expectedDate = expectedDate.AddDate(0, 0, -1)
 
 			if dates[i] == expectedDate.Format("2006-01-02") {
