@@ -1,8 +1,8 @@
 package api
 
 import (
+	"context"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"log/slog"
@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/zapponejosh/lectionary-api/internal/config"
+	"github.com/zapponejosh/lectionary-api/internal/database"
 )
 
 // Middleware is a function that wraps an HTTP handler.
@@ -139,14 +140,11 @@ func RecoveryMiddleware(logger *slog.Logger) Middleware {
 
 // AuthMiddleware validates API key for authenticated endpoints.
 // The API key should be passed in the X-API-Key header.
-func AuthMiddleware(cfg *config.Config, logger *slog.Logger) Middleware {
+// AuthMiddleware validates API key and loads user into context.
+func AuthMiddleware(db *database.DB, logger *slog.Logger) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Skip auth in development if no API key is configured
-			if cfg.IsDevelopment() && cfg.APIKey == "" {
-				next.ServeHTTP(w, r)
-				return
-			}
+			ctx := r.Context()
 
 			apiKey := r.Header.Get("X-API-Key")
 			if apiKey == "" {
@@ -154,13 +152,45 @@ func AuthMiddleware(cfg *config.Config, logger *slog.Logger) Middleware {
 				return
 			}
 
-			if apiKey != cfg.APIKey {
-				logger.Warn("invalid API key attempt",
+			// Validate key and get user
+			user, err := db.ValidateAPIKey(ctx, apiKey)
+			if err != nil {
+				if database.IsNotFound(err) {
+					logger.Warn("invalid API key attempt",
+						slog.String("remote_addr", r.RemoteAddr),
+						slog.String("path", r.URL.Path),
+					)
+					WriteUnauthorized(w, "Invalid API key")
+					return
+				}
+				logger.Error("api key validation failed",
+					slog.String("error", err.Error()),
+				)
+				WriteInternalError(w, "Authentication error")
+				return
+			}
+
+			// Store user in context
+			ctx = context.WithValue(ctx, "user", user)
+			r = r.WithContext(ctx)
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+// AdminOnlyMiddleware ensures request is from admin user.
+func AdminOnlyMiddleware(cfg *config.Config, logger *slog.Logger) Middleware {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			apiKey := r.Header.Get("X-API-Key")
+
+			if apiKey != cfg.AdminAPIKey {
+				logger.Warn("admin endpoint access attempt by non-admin",
 					slog.String("remote_addr", r.RemoteAddr),
 					slog.String("path", r.URL.Path),
-					slog.String("request_id", r.Header.Get("X-Request-ID")),
 				)
-				WriteUnauthorized(w, "Invalid API key")
+				WriteForbidden(w, "Admin access required")
 				return
 			}
 
@@ -169,19 +199,20 @@ func AuthMiddleware(cfg *config.Config, logger *slog.Logger) Middleware {
 	}
 }
 
-// GetUserID extracts the user ID from the request.
-// For MVP, we use a hash of the API key as the user ID.
-// This allows tracking per-user progress without a full auth system.
-func GetUserID(r *http.Request, cfg *config.Config) string {
-	apiKey := r.Header.Get("X-API-Key")
-	if apiKey == "" {
-		return "default"
+// GetUser extracts the authenticated user from request context.
+func GetUser(r *http.Request) *database.User {
+	if user, ok := r.Context().Value("user").(*database.User); ok {
+		return user
 	}
+	return nil
+}
 
-	// Hash the API key to use as user ID
-	// Using first 16 chars provides sufficient uniqueness while keeping IDs manageable
-	hash := sha256.Sum256([]byte(apiKey))
-	return hex.EncodeToString(hash[:])[:16]
+// GetUserID extracts the user ID from the authenticated user.
+func GetUserID(r *http.Request) string {
+	if user := GetUser(r); user != nil {
+		return fmt.Sprintf("%d", user.ID)
+	}
+	return "default"
 }
 
 // GetRequestTimezone extracts the timezone from the request.

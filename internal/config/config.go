@@ -21,7 +21,7 @@ type Config struct {
 	DatabasePath string // Path to SQLite file
 
 	// Authentication
-	APIKey string // API key for authenticated endpoints
+	AdminAPIKey string // Admin API key for creating users/keys
 
 	// Logging
 	LogLevel  string // debug, info, warn, error
@@ -52,7 +52,7 @@ func Load() (*Config, error) {
 	cfg.DatabasePath = getEnv("DATABASE_PATH", "./data/lectionary.db")
 
 	// Authentication
-	cfg.APIKey = getEnv("API_KEY", "")
+	cfg.AdminAPIKey = getEnv("ADMIN_API_KEY", "")
 
 	// Logging
 	cfg.LogLevel = getEnv("LOG_LEVEL", "info")
@@ -88,13 +88,15 @@ func (c *Config) Validate() error {
 		errs = append(errs, errors.New("DATABASE_PATH is required"))
 	}
 
-	// API key is required in production
-	if c.Env == EnvProduction && c.APIKey == "" {
-		errs = append(errs, errors.New("API_KEY is required in production"))
+	// Admin API key is required in production
+	if c.Env == EnvProduction && c.AdminAPIKey == "" {
+		errs = append(errs, errors.New("ADMIN_API_KEY is required in production"))
 	}
 
-	// Warn in development if API key is default/empty
-	// (We don't error, just let it be for easier local dev)
+	// Admin API key must be secure (at least 32 characters)
+	if c.AdminAPIKey != "" && len(c.AdminAPIKey) < 32 {
+		errs = append(errs, errors.New("ADMIN_API_KEY must be at least 32 characters for security"))
+	}
 
 	// Validate log level
 	switch c.LogLevel {

@@ -11,25 +11,11 @@ import (
 //
 // Route structure:
 //
-//	Public (no authentication):
-//	  GET  /health                        - Health check
-//	  GET  /api/v1/readings/today         - Today's readings
-//	  GET  /api/v1/readings/date/{date}   - Readings for specific date
-//	  GET  /api/v1/readings/range         - Readings for date range
-//
-//	Authenticated (requires X-API-Key header):
-//	  GET    /api/v1/progress             - Get reading progress
-//	  POST   /api/v1/progress             - Mark reading complete
-//	  DELETE /api/v1/progress/{id}        - Delete progress entry
-//	  GET    /api/v1/progress/stats       - Get progress statistics
+//	TODO: Document route structure here
+
 func SetupRoutes(handlers *Handlers, cfg *config.Config, logger *slog.Logger) http.Handler {
 	mux := http.NewServeMux()
 
-	// Base middleware applied to ALL routes (in order):
-	// 1. Recovery - catch panics from everything below
-	// 2. RequestID - tag request for correlation
-	// 3. Logging - log request/response
-	// 4. CORS - handle cross-origin requests
 	baseMiddleware := ChainMiddleware(
 		RecoveryMiddleware(logger),
 		RequestIDMiddleware(),
@@ -37,29 +23,40 @@ func SetupRoutes(handlers *Handlers, cfg *config.Config, logger *slog.Logger) ht
 		CORSMiddleware(),
 	)
 
-	// Auth middleware wraps individual handlers (not the whole mux)
-	// This prevents double-application of base middleware
-	authWrap := AuthMiddleware(cfg, logger)
+	// Auth middleware for regular users
+	authWrap := AuthMiddleware(handlers.db, logger)
+
+	// Admin-only middleware
+	adminWrap := func(h http.Handler) http.Handler {
+		return AdminOnlyMiddleware(cfg, logger)(h)
+	}
 
 	// ==========================================================================
-	// Public routes (no authentication required)
+	// Public routes
 	// ==========================================================================
-
 	mux.HandleFunc("GET /health", handlers.HealthCheck)
 	mux.HandleFunc("GET /api/v1/readings/today", handlers.GetTodayReadings)
 	mux.HandleFunc("GET /api/v1/readings/date/{date}", handlers.GetDateReadings)
 	mux.HandleFunc("GET /api/v1/readings/range", handlers.GetRangeReadings)
 
 	// ==========================================================================
-	// Authenticated routes (require X-API-Key header)
+	// User routes (authenticated)
 	// ==========================================================================
+	mux.Handle("GET /api/v1/me", authWrap(http.HandlerFunc(handlers.GetCurrentUser)))
+	mux.Handle("GET /api/v1/me/keys", authWrap(http.HandlerFunc(handlers.GetMyAPIKeys)))
+	mux.Handle("DELETE /api/v1/me/keys/{keyID}", authWrap(http.HandlerFunc(handlers.RevokeMyAPIKey)))
 
-	// Wrap each authenticated handler with auth middleware only
 	mux.Handle("GET /api/v1/progress", authWrap(http.HandlerFunc(handlers.GetProgress)))
 	mux.Handle("POST /api/v1/progress", authWrap(http.HandlerFunc(handlers.CreateProgress)))
 	mux.Handle("DELETE /api/v1/progress/{id}", authWrap(http.HandlerFunc(handlers.DeleteProgress)))
 	mux.Handle("GET /api/v1/progress/stats", authWrap(http.HandlerFunc(handlers.GetProgressStats)))
 
-	// Apply base middleware to entire mux (once, at the outer layer)
+	// ==========================================================================
+	// Admin routes (admin key only)
+	// ==========================================================================
+	mux.Handle("GET /api/v1/admin/users", adminWrap(http.HandlerFunc(handlers.ListUsers)))
+	mux.Handle("POST /api/v1/admin/users", adminWrap(http.HandlerFunc(handlers.CreateUser)))
+	mux.Handle("POST /api/v1/admin/users/{userID}/keys", adminWrap(http.HandlerFunc(handlers.CreateAPIKey)))
+
 	return baseMiddleware(mux)
 }

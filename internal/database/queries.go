@@ -2,7 +2,10 @@ package database
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"strings"
@@ -749,4 +752,387 @@ func (db *DB) calculateStreaks(ctx context.Context, userID string) (current, lon
 	}
 
 	return currentStreak, longestStreak
+}
+
+// ============================================================================
+// User Queries
+// ============================================================================
+
+// GetUserByID retrieves a user by ID.
+func (db *DB) GetUserByID(ctx context.Context, id int64) (*User, error) {
+	query := `
+		SELECT id, username, email, full_name, active, 
+		       created_at, updated_at, last_login_at
+		FROM users
+		WHERE id = ?
+	`
+
+	var u User
+	var email, fullName sql.NullString
+	var lastLoginAt sql.NullString
+	var createdAtStr, updatedAtStr string
+
+	err := db.QueryRowContext(ctx, query, id).Scan(
+		&u.ID,
+		&u.Username,
+		&email,
+		&fullName,
+		&u.Active,
+		&createdAtStr,
+		&updatedAtStr,
+		&lastLoginAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	if email.Valid {
+		u.Email = &email.String
+	}
+	if fullName.Valid {
+		u.FullName = &fullName.String
+	}
+	if t := parseTimestamp(sql.NullString{String: createdAtStr, Valid: true}); t != nil {
+		u.CreatedAt = *t
+	}
+	if t := parseTimestamp(sql.NullString{String: updatedAtStr, Valid: true}); t != nil {
+		u.UpdatedAt = *t
+	}
+	if t := parseTimestamp(lastLoginAt); t != nil {
+		u.LastLoginAt = t
+	}
+
+	return &u, nil
+}
+
+// GetUserByUsername retrieves a user by username.
+func (db *DB) GetUserByUsername(ctx context.Context, username string) (*User, error) {
+	query := `
+		SELECT id, username, email, full_name, active, 
+		       created_at, updated_at, last_login_at
+		FROM users
+		WHERE username = ?
+	`
+
+	var u User
+	var email, fullName sql.NullString
+	var lastLoginAt sql.NullString
+	var createdAtStr, updatedAtStr string
+
+	err := db.QueryRowContext(ctx, query, username).Scan(
+		&u.ID,
+		&u.Username,
+		&email,
+		&fullName,
+		&u.Active,
+		&createdAtStr,
+		&updatedAtStr,
+		&lastLoginAt,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("get user by username: %w", err)
+	}
+
+	if email.Valid {
+		u.Email = &email.String
+	}
+	if fullName.Valid {
+		u.FullName = &fullName.String
+	}
+	if t := parseTimestamp(sql.NullString{String: createdAtStr, Valid: true}); t != nil {
+		u.CreatedAt = *t
+	}
+	if t := parseTimestamp(sql.NullString{String: updatedAtStr, Valid: true}); t != nil {
+		u.UpdatedAt = *t
+	}
+	if t := parseTimestamp(lastLoginAt); t != nil {
+		u.LastLoginAt = t
+	}
+
+	return &u, nil
+}
+
+// CreateUser creates a new user.
+func (db *DB) CreateUser(ctx context.Context, username string, email, fullName *string) (*User, error) {
+	query := `
+		INSERT INTO users (username, email, full_name, active)
+		VALUES (?, ?, ?, 1)
+	`
+
+	result, err := db.ExecContext(ctx, query, username, email, fullName)
+	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint") {
+			return nil, ErrDuplicate
+		}
+		return nil, fmt.Errorf("create user: %w", err)
+	}
+
+	id, _ := result.LastInsertId()
+
+	return db.GetUserByID(ctx, id)
+}
+
+// UpdateUserLastLogin updates the last_login_at timestamp.
+func (db *DB) UpdateUserLastLogin(ctx context.Context, userID int64) error {
+	query := `UPDATE users SET last_login_at = datetime('now') WHERE id = ?`
+	_, err := db.ExecContext(ctx, query, userID)
+	return err
+}
+
+// ListUsers returns all users (admin only).
+func (db *DB) ListUsers(ctx context.Context) ([]User, error) {
+	query := `
+		SELECT id, username, email, full_name, active, 
+		       created_at, updated_at, last_login_at
+		FROM users
+		ORDER BY created_at DESC
+	`
+
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("list users: %w", err)
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var u User
+		var email, fullName sql.NullString
+		var lastLoginAt sql.NullString
+		var createdAtStr, updatedAtStr string
+
+		err := rows.Scan(
+			&u.ID,
+			&u.Username,
+			&email,
+			&fullName,
+			&u.Active,
+			&createdAtStr,
+			&updatedAtStr,
+			&lastLoginAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("scan user: %w", err)
+		}
+
+		if email.Valid {
+			u.Email = &email.String
+		}
+		if fullName.Valid {
+			u.FullName = &fullName.String
+		}
+		if t := parseTimestamp(sql.NullString{String: createdAtStr, Valid: true}); t != nil {
+			u.CreatedAt = *t
+		}
+		if t := parseTimestamp(sql.NullString{String: updatedAtStr, Valid: true}); t != nil {
+			u.UpdatedAt = *t
+		}
+		if t := parseTimestamp(lastLoginAt); t != nil {
+			u.LastLoginAt = t
+		}
+
+		users = append(users, u)
+	}
+
+	return users, nil
+}
+
+// ============================================================================
+// API Key Queries
+// ============================================================================
+
+// ValidateAPIKey checks if a key is valid and returns the user.
+// Returns ErrNotFound if key doesn't exist or is inactive.
+// Updates last_used_at timestamp.
+func (db *DB) ValidateAPIKey(ctx context.Context, apiKey string) (*User, error) {
+	// Hash the provided key
+	hash := sha256.Sum256([]byte(apiKey))
+	keyHash := hex.EncodeToString(hash[:])
+
+	query := `
+		SELECT u.id, u.username, u.email, u.full_name, u.active,
+		       u.created_at, u.updated_at, u.last_login_at,
+		       k.id as key_id
+		FROM users u
+		INNER JOIN api_keys k ON k.user_id = u.id
+		WHERE k.key_hash = ? AND k.active = 1 AND u.active = 1
+	`
+
+	var u User
+	var keyID int64
+	var email, fullName sql.NullString
+	var lastLoginAt sql.NullString
+	var createdAtStr, updatedAtStr string
+
+	err := db.QueryRowContext(ctx, query, keyHash).Scan(
+		&u.ID,
+		&u.Username,
+		&email,
+		&fullName,
+		&u.Active,
+		&createdAtStr,
+		&updatedAtStr,
+		&lastLoginAt,
+		&keyID,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, fmt.Errorf("validate api key: %w", err)
+	}
+
+	if email.Valid {
+		u.Email = &email.String
+	}
+	if fullName.Valid {
+		u.FullName = &fullName.String
+	}
+	if t := parseTimestamp(sql.NullString{String: createdAtStr, Valid: true}); t != nil {
+		u.CreatedAt = *t
+	}
+	if t := parseTimestamp(sql.NullString{String: updatedAtStr, Valid: true}); t != nil {
+		u.UpdatedAt = *t
+	}
+	if t := parseTimestamp(lastLoginAt); t != nil {
+		u.LastLoginAt = t
+	}
+
+	// Update last_used_at (async, don't block)
+	go func() {
+		updateQuery := `UPDATE api_keys SET last_used_at = datetime('now') WHERE id = ?`
+		db.ExecContext(context.Background(), updateQuery, keyID)
+
+		// Also update user's last_login_at
+		db.UpdateUserLastLogin(context.Background(), u.ID)
+	}()
+
+	return &u, nil
+}
+
+// CreateAPIKey generates and stores a new API key for a user.
+// Returns the plaintext key (only time it's visible) and the record.
+func (db *DB) CreateAPIKey(ctx context.Context, userID int64, name string) (*APIKeyWithPlaintext, error) {
+	// Verify user exists
+	_, err := db.GetUserByID(ctx, userID)
+	if err != nil {
+		return nil, fmt.Errorf("user not found: %w", err)
+	}
+
+	// Generate cryptographically secure random key
+	keyBytes := make([]byte, 32) // 32 bytes = 64 hex chars
+	if _, err := rand.Read(keyBytes); err != nil {
+		return nil, fmt.Errorf("generate random key: %w", err)
+	}
+	plainKey := "key_" + hex.EncodeToString(keyBytes)
+
+	// Hash for storage
+	hash := sha256.Sum256([]byte(plainKey))
+	keyHash := hex.EncodeToString(hash[:])
+
+	query := `
+		INSERT INTO api_keys (user_id, key_hash, name, active)
+		VALUES (?, ?, ?, 1)
+	`
+
+	result, err := db.ExecContext(ctx, query, userID, keyHash, name)
+	if err != nil {
+		return nil, fmt.Errorf("insert api key: %w", err)
+	}
+
+	id, _ := result.LastInsertId()
+
+	return &APIKeyWithPlaintext{
+		APIKey: APIKey{
+			ID:        id,
+			UserID:    userID,
+			KeyHash:   keyHash,
+			Name:      name,
+			Active:    true,
+			CreatedAt: time.Now(),
+		},
+		PlaintextKey: plainKey,
+	}, nil
+}
+
+// ListUserAPIKeys returns all API keys for a user.
+func (db *DB) ListUserAPIKeys(ctx context.Context, userID int64) ([]APIKey, error) {
+	query := `
+		SELECT id, user_id, key_hash, name, active, 
+		       created_at, last_used_at, revoked_at
+		FROM api_keys
+		WHERE user_id = ?
+		ORDER BY created_at DESC
+	`
+
+	rows, err := db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("list user api keys: %w", err)
+	}
+	defer rows.Close()
+
+	var keys []APIKey
+	for rows.Next() {
+		var k APIKey
+		var createdAtStr string
+		var lastUsedAt, revokedAt sql.NullString
+
+		err := rows.Scan(
+			&k.ID,
+			&k.UserID,
+			&k.KeyHash,
+			&k.Name,
+			&k.Active,
+			&createdAtStr,
+			&lastUsedAt,
+			&revokedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("scan api key: %w", err)
+		}
+
+		if t := parseTimestamp(sql.NullString{String: createdAtStr, Valid: true}); t != nil {
+			k.CreatedAt = *t
+		}
+		if t := parseTimestamp(lastUsedAt); t != nil {
+			k.LastUsedAt = t
+		}
+		if t := parseTimestamp(revokedAt); t != nil {
+			k.RevokedAt = t
+		}
+
+		keys = append(keys, k)
+	}
+
+	return keys, nil
+}
+
+// RevokeAPIKey marks an API key as inactive.
+func (db *DB) RevokeAPIKey(ctx context.Context, keyID int64, userID int64) error {
+	query := `
+		UPDATE api_keys 
+		SET active = 0, revoked_at = datetime('now')
+		WHERE id = ? AND user_id = ?
+	`
+
+	result, err := db.ExecContext(ctx, query, keyID, userID)
+	if err != nil {
+		return fmt.Errorf("revoke api key: %w", err)
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return ErrNotFound
+	}
+
+	return nil
 }

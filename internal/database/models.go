@@ -79,6 +79,43 @@ type ReadingWithProgress struct {
 	Completed bool             `json:"completed"`
 }
 
+// User represents a user of the API.
+type User struct {
+	ID          int64      `json:"id"`
+	Username    string     `json:"username"`
+	Email       *string    `json:"email,omitempty"`
+	FullName    *string    `json:"full_name,omitempty"`
+	Active      bool       `json:"active"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	LastLoginAt *time.Time `json:"last_login_at,omitempty"`
+}
+
+// APIKey represents an API key for authentication.
+type APIKey struct {
+	ID         int64      `json:"id"`
+	UserID     int64      `json:"user_id"`
+	KeyHash    string     `json:"-"` // Never expose the hash
+	Name       string     `json:"name"`
+	Active     bool       `json:"active"`
+	CreatedAt  time.Time  `json:"created_at"`
+	LastUsedAt *time.Time `json:"last_used_at,omitempty"`
+	RevokedAt  *time.Time `json:"revoked_at,omitempty"`
+}
+
+// APIKeyWithPlaintext is returned when creating a new key.
+// The plaintext key is only shown once.
+type APIKeyWithPlaintext struct {
+	APIKey
+	PlaintextKey string `json:"plaintext_key"` // Only populated on creation
+}
+
+// UserWithKeys combines user info with their API keys.
+type UserWithKeys struct {
+	User
+	APIKeys []APIKey `json:"api_keys"`
+}
+
 // =============================================================================
 // JSON Helper Functions
 // =============================================================================
