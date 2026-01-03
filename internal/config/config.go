@@ -40,8 +40,8 @@ const (
 func Load() (*Config, error) {
 	// Load .env file if it exists (ignore error if not found)
 	// This is a no-op in production where env vars are set directly
-	_ = godotenv.Load()
-
+	_ = godotenv.Load(".env.local")
+	_ = godotenv.Load(".env")
 	cfg := &Config{}
 
 	// Server settings
@@ -53,6 +53,7 @@ func Load() (*Config, error) {
 
 	// Authentication
 	cfg.AdminAPIKey = getEnv("ADMIN_API_KEY", "")
+	fmt.Println(cfg.AdminAPIKey)
 
 	// Logging
 	cfg.LogLevel = getEnv("LOG_LEVEL", "info")
