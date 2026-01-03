@@ -14,12 +14,25 @@ import (
 	"github.com/zapponejosh/lectionary-api/internal/database"
 )
 
+// Handler constants
+const (
+	// MaxRangeDays is the maximum number of days allowed in a date range query.
+	MaxRangeDays = 90
+
+	// DefaultProgressLimit is the default pagination limit for progress queries.
+	DefaultProgressLimit = 50
+
+	// MaxProgressLimit is the maximum pagination limit for progress queries.
+	MaxProgressLimit = 100
+)
+
 // Handlers contains all HTTP handlers and their dependencies.
 type Handlers struct {
 	db       *database.DB
 	resolver *calendar.DateResolver
 	cfg      *config.Config
 	logger   *slog.Logger
+	resp     *ResponseWriter
 }
 
 // NewHandlers creates a new Handlers instance.
@@ -30,6 +43,7 @@ func NewHandlers(db *database.DB, cfg *config.Config, logger *slog.Logger) *Hand
 		resolver: resolver,
 		cfg:      cfg,
 		logger:   logger,
+		resp:     NewResponseWriter(logger),
 	}
 }
 
@@ -40,28 +54,42 @@ func (h *Handlers) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	// Check database health
 	if err := h.db.Health(ctx); err != nil {
 		h.logger.Warn("health check failed", slog.Any("error", err))
-		WriteError(w, http.StatusServiceUnavailable, "Database unhealthy", "HEALTH_CHECK_FAILED")
+		h.resp.WriteServiceUnavailable(w, "Database unhealthy")
 		return
 	}
 
-	WriteSuccess(w, map[string]string{
+	h.resp.WriteSuccess(w, map[string]string{
 		"status": "healthy",
 	})
 }
 
 // GetTodayReadings handles GET /api/v1/readings/today
+//
+// Supports timezone via X-Timezone header or ?tz= query parameter.
+// If no timezone is provided, defaults to UTC.
 func (h *Handlers) GetTodayReadings(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	today := time.Now()
+
+	// Get "today" in the context of the user's timezone
+	today := GetTodayForRequest(r)
 
 	readings, err := h.getReadingsForDate(ctx, today)
 	if err != nil {
-		h.logger.Error("failed to get today's readings", slog.Any("error", err))
-		WriteInternalError(w, "Failed to retrieve readings")
+		h.logger.Error("failed to get today's readings",
+			slog.Any("error", err),
+			slog.String("date", calendar.FormatDate(today)),
+		)
+		h.resp.WriteInternalError(w, "Failed to retrieve readings")
 		return
 	}
 
-	WriteSuccess(w, readings)
+	// Include the resolved date in response for clarity
+	response := map[string]interface{}{
+		"date":     calendar.FormatDate(today),
+		"readings": readings,
+	}
+
+	h.resp.WriteSuccess(w, response)
 }
 
 // GetDateReadings handles GET /api/v1/readings/date/{YYYY-MM-DD}
@@ -71,13 +99,13 @@ func (h *Handlers) GetDateReadings(w http.ResponseWriter, r *http.Request) {
 	// Extract date from path
 	dateStr := r.PathValue("date")
 	if dateStr == "" {
-		WriteBadRequest(w, "Date parameter is required")
+		h.resp.WriteBadRequest(w, "Date parameter is required")
 		return
 	}
 
 	date, err := calendar.ParseDateString(dateStr)
 	if err != nil {
-		WriteBadRequest(w, fmt.Sprintf("Invalid date format: %s. Use YYYY-MM-DD", dateStr))
+		h.resp.WriteBadRequest(w, fmt.Sprintf("Invalid date format: %s. Use YYYY-MM-DD", dateStr))
 		return
 	}
 
@@ -85,12 +113,18 @@ func (h *Handlers) GetDateReadings(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.logger.Error("failed to get readings for date",
 			slog.String("date", dateStr),
-			slog.Any("error", err))
-		WriteInternalError(w, "Failed to retrieve readings")
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to retrieve readings")
 		return
 	}
 
-	WriteSuccess(w, readings)
+	response := map[string]interface{}{
+		"date":     dateStr,
+		"readings": readings,
+	}
+
+	h.resp.WriteSuccess(w, response)
 }
 
 // GetRangeReadings handles GET /api/v1/readings/range?start=YYYY-MM-DD&end=YYYY-MM-DD
@@ -101,52 +135,61 @@ func (h *Handlers) GetRangeReadings(w http.ResponseWriter, r *http.Request) {
 	endStr := r.URL.Query().Get("end")
 
 	if startStr == "" || endStr == "" {
-		WriteBadRequest(w, "Both start and end date parameters are required")
+		h.resp.WriteBadRequest(w, "Both start and end date parameters are required")
 		return
 	}
 
 	startDate, err := calendar.ParseDateString(startStr)
 	if err != nil {
-		WriteBadRequest(w, fmt.Sprintf("Invalid start date format: %s. Use YYYY-MM-DD", startStr))
+		h.resp.WriteBadRequest(w, fmt.Sprintf("Invalid start date format: %s. Use YYYY-MM-DD", startStr))
 		return
 	}
 
 	endDate, err := calendar.ParseDateString(endStr)
 	if err != nil {
-		WriteBadRequest(w, fmt.Sprintf("Invalid end date format: %s. Use YYYY-MM-DD", endStr))
+		h.resp.WriteBadRequest(w, fmt.Sprintf("Invalid end date format: %s. Use YYYY-MM-DD", endStr))
 		return
 	}
 
 	if startDate.After(endDate) {
-		WriteBadRequest(w, "Start date must be before or equal to end date")
+		h.resp.WriteBadRequest(w, "Start date must be before or equal to end date")
 		return
 	}
 
-	// Limit range to 90 days to prevent abuse
-	daysDiff := int(endDate.Sub(startDate).Hours() / 24)
-	if daysDiff > 90 {
-		WriteBadRequest(w, "Date range cannot exceed 90 days")
+	// Limit range to prevent abuse
+	daysDiff := calendar.DaysBetween(startDate, endDate)
+	if daysDiff > MaxRangeDays {
+		h.resp.WriteBadRequest(w, fmt.Sprintf("Date range cannot exceed %d days", MaxRangeDays))
 		return
 	}
 
-	var results []interface{}
+	var results []map[string]interface{}
 	current := startDate
 	for !current.After(endDate) {
 		readings, err := h.getReadingsForDate(ctx, current)
 		if err != nil {
 			h.logger.Warn("failed to get readings for date in range",
 				slog.String("date", calendar.FormatDate(current)),
-				slog.Any("error", err))
-			// Continue with other dates even if one fails
+				slog.Any("error", err),
+			)
+			// Include error indication but continue with other dates
+			results = append(results, map[string]interface{}{
+				"date":  calendar.FormatDate(current),
+				"error": "Failed to retrieve readings",
+			})
 		} else {
-			results = append(results, readings)
+			results = append(results, map[string]interface{}{
+				"date":     calendar.FormatDate(current),
+				"readings": readings,
+			})
 		}
 		current = current.AddDate(0, 0, 1)
 	}
 
-	WriteSuccess(w, map[string]interface{}{
+	h.resp.WriteSuccess(w, map[string]interface{}{
 		"start":    startStr,
 		"end":      endStr,
+		"count":    len(results),
 		"readings": results,
 	})
 }
@@ -156,14 +199,32 @@ func (h *Handlers) getReadingsForDate(ctx context.Context, date time.Time) (*dat
 	// Resolve date to lectionary position
 	position, err := h.resolver.ResolveDate(ctx, date)
 	if err != nil {
+		h.logger.Error("date resolution failed",
+			slog.String("date", calendar.FormatDate(date)),
+			slog.Any("error", err),
+		)
 		return nil, fmt.Errorf("resolve date: %w", err)
 	}
+
+	h.logger.Debug("resolved date to position",
+		slog.String("date", calendar.FormatDate(date)),
+		slog.String("period", position.Period),
+		slog.String("day_identifier", position.DayIdentifier),
+		slog.Int("year_cycle", position.YearCycle),
+	)
 
 	// Get readings from database
 	readings, err := h.db.GetDailyReadings(ctx, position.Period, position.DayIdentifier, position.YearCycle)
 	if err != nil {
+		h.logger.Error("database lookup failed",
+			slog.String("period", position.Period),
+			slog.String("day_identifier", position.DayIdentifier),
+			slog.Int("year_cycle", position.YearCycle),
+			slog.Any("error", err),
+		)
 		if database.IsNotFound(err) {
-			return nil, fmt.Errorf("no readings found for position: %s/%s", position.Period, position.DayIdentifier)
+			return nil, fmt.Errorf("no readings found for position: %s/%s (year %d)",
+				position.Period, position.DayIdentifier, position.YearCycle)
 		}
 		return nil, fmt.Errorf("get daily readings: %w", err)
 	}
@@ -176,33 +237,21 @@ func (h *Handlers) GetProgress(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	userID := GetUserID(r, h.cfg)
 
-	// Parse query parameters
-	limitStr := r.URL.Query().Get("limit")
-	offsetStr := r.URL.Query().Get("offset")
-
-	limit := 50 // default
-	offset := 0
-
-	if limitStr != "" {
-		if l, err := strconv.Atoi(limitStr); err == nil && l > 0 && l <= 100 {
-			limit = l
-		}
-	}
-
-	if offsetStr != "" {
-		if o, err := strconv.Atoi(offsetStr); err == nil && o >= 0 {
-			offset = o
-		}
-	}
+	// Parse pagination parameters
+	limit := parsePaginationParam(r.URL.Query().Get("limit"), DefaultProgressLimit, MaxProgressLimit)
+	offset := parsePaginationParam(r.URL.Query().Get("offset"), 0, -1) // No max for offset
 
 	progress, err := h.db.GetProgressByUser(ctx, userID, limit, offset)
 	if err != nil {
-		h.logger.Error("failed to get progress", slog.Any("error", err))
-		WriteInternalError(w, "Failed to retrieve progress")
+		h.logger.Error("failed to get progress",
+			slog.String("user_id", userID),
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to retrieve progress")
 		return
 	}
 
-	WriteSuccess(w, map[string]interface{}{
+	h.resp.WriteSuccess(w, map[string]interface{}{
 		"progress": progress,
 		"limit":    limit,
 		"offset":   offset,
@@ -220,12 +269,12 @@ func (h *Handlers) CreateProgress(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := decodeJSON(r, &req); err != nil {
-		WriteBadRequest(w, fmt.Sprintf("Invalid request body: %v", err))
+		h.resp.WriteBadRequest(w, fmt.Sprintf("Invalid request body: %v", err))
 		return
 	}
 
 	if req.ReadingID <= 0 {
-		WriteBadRequest(w, "reading_id must be a positive integer")
+		h.resp.WriteBadRequest(w, "reading_id must be a positive integer")
 		return
 	}
 
@@ -233,11 +282,14 @@ func (h *Handlers) CreateProgress(w http.ResponseWriter, r *http.Request) {
 	_, err := h.db.GetReadingByID(ctx, req.ReadingID)
 	if err != nil {
 		if database.IsNotFound(err) {
-			WriteNotFound(w, "Reading not found")
+			h.resp.WriteNotFound(w, "Reading not found")
 			return
 		}
-		h.logger.Error("failed to get reading", slog.Any("error", err))
-		WriteInternalError(w, "Failed to verify reading")
+		h.logger.Error("failed to get reading",
+			slog.Int64("reading_id", req.ReadingID),
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to verify reading")
 		return
 	}
 
@@ -256,15 +308,19 @@ func (h *Handlers) CreateProgress(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.db.CreateProgress(ctx, progress); err != nil {
 		if err == database.ErrDuplicate {
-			WriteError(w, http.StatusConflict, "Reading already marked as complete", "DUPLICATE")
+			h.resp.WriteConflict(w, "Reading already marked as complete")
 			return
 		}
-		h.logger.Error("failed to create progress", slog.Any("error", err))
-		WriteInternalError(w, "Failed to mark reading as complete")
+		h.logger.Error("failed to create progress",
+			slog.String("user_id", userID),
+			slog.Int64("reading_id", req.ReadingID),
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to mark reading as complete")
 		return
 	}
 
-	WriteSuccess(w, progress)
+	h.resp.WriteSuccess(w, progress)
 }
 
 // DeleteProgress handles DELETE /api/v1/progress/{id}
@@ -274,13 +330,13 @@ func (h *Handlers) DeleteProgress(w http.ResponseWriter, r *http.Request) {
 
 	progressIDStr := r.PathValue("id")
 	if progressIDStr == "" {
-		WriteBadRequest(w, "Progress ID is required")
+		h.resp.WriteBadRequest(w, "Progress ID is required")
 		return
 	}
 
 	progressID, err := strconv.ParseInt(progressIDStr, 10, 64)
 	if err != nil {
-		WriteBadRequest(w, "Invalid progress ID")
+		h.resp.WriteBadRequest(w, "Invalid progress ID")
 		return
 	}
 
@@ -288,26 +344,32 @@ func (h *Handlers) DeleteProgress(w http.ResponseWriter, r *http.Request) {
 	progress, err := h.db.GetProgressByID(ctx, progressID)
 	if err != nil {
 		if database.IsNotFound(err) {
-			WriteNotFound(w, "Progress entry not found")
+			h.resp.WriteNotFound(w, "Progress entry not found")
 			return
 		}
-		h.logger.Error("failed to get progress", slog.Any("error", err))
-		WriteInternalError(w, "Failed to retrieve progress")
+		h.logger.Error("failed to get progress",
+			slog.Int64("progress_id", progressID),
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to retrieve progress")
 		return
 	}
 
 	if progress.UserID != userID {
-		WriteUnauthorized(w, "Progress entry does not belong to user")
+		h.resp.WriteUnauthorized(w, "Progress entry does not belong to user")
 		return
 	}
 
 	if err := h.db.DeleteProgress(ctx, progressID); err != nil {
-		h.logger.Error("failed to delete progress", slog.Any("error", err))
-		WriteInternalError(w, "Failed to delete progress")
+		h.logger.Error("failed to delete progress",
+			slog.Int64("progress_id", progressID),
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to delete progress")
 		return
 	}
 
-	WriteSuccess(w, map[string]string{"message": "Progress deleted"})
+	h.resp.WriteSuccess(w, map[string]string{"message": "Progress deleted"})
 }
 
 // GetProgressStats handles GET /api/v1/progress/stats
@@ -317,12 +379,15 @@ func (h *Handlers) GetProgressStats(w http.ResponseWriter, r *http.Request) {
 
 	stats, err := h.db.GetProgressStats(ctx, userID)
 	if err != nil {
-		h.logger.Error("failed to get progress stats", slog.Any("error", err))
-		WriteInternalError(w, "Failed to retrieve statistics")
+		h.logger.Error("failed to get progress stats",
+			slog.String("user_id", userID),
+			slog.Any("error", err),
+		)
+		h.resp.WriteInternalError(w, "Failed to retrieve statistics")
 		return
 	}
 
-	WriteSuccess(w, stats)
+	h.resp.WriteSuccess(w, stats)
 }
 
 // decodeJSON decodes JSON request body.
@@ -332,5 +397,27 @@ func decodeJSON(r *http.Request, v interface{}) error {
 	}
 	defer r.Body.Close()
 
-	return json.NewDecoder(r.Body).Decode(v)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields() // Reject requests with unknown fields
+	return decoder.Decode(v)
+}
+
+// parsePaginationParam parses a pagination parameter string.
+// Returns defaultVal if the string is empty or invalid.
+// If maxVal is positive, clamps the result to maxVal.
+func parsePaginationParam(s string, defaultVal, maxVal int) int {
+	if s == "" {
+		return defaultVal
+	}
+
+	val, err := strconv.Atoi(s)
+	if err != nil || val < 0 {
+		return defaultVal
+	}
+
+	if maxVal > 0 && val > maxVal {
+		return maxVal
+	}
+
+	return val
 }

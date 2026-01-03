@@ -21,7 +21,8 @@ type DateResolver struct {
 }
 
 // Queryable is an interface for database queries.
-// This allows us to use either *database.DB or *database.Tx.
+// This allows us to use either *database.DB or *database.Tx, and enables
+// easy mocking in tests.
 type Queryable interface {
 	GetDaysByPeriodType(ctx context.Context, periodType database.PeriodType) ([]database.LectionaryDay, error)
 	GetDayByPosition(ctx context.Context, period, dayIdentifier string) (*database.LectionaryDay, error)
@@ -34,201 +35,109 @@ func NewDateResolver(db Queryable) *DateResolver {
 
 // ResolveDate converts a calendar date to a lectionary position.
 // Returns the period, day identifier, and year cycle for the given date.
+//
+// The resolution follows this priority:
+//  1. Fixed days (Christmas, Epiphany)
+//  2. Advent weeks
+//  3. Christmas season
+//  4. Epiphany and following
+//  5. Baptism of the Lord and weeks after
+//  6. Dated weeks (variable Epiphany-Lent transition)
+//  7. Ash Wednesday and following
+//  8. Lent weeks
+//  9. Holy Week
+//  10. Easter weeks
+//  11. Pentecost and weeks after (including Trinity Sunday)
 func (dr *DateResolver) ResolveDate(ctx context.Context, date time.Time) (*ResolvedPosition, error) {
+	// Normalize the date to midnight UTC for consistent comparisons
+	date = NormalizeToMidnight(date)
+
 	year := date.Year()
 	yearCycle := GetYearCycle(date)
 
-	// Get key liturgical dates
+	// Get key liturgical dates for this CALENDAR year.
+	// Important: Easter, Ash Wednesday, Pentecost are based on the calendar year
+	// of the date being resolved, NOT the liturgical year.
+	// The liturgical year only affects which year cycle (1 or 2) we use.
 	easter := CalculateEaster(year)
-	advent := CalculateAdvent(year)
 	ashWednesday := CalculateAshWednesday(year)
 	pentecost := CalculatePentecost(year)
 
-	// Check if date is before Advent (belongs to previous liturgical year)
-	if date.Before(advent) {
-		prevYear := year - 1
-		prevAdvent := CalculateAdvent(prevYear)
-		prevEaster := CalculateEaster(prevYear)
-		prevAshWednesday := CalculateAshWednesday(prevYear)
-		prevPentecost := CalculatePentecost(prevYear)
+	// Advent for this calendar year (used as boundary for Pentecost season)
+	advent := CalculateAdvent(year)
 
-		// Use previous year's dates for calculation
-		return dr.resolveDateWithContext(ctx, date, prevYear, yearCycle, prevAdvent, prevEaster, prevAshWednesday, prevPentecost)
-	}
+	// For dates in Advent/Christmas (after this year's Advent), we need
+	// to check against THIS year's Advent, not next year's
+	// For dates before Advent (Jan-Nov), Advent serves as the end boundary
+	// for the Pentecost season
 
 	return dr.resolveDateWithContext(ctx, date, year, yearCycle, advent, easter, ashWednesday, pentecost)
 }
 
+// resolveDateWithContext resolves a date using pre-calculated liturgical dates.
 func (dr *DateResolver) resolveDateWithContext(
 	ctx context.Context,
 	date time.Time,
 	year int,
 	yearCycle int,
-	advent time.Time,
-	easter time.Time,
-	ashWednesday time.Time,
-	pentecost time.Time,
+	advent, easter, ashWednesday, pentecost time.Time,
 ) (*ResolvedPosition, error) {
-	// ============================================================================
-	// 1. FIXED DAYS - Direct date matching
-	// ============================================================================
-	if fixed := dr.resolveFixedDay(ctx, date); fixed != nil {
-		return &ResolvedPosition{
-			Period:        fixed.Period,
-			DayIdentifier: fixed.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
+
+	// Resolution chain - order matters!
+	resolvers := []func() *ResolvedPosition{
+		func() *ResolvedPosition { return dr.resolveFixedDay(ctx, date) },
+		func() *ResolvedPosition { return dr.resolveAdventWeek(date, advent, year) },
+		func() *ResolvedPosition { return dr.resolveChristmasSeason(date, year) },
+		func() *ResolvedPosition { return dr.resolveEpiphany(date) },
+		func() *ResolvedPosition { return dr.resolveBaptismAndFollowing(ctx, date, year, ashWednesday) },
+		func() *ResolvedPosition { return dr.resolveDatedWeek(ctx, date, year, ashWednesday) },
+		func() *ResolvedPosition { return dr.resolveAshWednesday(date, ashWednesday) },
+		func() *ResolvedPosition { return dr.resolveLentWeek(date, ashWednesday, easter) },
+		func() *ResolvedPosition { return dr.resolveHolyWeek(date, easter) },
+		func() *ResolvedPosition { return dr.resolveEasterWeek(date, easter, pentecost) },
+		func() *ResolvedPosition { return dr.resolvePentecostAndFollowing(date, pentecost, advent) },
 	}
 
-	// ============================================================================
-	// 2. ADVENT WEEKS (1st-4th Week of Advent)
-	// ============================================================================
-	if date.After(advent.AddDate(0, 0, -1)) && date.Before(time.Date(year, time.December, 25, 0, 0, 0, 0, time.UTC)) {
-		adventWeek := dr.resolveAdventWeek(date, advent)
-		if adventWeek != nil {
-			return &ResolvedPosition{
-				Period:        adventWeek.Period,
-				DayIdentifier: adventWeek.DayIdentifier,
-				YearCycle:     yearCycle,
-			}, nil
+	for _, resolve := range resolvers {
+		if pos := resolve(); pos != nil {
+			pos.YearCycle = yearCycle
+			return pos, nil
 		}
 	}
 
-	// ============================================================================
-	// 3. CHRISTMAS SEASON (Dec 25 - Jan 5)
-	// ============================================================================
-	if christmas := dr.resolveChristmasSeason(date, year); christmas != nil {
-		return &ResolvedPosition{
-			Period:        christmas.Period,
-			DayIdentifier: christmas.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 4. EPIPHANY AND FOLLOWING (Jan 6-12)
-	// ============================================================================
-	if epiphany := dr.resolveEpiphany(date, year); epiphany != nil {
-		return &ResolvedPosition{
-			Period:        epiphany.Period,
-			DayIdentifier: epiphany.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 5. BAPTISM OF THE LORD & WEEKS AFTER
-	// ============================================================================
-	if baptism := dr.resolveBaptismAndFollowing(ctx, date, year, ashWednesday); baptism != nil {
-		return &ResolvedPosition{
-			Period:        baptism.Period,
-			DayIdentifier: baptism.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 6. DATED WEEKS (Week following Sun. between Feb. X and Y)
-	// ============================================================================
-	if dated := dr.resolveDatedWeek(ctx, date, year, ashWednesday); dated != nil {
-		return &ResolvedPosition{
-			Period:        dated.Period,
-			DayIdentifier: dated.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 7. ASH WEDNESDAY AND FOLLOWING
-	// ============================================================================
-	if ash := dr.resolveAshWednesday(date, ashWednesday); ash != nil {
-		return &ResolvedPosition{
-			Period:        ash.Period,
-			DayIdentifier: ash.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 8. LENT WEEKS (1st-6th Week of Lent)
-	// ============================================================================
-	if lent := dr.resolveLentWeek(date, ashWednesday); lent != nil {
-		return &ResolvedPosition{
-			Period:        lent.Period,
-			DayIdentifier: lent.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 9. HOLY WEEK
-	// ============================================================================
-	if holyWeek := dr.resolveHolyWeek(date, easter); holyWeek != nil {
-		return &ResolvedPosition{
-			Period:        holyWeek.Period,
-			DayIdentifier: holyWeek.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 10. EASTER WEEKS (1st-7th Week of Easter)
-	// ============================================================================
-	if easterWeek := dr.resolveEasterWeek(date, easter, pentecost); easterWeek != nil {
-		return &ResolvedPosition{
-			Period:        easterWeek.Period,
-			DayIdentifier: easterWeek.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	// ============================================================================
-	// 11. PENTECOST AND FOLLOWING
-	// ============================================================================
-	if pentecostWeek := dr.resolvePentecostAndFollowing(ctx, date, pentecost, advent); pentecostWeek != nil {
-		return &ResolvedPosition{
-			Period:        pentecostWeek.Period,
-			DayIdentifier: pentecostWeek.DayIdentifier,
-			YearCycle:     yearCycle,
-		}, nil
-	}
-
-	return nil, fmt.Errorf("could not resolve date %s to lectionary position", date.Format("2006-01-02"))
+	return nil, fmt.Errorf("could not resolve date %s to lectionary position", FormatDate(date))
 }
 
 // resolveFixedDay handles fixed calendar dates like Christmas, Epiphany, etc.
 func (dr *DateResolver) resolveFixedDay(ctx context.Context, date time.Time) *ResolvedPosition {
 	month := date.Month()
-	day := date.Day()
+	dayOfMonth := date.Day()
 
 	// Christmas Day - December 25
-	if month == time.December && day == 25 {
-		dayName := DayName(date)
-		// Check if it's stored as "December 25" or "Sunday"
-		day, err := dr.db.GetDayByPosition(ctx, "Christmas", "December 25")
-		if err == nil && day != nil {
+	if month == time.December && dayOfMonth == 25 {
+		// Try "December 25" identifier first
+		if lday, err := dr.db.GetDayByPosition(ctx, "Christmas", "December 25"); err == nil && lday != nil {
 			return &ResolvedPosition{
-				Period:        day.Period,
-				DayIdentifier: day.DayIdentifier,
+				Period:        lday.Period,
+				DayIdentifier: lday.DayIdentifier,
 			}
 		}
-		// Fallback to day name
-		day, err = dr.db.GetDayByPosition(ctx, "Christmas", dayName)
-		if err == nil && day != nil {
+		// Fallback to day name (some lectionaries use the day name for Christmas)
+		dayName := DayName(date)
+		if lday, err := dr.db.GetDayByPosition(ctx, "Christmas", dayName); err == nil && lday != nil {
 			return &ResolvedPosition{
-				Period:        day.Period,
-				DayIdentifier: day.DayIdentifier,
+				Period:        lday.Period,
+				DayIdentifier: lday.DayIdentifier,
 			}
 		}
 	}
 
 	// Epiphany - January 6
-	if month == time.January && day == 6 {
-		day, err := dr.db.GetDayByPosition(ctx, "Epiphany and Following", "January 6")
-		if err == nil && day != nil {
+	if month == time.January && dayOfMonth == 6 {
+		if lday, err := dr.db.GetDayByPosition(ctx, "Epiphany and Following", "January 6"); err == nil && lday != nil {
 			return &ResolvedPosition{
-				Period:        day.Period,
-				DayIdentifier: day.DayIdentifier,
+				Period:        lday.Period,
+				DayIdentifier: lday.DayIdentifier,
 			}
 		}
 	}
@@ -236,102 +145,111 @@ func (dr *DateResolver) resolveFixedDay(ctx context.Context, date time.Time) *Re
 	return nil
 }
 
-// resolveAdventWeek resolves dates in Advent (weeks 1-4)
-func (dr *DateResolver) resolveAdventWeek(date time.Time, advent time.Time) *ResolvedPosition {
-	daysSinceAdvent := int(date.Sub(advent).Hours() / 24)
+// resolveAdventWeek resolves dates in Advent (weeks 1-4).
+func (dr *DateResolver) resolveAdventWeek(date time.Time, advent time.Time, year int) *ResolvedPosition {
+	christmas := time.Date(year, time.December, 25, 0, 0, 0, 0, time.UTC)
+
+	// Must be between Advent Sunday (inclusive) and Christmas (exclusive)
+	if date.Before(advent) || !date.Before(christmas) {
+		return nil
+	}
+
+	daysSinceAdvent := DaysBetween(advent, date)
 	weekNum := (daysSinceAdvent / 7) + 1
 
-	if weekNum >= 1 && weekNum <= 4 {
-		period := fmt.Sprintf("%s Week of Advent", Ordinal(weekNum))
-		
-		// 4th Week of Advent uses date-based identifiers (December 17-24)
-		// instead of day names
-		var dayIdentifier string
-		if weekNum == 4 {
-			monthName := date.Month().String()
-			dayIdentifier = fmt.Sprintf("%s %d", monthName, date.Day())
-		} else {
-			dayIdentifier = DayName(date)
-		}
-		
-		return &ResolvedPosition{
-			Period:        period,
-			DayIdentifier: dayIdentifier,
-		}
+	if weekNum < 1 || weekNum > AdventWeeks {
+		return nil
 	}
 
-	return nil
+	period := fmt.Sprintf("%s Week of Advent", Ordinal(weekNum))
+
+	// 4th Week of Advent uses date-based identifiers (December 17-24)
+	// because it has variable length depending on when Christmas falls
+	var dayIdentifier string
+	if weekNum == 4 {
+		dayIdentifier = fmt.Sprintf("%s %d", date.Month().String(), date.Day())
+	} else {
+		dayIdentifier = DayName(date)
+	}
+
+	return &ResolvedPosition{
+		Period:        period,
+		DayIdentifier: dayIdentifier,
+	}
 }
 
-// resolveChristmasSeason resolves dates in Christmas season (Dec 25 - Jan 5)
+// resolveChristmasSeason resolves dates in Christmas season (Dec 25 - Jan 5).
 func (dr *DateResolver) resolveChristmasSeason(date time.Time, year int) *ResolvedPosition {
 	month := date.Month()
-	day := date.Day()
+	dayOfMonth := date.Day()
 
-	// December 25-31
-	if month == time.December && day >= 25 {
-		dayIdentifier := fmt.Sprintf("December %d", day)
+	// December 25-31 of current year
+	if month == time.December && dayOfMonth >= 25 {
 		return &ResolvedPosition{
 			Period:        "Christmas Season",
-			DayIdentifier: dayIdentifier,
+			DayIdentifier: fmt.Sprintf("December %d", dayOfMonth),
 		}
 	}
 
-	// January 1-5
-	if month == time.January && day <= 5 {
-		dayIdentifier := fmt.Sprintf("January %d", day)
+	// January 1-5 (next calendar year but same liturgical season)
+	// We need to check if this is the January following Christmas
+	if month == time.January && dayOfMonth >= 1 && dayOfMonth <= 5 {
 		return &ResolvedPosition{
 			Period:        "Christmas Season",
-			DayIdentifier: dayIdentifier,
+			DayIdentifier: fmt.Sprintf("January %d", dayOfMonth),
 		}
 	}
 
 	return nil
 }
 
-// resolveEpiphany resolves Epiphany and Following (Jan 6-12)
-func (dr *DateResolver) resolveEpiphany(date time.Time, year int) *ResolvedPosition {
+// resolveEpiphany resolves Epiphany and Following (Jan 6-12).
+func (dr *DateResolver) resolveEpiphany(date time.Time) *ResolvedPosition {
 	month := date.Month()
-	day := date.Day()
+	dayOfMonth := date.Day()
 
-	if month == time.January && day >= 6 && day <= 12 {
-		dayIdentifier := fmt.Sprintf("January %d", day)
+	if month == time.January && dayOfMonth >= 6 && dayOfMonth <= 12 {
 		return &ResolvedPosition{
 			Period:        "Epiphany and Following",
-			DayIdentifier: dayIdentifier,
+			DayIdentifier: fmt.Sprintf("January %d", dayOfMonth),
 		}
 	}
 
 	return nil
 }
 
-// resolveBaptismAndFollowing resolves Baptism of the Lord and weeks after
+// resolveBaptismAndFollowing resolves Baptism of the Lord and weeks 1-4 after.
+// Weeks 5+ are handled by resolveDatedWeek using "Week following Sun. between..." periods.
 func (dr *DateResolver) resolveBaptismAndFollowing(ctx context.Context, date time.Time, year int, ashWednesday time.Time) *ResolvedPosition {
+	// Don't process if we're past Ash Wednesday
+	if !date.Before(ashWednesday) {
+		return nil
+	}
+
 	// Baptism of the Lord is the Sunday between Jan 7-13
 	baptismSunday := FindSundayBetween(year, 1, 7, 1, 13)
 	if baptismSunday == nil {
 		return nil
 	}
 
-	// Check if date is in Baptism of the Lord week or weeks after
-	if date.Before(ashWednesday) {
-		// Check if it's the Baptism Sunday itself
-		if date.Year() == baptismSunday.Year() && date.Month() == baptismSunday.Month() && date.Day() == baptismSunday.Day() {
-			return &ResolvedPosition{
-				Period:        "Baptism of the Lord",
-				DayIdentifier: "Sunday",
-			}
+	// Check if it's the Baptism Sunday itself
+	if IsSameDay(date, *baptismSunday) {
+		return &ResolvedPosition{
+			Period:        "Baptism of the Lord",
+			DayIdentifier: "Sunday",
 		}
+	}
 
-		// Check for "Week N after Baptism of the Lord"
-		daysAfterBaptism := int(date.Sub(*baptismSunday).Hours() / 24)
-		if daysAfterBaptism > 0 && daysAfterBaptism < 7*10 { // Up to 10 weeks
-			weekNum := (daysAfterBaptism / 7) + 1
-			dayName := DayName(date)
-			period := fmt.Sprintf("Week %d after Baptism of the Lord", weekNum)
+	// Check for weeks 1-4 after Baptism of the Lord
+	// The database only has weeks 1-4; weeks 5+ use dated weeks
+	daysAfterBaptism := DaysBetween(*baptismSunday, date)
+	if daysAfterBaptism > 0 {
+		weekNum := (daysAfterBaptism / 7) + 1
+		// Only handle weeks 1-4; let resolveDatedWeek handle weeks 5+
+		if weekNum >= 1 && weekNum <= 4 {
 			return &ResolvedPosition{
-				Period:        period,
-				DayIdentifier: dayName,
+				Period:        fmt.Sprintf("Week %d after Baptism of the Lord", weekNum),
+				DayIdentifier: DayName(date),
 			}
 		}
 	}
@@ -339,16 +257,33 @@ func (dr *DateResolver) resolveBaptismAndFollowing(ctx context.Context, date tim
 	return nil
 }
 
-// resolveDatedWeek resolves "Week following Sun. between Feb. X and Y" periods
+// resolveDatedWeek resolves "Week following Sun. between Feb. X and Y" periods.
+// These are transitional weeks between Epiphany season and Lent.
+// Note: Despite the name "Week following", these periods include the Sunday itself.
 func (dr *DateResolver) resolveDatedWeek(ctx context.Context, date time.Time, year int, ashWednesday time.Time) *ResolvedPosition {
+	// Must be before Ash Wednesday
+	if !date.Before(ashWednesday) {
+		return nil
+	}
+
 	// Get all dated week periods from database
 	days, err := dr.db.GetDaysByPeriodType(ctx, database.PeriodTypeDated)
 	if err != nil {
 		return nil
 	}
 
-	for _, day := range days {
-		startMonth, startDay, endMonth, endDay, err := ParseDatedWeekPeriod(day.Period)
+	// Build a unique set of periods (we get multiple rows per period)
+	seenPeriods := make(map[string]bool)
+	var periods []string
+	for _, lday := range days {
+		if !seenPeriods[lday.Period] {
+			seenPeriods[lday.Period] = true
+			periods = append(periods, lday.Period)
+		}
+	}
+
+	for _, period := range periods {
+		startMonth, startDay, endMonth, endDay, err := ParseDatedWeekPeriod(period)
 		if err != nil {
 			continue
 		}
@@ -358,16 +293,15 @@ func (dr *DateResolver) resolveDatedWeek(ctx context.Context, date time.Time, ye
 			continue
 		}
 
-		// The week following starts the day after the Sunday
-		weekStart := sunday.AddDate(0, 0, 1)
-		weekEnd := weekStart.AddDate(0, 0, 7)
+		// The week includes Sunday through Saturday (7 days)
+		weekStart := *sunday
+		weekEnd := sunday.AddDate(0, 0, 6) // Saturday
 
-		// Check if date falls in this week and before Ash Wednesday
-		if (date.After(weekStart) || date.Equal(weekStart)) && date.Before(weekEnd) && date.Before(ashWednesday) {
-			dayName := DayName(date)
+		// Check if date falls in this week (Sunday through Saturday)
+		if (date.Equal(weekStart) || date.After(weekStart)) && !date.After(weekEnd) {
 			return &ResolvedPosition{
-				Period:        day.Period,
-				DayIdentifier: dayName,
+				Period:        period,
+				DayIdentifier: DayName(date),
 			}
 		}
 	}
@@ -375,124 +309,180 @@ func (dr *DateResolver) resolveDatedWeek(ctx context.Context, date time.Time, ye
 	return nil
 }
 
-// resolveAshWednesday resolves Ash Wednesday and following days
+// resolveAshWednesday resolves Ash Wednesday and following days (Wed-Sat).
 func (dr *DateResolver) resolveAshWednesday(date time.Time, ashWednesday time.Time) *ResolvedPosition {
-	daysSinceAsh := int(date.Sub(ashWednesday).Hours() / 24)
+	daysSinceAsh := DaysBetween(ashWednesday, date)
 
+	// Ash Wednesday through Saturday (4 days: Wed, Thu, Fri, Sat)
 	if daysSinceAsh >= 0 && daysSinceAsh <= 3 {
 		dayNames := []string{"Wednesday", "Thursday", "Friday", "Saturday"}
-		if daysSinceAsh < len(dayNames) {
-			return &ResolvedPosition{
-				Period:        "Ash Wednesday and Following",
-				DayIdentifier: dayNames[daysSinceAsh],
-			}
+		return &ResolvedPosition{
+			Period:        "Ash Wednesday and Following",
+			DayIdentifier: dayNames[daysSinceAsh],
 		}
 	}
 
 	return nil
 }
 
-// resolveLentWeek resolves Lent weeks (1st-6th Week of Lent)
-func (dr *DateResolver) resolveLentWeek(date time.Time, ashWednesday time.Time) *ResolvedPosition {
+// resolveLentWeek resolves Lent weeks (1st-5th Week of Lent).
+// Note: There is no 6th Week of Lent - that becomes Holy Week.
+func (dr *DateResolver) resolveLentWeek(date time.Time, ashWednesday, easter time.Time) *ResolvedPosition {
 	// First Sunday of Lent is the Sunday after Ash Wednesday
 	firstSundayOfLent := ashWednesday
 	for firstSundayOfLent.Weekday() != time.Sunday {
 		firstSundayOfLent = firstSundayOfLent.AddDate(0, 0, 1)
 	}
 
-	if date.Before(firstSundayOfLent) {
+	// Holy Week starts on Palm Sunday (7 days before Easter)
+	palmSunday := easter.AddDate(0, 0, -7)
+
+	if date.Before(firstSundayOfLent) || !date.Before(palmSunday) {
 		return nil
 	}
 
-	daysSinceFirstSunday := int(date.Sub(firstSundayOfLent).Hours() / 24)
+	daysSinceFirstSunday := DaysBetween(firstSundayOfLent, date)
 	weekNum := (daysSinceFirstSunday / 7) + 1
 
-	if weekNum >= 1 && weekNum <= 6 {
-		dayName := DayName(date)
-		period := fmt.Sprintf("%s Week of Lent", Ordinal(weekNum))
+	// Only weeks 1-5 of Lent (week 6 is Holy Week)
+	if weekNum >= 1 && weekNum <= 5 {
 		return &ResolvedPosition{
-			Period:        period,
-			DayIdentifier: dayName,
+			Period:        fmt.Sprintf("%s Week of Lent", Ordinal(weekNum)),
+			DayIdentifier: DayName(date),
 		}
 	}
 
 	return nil
 }
 
-// resolveHolyWeek resolves Holy Week (Palm Sunday through Holy Saturday)
+// resolveHolyWeek resolves Holy Week (Palm Sunday through Holy Saturday).
 func (dr *DateResolver) resolveHolyWeek(date time.Time, easter time.Time) *ResolvedPosition {
-	palmSunday := easter.AddDate(0, 0, -7)
-	daysSincePalm := int(date.Sub(palmSunday).Hours() / 24)
+	palmSunday := easter.AddDate(0, 0, -DaysFromEasterToPalmSunday)
+	daysSincePalm := DaysBetween(palmSunday, date)
 
+	// Holy Week is Palm Sunday (day 0) through Holy Saturday (day 6)
 	if daysSincePalm >= 0 && daysSincePalm < 7 {
-		dayName := DayName(date)
 		return &ResolvedPosition{
 			Period:        "Holy Week",
-			DayIdentifier: dayName,
+			DayIdentifier: DayName(date),
 		}
 	}
 
 	return nil
 }
 
-// resolveEasterWeek resolves Easter weeks (1st-7th Week of Easter)
-func (dr *DateResolver) resolveEasterWeek(date time.Time, easter time.Time, pentecost time.Time) *ResolvedPosition {
-	if date.Before(easter) || date.After(pentecost) || date.Equal(pentecost) {
+// resolveEasterWeek resolves Easter weeks.
+// Note: The first week is called "Easter Week", subsequent weeks are "2nd Week of Easter", etc.
+func (dr *DateResolver) resolveEasterWeek(date time.Time, easter, pentecost time.Time) *ResolvedPosition {
+	// Easter season is from Easter Sunday up to (but not including) Pentecost
+	if date.Before(easter) || !date.Before(pentecost) {
 		return nil
 	}
 
-	daysSinceEaster := int(date.Sub(easter).Hours() / 24)
+	daysSinceEaster := DaysBetween(easter, date)
 	weekNum := (daysSinceEaster / 7) + 1
 
-	if weekNum >= 1 && weekNum <= 7 {
-		dayName := DayName(date)
-		period := fmt.Sprintf("%s Week of Easter", Ordinal(weekNum))
+	if weekNum >= 1 && weekNum <= EasterWeeks {
+		// First week is "Easter Week", not "1st Week of Easter"
+		var period string
+		if weekNum == 1 {
+			period = "Easter Week"
+		} else {
+			period = fmt.Sprintf("%s Week of Easter", Ordinal(weekNum))
+		}
+
 		return &ResolvedPosition{
 			Period:        period,
-			DayIdentifier: dayName,
+			DayIdentifier: DayName(date),
 		}
 	}
 
 	return nil
 }
 
-// resolvePentecostAndFollowing resolves Pentecost and weeks after until Advent
-func (dr *DateResolver) resolvePentecostAndFollowing(ctx context.Context, date time.Time, pentecost time.Time, nextAdvent time.Time) *ResolvedPosition {
-	if date.Before(pentecost) {
+// resolvePentecostAndFollowing resolves Pentecost and weeks after until Advent.
+//
+// Database structure:
+// - Pentecost (Sunday only)
+// - Week 1 after Pentecost (Mon-Sat after Pentecost)
+// - Trinity Sunday and Following (Sunday only - no weekdays in DB)
+// - Week 2 after Pentecost (includes 2nd Sunday after Pentecost + Mon-Sat)
+// - Week 3-27 after Pentecost (Sunday + Mon-Sat each)
+// - Christ the King (Sunday only - last Sunday before Advent)
+func (dr *DateResolver) resolvePentecostAndFollowing(date time.Time, pentecost, nextAdvent time.Time) *ResolvedPosition {
+	if date.Before(pentecost) || !date.Before(nextAdvent) {
 		return nil
 	}
 
 	// Pentecost Sunday itself
-	if date.Year() == pentecost.Year() && date.Month() == pentecost.Month() && date.Day() == pentecost.Day() {
+	if IsSameDay(date, pentecost) {
 		return &ResolvedPosition{
 			Period:        "Pentecost",
 			DayIdentifier: "Sunday",
 		}
 	}
 
-	// Weeks after Pentecost
-	daysSincePentecost := int(date.Sub(pentecost).Hours() / 24)
-	weekNum := (daysSincePentecost / 7) + 1
+	daysSincePentecost := DaysBetween(pentecost, date)
 
-	// Limit to reasonable number of weeks (up to Advent)
-	if date.Before(nextAdvent) && weekNum >= 1 && weekNum <= 30 {
-		dayName := DayName(date)
-		period := fmt.Sprintf("Week %d after Pentecost", weekNum)
+	// Week 1 after Pentecost is Mon-Sat after Pentecost (days 1-6)
+	if daysSincePentecost >= 1 && daysSincePentecost <= 6 {
 		return &ResolvedPosition{
-			Period:        period,
-			DayIdentifier: dayName,
+			Period:        "Week 1 after Pentecost",
+			DayIdentifier: DayName(date),
+		}
+	}
+
+	// Trinity Sunday is the Sunday after Pentecost (day 7)
+	// In the database, Trinity Sunday only has Sunday - no weekdays
+	if daysSincePentecost == 7 {
+		return &ResolvedPosition{
+			Period:        "Trinity Sunday and Following",
+			DayIdentifier: "Sunday",
+		}
+	}
+
+	// Check for Christ the King Sunday (last Sunday before Advent)
+	// This takes precedence over week numbering
+	christTheKing := nextAdvent.AddDate(0, 0, -7) // Sunday before Advent
+	if date.Weekday() == time.Sunday && IsSameDay(date, christTheKing) {
+		return &ResolvedPosition{
+			Period:        "Christ the King",
+			DayIdentifier: "Sunday",
+		}
+	}
+
+	// Days 8+ after Pentecost: Week 2-27 after Pentecost
+	if daysSincePentecost >= 8 {
+		// Calculate which week we're in
+		// Days 8-14: Week 2 (8-14 = days after Trinity week)
+		// Days 15-21: Week 3
+		// etc.
+		daysAfterTrinity := daysSincePentecost - 7 // Day 8 = day 1 after Trinity
+		weekNum := (daysAfterTrinity / 7) + 2      // Week 2 = first week after Trinity
+
+		// Cap at MaxWeeksAfterPentecost (27)
+		// Weeks beyond 27 still use Week 27 readings (the last available)
+		if weekNum > MaxWeeksAfterPentecost {
+			weekNum = MaxWeeksAfterPentecost
+		}
+
+		if weekNum >= 2 {
+			return &ResolvedPosition{
+				Period:        fmt.Sprintf("Week %d after Pentecost", weekNum),
+				DayIdentifier: DayName(date),
+			}
 		}
 	}
 
 	return nil
 }
 
-// ParseDateString parses a date string in YYYY-MM-DD format
+// ParseDateString parses a date string in YYYY-MM-DD format.
 func ParseDateString(dateStr string) (time.Time, error) {
 	return time.Parse("2006-01-02", dateStr)
 }
 
-// FormatDate formats a date as YYYY-MM-DD
+// FormatDate formats a date as YYYY-MM-DD.
 func FormatDate(date time.Time) string {
 	return date.Format("2006-01-02")
 }
