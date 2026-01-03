@@ -1,248 +1,125 @@
-// Package database provides database access for the lectionary API.
 package database
 
 import (
+	"database/sql"
 	"encoding/json"
 	"time"
 )
 
 // =============================================================================
-// Core Domain Types
+// Core Data Models
 // =============================================================================
 
-// PeriodType categorizes how a lectionary period relates to the calendar.
-// This affects how we compute dates for a given position.
-type PeriodType string
-
-const (
-	// PeriodTypeLiturgical represents weeks relative to moveable feasts.
-	// Examples: "1st Week of Advent", "Holy Week", "3rd Week of Easter"
-	// Date computation requires knowing Easter date for the year.
-	PeriodTypeLiturgical PeriodType = "liturgical_week"
-
-	// PeriodTypeDated represents weeks anchored to calendar date ranges.
-	// Examples: "Week following Sun. between Feb. 11 and 17"
-	// These occur in the Epiphany→Lent and Pentecost→Advent transitions.
-	PeriodTypeDated PeriodType = "dated_week"
-
-	// PeriodTypeFixed represents specific calendar dates.
-	// Examples: Christmas Day (Dec 25), Epiphany (Jan 6)
-	// These always fall on the same date regardless of Easter.
-	PeriodTypeFixed PeriodType = "fixed_days"
-)
-
-// ValidPeriodTypes returns all valid period types.
-func ValidPeriodTypes() []PeriodType {
-	return []PeriodType{
-		PeriodTypeLiturgical,
-		PeriodTypeDated,
-		PeriodTypeFixed,
-	}
+// DailyReading represents a single day's readings.
+// This is a direct mapping of what we scrape from PCUSA.
+type DailyReading struct {
+	ID             int64      `json:"id"`
+	Date           string     `json:"date"`                      // YYYY-MM-DD
+	MorningPsalms  []string   `json:"morning_psalms"`            // ["111", "149"]
+	EveningPsalms  []string   `json:"evening_psalms"`            // ["107", "15"]
+	FirstReading   string     `json:"first_reading"`             // "1 Kings 19:9-18"
+	SecondReading  string     `json:"second_reading"`            // "Ephesians 4:17-32"
+	GospelReading  string     `json:"gospel_reading"`            // "John 6:15-27"
+	LiturgicalInfo *string    `json:"liturgical_info,omitempty"` // Optional JSON metadata
+	SourceURL      string     `json:"source_url"`
+	ScrapedAt      *time.Time `json:"scraped_at,omitempty"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
 }
 
-// IsValid checks if a period type is valid.
-func (pt PeriodType) IsValid() bool {
-	for _, valid := range ValidPeriodTypes() {
-		if pt == valid {
-			return true
-		}
-	}
-	return false
+// ScrapeLogEntry tracks a scraping attempt for debugging.
+type ScrapeLogEntry struct {
+	ID           int64     `json:"id"`
+	Date         string    `json:"date"`
+	ScrapedAt    time.Time `json:"scraped_at"`
+	SourceURL    string    `json:"source_url"`
+	RawData      *string   `json:"raw_data,omitempty"`
+	Success      bool      `json:"success"`
+	ErrorMessage *string   `json:"error_message,omitempty"`
+	DurationMs   *int64    `json:"duration_ms,omitempty"`
 }
 
-// ReadingType defines the category of a scripture reading.
-type ReadingType string
-
-const (
-	// ReadingTypeFirst is the first scripture reading (typically OT).
-	ReadingTypeFirst ReadingType = "first"
-
-	// ReadingTypeSecond is the second scripture reading (typically Epistle).
-	ReadingTypeSecond ReadingType = "second"
-
-	// ReadingTypeGospel is the gospel reading.
-	ReadingTypeGospel ReadingType = "gospel"
-)
-
-// ValidReadingTypes returns all valid reading types.
-func ValidReadingTypes() []ReadingType {
-	return []ReadingType{
-		ReadingTypeFirst,
-		ReadingTypeSecond,
-		ReadingTypeGospel,
-	}
-}
-
-// IsValid checks if a reading type is valid.
-func (rt ReadingType) IsValid() bool {
-	for _, valid := range ValidReadingTypes() {
-		if rt == valid {
-			return true
-		}
-	}
-	return false
+// ReadingStats provides overview statistics about the database.
+type ReadingStats struct {
+	TotalDays     int        `json:"total_days"`
+	EarliestDate  string     `json:"earliest_date"`
+	LatestDate    string     `json:"latest_date"`
+	LastScrapedAt *time.Time `json:"last_scraped_at,omitempty"`
 }
 
 // =============================================================================
-// Database Models
+// JSON Helper Functions
 // =============================================================================
 
-// LectionaryDay represents a position in the 2-year lectionary cycle.
-// This is NOT tied to specific calendar dates - dates are computed at runtime.
-//
-// The combination of Period + DayIdentifier uniquely identifies a position.
-// Examples:
-//   - Period="1st Week of Advent", DayIdentifier="Sunday"
-//   - Period="Christmas Season", DayIdentifier="December 25"
-type LectionaryDay struct {
-	ID            int64      `json:"id"`
-	Period        string     `json:"period"`         // "1st Week of Advent", "Holy Week", etc.
-	DayIdentifier string     `json:"day_identifier"` // "Sunday", "Monday", or "December 25"
-	PeriodType    PeriodType `json:"period_type"`    // liturgical_week, dated_week, fixed_days
-	SpecialName   *string    `json:"special_name"`   // "Christmas Day", "Epiphany", etc. (nullable)
-	MorningPsalms []string   `json:"morning_psalms"` // ["24", "150"]
-	EveningPsalms []string   `json:"evening_psalms"` // ["25", "110"]
-	CreatedAt     time.Time  `json:"created_at"`
-	UpdatedAt     time.Time  `json:"updated_at"`
-}
-
-// MorningPsalmsJSON returns the morning psalms as a JSON string for database storage.
-func (ld *LectionaryDay) MorningPsalmsJSON() string {
-	if ld.MorningPsalms == nil {
-		return "[]"
+// MarshalPsalms converts a string slice to JSON for storage.
+// Example: ["111", "149"] → '["111","149"]'
+func MarshalPsalms(psalms []string) (string, error) {
+	if psalms == nil {
+		return "[]", nil
 	}
-	b, _ := json.Marshal(ld.MorningPsalms)
-	return string(b)
-}
-
-// EveningPsalmsJSON returns the evening psalms as a JSON string for database storage.
-func (ld *LectionaryDay) EveningPsalmsJSON() string {
-	if ld.EveningPsalms == nil {
-		return "[]"
+	data, err := json.Marshal(psalms)
+	if err != nil {
+		return "[]", err
 	}
-	b, _ := json.Marshal(ld.EveningPsalms)
-	return string(b)
+	return string(data), nil
 }
 
-// ParsePsalmsJSON parses a JSON array string into a slice of psalm references.
-func ParsePsalmsJSON(jsonStr string) ([]string, error) {
-	if jsonStr == "" || jsonStr == "[]" {
+// UnmarshalPsalms converts JSON string to string slice.
+// Example: '["111","149"]' → ["111", "149"]
+func UnmarshalPsalms(data string) ([]string, error) {
+	if data == "" || data == "[]" {
 		return []string{}, nil
 	}
+
 	var psalms []string
-	err := json.Unmarshal([]byte(jsonStr), &psalms)
-	return psalms, err
-}
-
-// Reading represents a single scripture reading assigned to a lectionary position.
-// Readings are specific to a year cycle (1 or 2).
-type Reading struct {
-	ID              int64       `json:"id"`
-	LectionaryDayID int64       `json:"lectionary_day_id"`
-	YearCycle       int         `json:"year_cycle"`   // 1 or 2
-	ReadingType     ReadingType `json:"reading_type"` // first, second, gospel
-	Position        int         `json:"position"`     // Order within type (usually 1)
-	Reference       string      `json:"reference"`    // "Isaiah 1:1-9"
-	CreatedAt       time.Time   `json:"created_at"`
-	UpdatedAt       time.Time   `json:"updated_at"`
-}
-
-// ReadingProgress tracks a user's completion of a specific reading.
-type ReadingProgress struct {
-	ID          int64     `json:"id"`
-	UserID      string    `json:"user_id"`
-	ReadingID   int64     `json:"reading_id"`
-	Notes       *string   `json:"notes"` // nullable
-	CompletedAt time.Time `json:"completed_at"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	err := json.Unmarshal([]byte(data), &psalms)
+	if err != nil {
+		return []string{}, err
+	}
+	return psalms, nil
 }
 
 // =============================================================================
-// API Response Types
+// Database Helper Functions
 // =============================================================================
+// These help convert between Go types and SQL nullable types
 
-// DailyReadings is the primary response for "give me readings for a date".
-// It combines the position information with the appropriate year's readings.
-type DailyReadings struct {
-	// Position information (from lectionary_days)
-	Period        string   `json:"period"`
-	DayIdentifier string   `json:"day_identifier"`
-	SpecialName   *string  `json:"special_name,omitempty"`
-	MorningPsalms []string `json:"morning_psalms"`
-	EveningPsalms []string `json:"evening_psalms"`
-
-	// Which year cycle was used for this response
-	YearCycle int `json:"year_cycle"`
-
-	// The scripture readings for this year cycle
-	Readings []Reading `json:"readings"`
+// NullString returns the string value or empty string if null
+func NullString(ns sql.NullString) string {
+	if ns.Valid {
+		return ns.String
+	}
+	return ""
 }
 
-// ReadingWithProgress combines a reading with its completion status.
-type ReadingWithProgress struct {
-	Reading   Reading          `json:"reading"`
-	Progress  *ReadingProgress `json:"progress,omitempty"`
-	Completed bool             `json:"completed"`
+// NullTime returns a pointer to time or nil if null
+func NullTime(nt sql.NullTime) *time.Time {
+	if nt.Valid {
+		return &nt.Time
+	}
+	return nil
 }
 
-// DailyReadingsWithProgress extends DailyReadings with progress information.
-type DailyReadingsWithProgress struct {
-	DailyReadings
-	ReadingsWithProgress []ReadingWithProgress `json:"readings_with_progress"`
+// NullInt64 returns a pointer to int64 or nil if null
+func NullInt64(ni sql.NullInt64) *int64 {
+	if ni.Valid {
+		return &ni.Int64
+	}
+	return nil
 }
 
-// ProgressStats contains statistics about a user's reading progress.
-type ProgressStats struct {
-	TotalReadings     int     `json:"total_readings"`
-	CompletedReadings int     `json:"completed_readings"`
-	CompletionPercent float64 `json:"completion_percent"`
-	CurrentStreak     int     `json:"current_streak"`
-	LongestStreak     int     `json:"longest_streak"`
+// StringToNullString converts string to NullString (for inserts)
+func StringToNullString(s string) sql.NullString {
+	if s == "" {
+		return sql.NullString{Valid: false}
+	}
+	return sql.NullString{String: s, Valid: true}
 }
 
-// =============================================================================
-// Import Types (for loading JSON data)
-// =============================================================================
-
-// ImportReading represents a reading in the import JSON format.
-type ImportReading struct {
-	Position   int      `json:"position"`
-	Label      string   `json:"label"` // "first", "second", "gospel"
-	References []string `json:"references"`
-}
-
-// ImportYearData represents readings for a single year in the import JSON.
-type ImportYearData struct {
-	Readings []ImportReading `json:"readings"`
-}
-
-// ImportPsalms represents the psalms structure in import JSON.
-type ImportPsalms struct {
-	Morning []string `json:"morning"`
-	Evening []string `json:"evening"`
-}
-
-// ImportPosition represents a single position in the import JSON.
-type ImportPosition struct {
-	Period        string          `json:"period"`
-	DayIdentifier string          `json:"day_identifier"`
-	SpecialName   *string         `json:"special_name"`
-	PeriodType    string          `json:"period_type"`
-	Psalms        ImportPsalms    `json:"psalms"`
-	Year1         *ImportYearData `json:"year_1"`
-	Year2         *ImportYearData `json:"year_2"`
-}
-
-// ImportData represents the full import JSON structure.
-type ImportData struct {
-	Metadata struct {
-		GeneratedAt    string `json:"generated_at"`
-		Source         string `json:"source"`
-		SchemaVersion  string `json:"schema_version"`
-		TotalPositions int    `json:"total_positions"`
-		Year1Complete  int    `json:"year_1_complete"`
-		Year2Complete  int    `json:"year_2_complete"`
-	} `json:"metadata"`
-	DailyLectionary []ImportPosition `json:"daily_lectionary"`
+// TimeToNullTime converts time pointer to NullTime (for inserts)
+func TimeToNullTime(t *time.Time) sql.NullTime {
+	if t == nil {
+		return sql.NullTime{Valid: false}
+	}
+	return sql.NullTime{Time: *t, Valid: true}
 }

@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 """
-PCUSA Daily Lectionary Scraper
+PCUSA Daily Lectionary Scraper - Date Range Version
 
-Scrapes readings from https://pcusa.org/daily/devotion/{date}
+Scrapes readings from https://pcusa.org/daily/devotion/{date} for a date range.
 
 Features:
+- Accepts start and end dates as arguments
 - Saves progress after each page (can stop and resume)
 - Random delays between requests to be polite
 - Extracts all 5 reading types (Morning, First, Second, Gospel, Evening)
 - Outputs clean JSON
 
 Usage:
-    python3 scraper.py                    # Start/resume scraping
-    python3 scraper.py --status           # Show progress
-    python3 scraper.py --reset            # Clear progress and start over
-    python3 scraper.py --export           # Export completed data to final JSON
+    python3 scraper.py 2024-01-01 2027-12-31  # Scrape 4 years
+    python3 scraper.py 2026-01-01 2026-12-31  # Scrape 2026 only
+    python3 scraper.py --status                 # Show progress
+    python3 scraper.py --reset                  # Clear progress and start over
+    python3 scraper.py --export                 # Export completed data to final JSON
 """
 
 import json
@@ -22,7 +24,7 @@ import os
 import random
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Dict, List
 from urllib.parse import urljoin
@@ -34,8 +36,7 @@ from bs4 import BeautifulSoup
 # CONFIGURATION
 # =============================================================================
 
-BASE_URL = "https://pcusa.org/daily/devotion/"
-URLS_FILE = "urls_to_scrape_v4.txt"
+BASE_URL = "https://pcusa.org/daily/devotion"
 PROGRESS_FILE = "scrape_progress.json"
 OUTPUT_FILE = "scraped_readings.json"
 
@@ -45,7 +46,7 @@ MAX_DELAY = 3.0
 
 # Request settings
 REQUEST_TIMEOUT = 30
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 # Reading types to extract (anchor href values)
 READING_TYPES = [
@@ -55,6 +56,41 @@ READING_TYPES = [
     ("Gospel", "#reading-Gospel-Reading"),
     ("Evening", "#reading-Evening"),
 ]
+
+# =============================================================================
+# DATE RANGE GENERATION
+# =============================================================================
+
+def generate_urls(start_date: str, end_date: str) -> List[str]:
+    """
+    Generate URLs for date range.
+    
+    Args:
+        start_date: YYYY-MM-DD
+        end_date: YYYY-MM-DD (inclusive)
+    
+    Returns:
+        List of URLs
+    """
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+    
+    urls = []
+    current = start
+    while current <= end:
+        url = f"{BASE_URL}/{current.year}/{current.month:02d}/{current.day:02d}"
+        urls.append(url)
+        current += timedelta(days=1)
+    
+    return urls
+
+
+def extract_date_from_url(url: str) -> str:
+    """Extract YYYY-MM-DD from URL."""
+    # URL format: https://pcusa.org/daily/devotion/2025/12/01
+    parts = url.rstrip('/').split('/')
+    return f"{parts[-3]}-{parts[-2]}-{parts[-1]}"
+
 
 # =============================================================================
 # PROGRESS TRACKING
@@ -68,6 +104,7 @@ def load_progress() -> Dict:
     return {
         "completed": {},  # date -> readings dict
         "failed": {},     # date -> error message
+        "date_range": None,  # {"start": "YYYY-MM-DD", "end": "YYYY-MM-DD"}
         "last_updated": None,
     }
 
@@ -77,26 +114,6 @@ def save_progress(progress: Dict):
     progress["last_updated"] = datetime.now().isoformat()
     with open(PROGRESS_FILE, 'w') as f:
         json.dump(progress, f, indent=2)
-
-
-def load_urls() -> List[str]:
-    """Load URLs from the URL list file."""
-    if not os.path.exists(URLS_FILE):
-        print(f"ERROR: {URLS_FILE} not found!")
-        print("Make sure you've run calculate_dates_v4.py first.")
-        sys.exit(1)
-    
-    with open(URLS_FILE, 'r') as f:
-        urls = [line.strip() for line in f if line.strip()]
-    return urls
-
-
-def extract_date_from_url(url: str) -> str:
-    """Extract YYYY-MM-DD from URL."""
-    # URL format: https://pcusa.org/daily/devotion/2025/12/01
-    # Extract last 3 parts and join with dashes
-    parts = url.rstrip('/').split('/')
-    return f"{parts[-3]}-{parts[-2]}-{parts[-1]}"
 
 
 # =============================================================================
@@ -180,15 +197,23 @@ def scrape_date(url: str) -> Dict:
 # MAIN SCRAPING LOOP
 # =============================================================================
 
-def run_scraper():
+def run_scraper(start_date: str, end_date: str):
     """Main scraping loop with progress tracking."""
     print("=" * 60)
     print("PCUSA Daily Lectionary Scraper")
     print("=" * 60)
+    print(f"Date range: {start_date} to {end_date}")
+    print()
     
-    # Load URLs and progress
-    urls = load_urls()
+    # Generate URLs
+    urls = generate_urls(start_date, end_date)
+    print(f"Generated {len(urls)} URLs")
+    
+    # Load progress
     progress = load_progress()
+    
+    # Update date range in progress
+    progress["date_range"] = {"start": start_date, "end": end_date}
     
     # Figure out what's left to do
     completed_dates = set(progress["completed"].keys())
@@ -199,7 +224,6 @@ def run_scraper():
         if extract_date_from_url(url) not in completed_dates
     ]
     
-    print(f"\nTotal URLs: {len(urls)}")
     print(f"Already completed: {len(completed_dates)}")
     print(f"Previously failed: {len(failed_dates)}")
     print(f"Remaining: {len(remaining_urls)}")
@@ -247,20 +271,31 @@ def run_scraper():
 def show_status():
     """Show current progress status."""
     progress = load_progress()
-    urls = load_urls()
     
     completed = len(progress["completed"])
     failed = len(progress["failed"])
-    total = len(urls)
-    remaining = total - completed
     
     print("=" * 60)
     print("Scraping Status")
     print("=" * 60)
-    print(f"Total URLs:      {total}")
-    print(f"Completed:       {completed} ({100*completed/total:.1f}%)")
-    print(f"Failed:          {failed}")
-    print(f"Remaining:       {remaining}")
+    
+    if progress.get("date_range"):
+        dr = progress["date_range"]
+        print(f"Date range:      {dr['start']} to {dr['end']}")
+        
+        # Calculate total days
+        start = datetime.strptime(dr['start'], "%Y-%m-%d")
+        end = datetime.strptime(dr['end'], "%Y-%m-%d")
+        total = (end - start).days + 1
+        
+        print(f"Total dates:     {total}")
+        print(f"Completed:       {completed} ({100*completed/total:.1f}%)")
+        print(f"Failed:          {failed}")
+        print(f"Remaining:       {total - completed - failed}")
+    else:
+        print("No date range set. Run scraper with start and end dates.")
+        print(f"Completed:       {completed}")
+        print(f"Failed:          {failed}")
     
     if progress["last_updated"]:
         print(f"Last updated:    {progress['last_updated']}")
@@ -279,7 +314,8 @@ def show_status():
         sample = progress["completed"][sample_date]
         print(f"  Date: {sample['date']}")
         for reading, ref in sample["readings"].items():
-            print(f"    {reading}: {ref}")
+            status = ref if ref else "(not found)"
+            print(f"    {reading}: {status}")
 
 
 def reset_progress():
@@ -311,6 +347,7 @@ def export_data():
             "exported_at": datetime.now().isoformat(),
             "total_dates": len(sorted_dates),
             "source": "https://pcusa.org/daily/devotion/",
+            "date_range": progress.get("date_range"),
         },
         "readings_by_date": {
             date: progress["completed"][date]
@@ -321,7 +358,7 @@ def export_data():
     with open(OUTPUT_FILE, 'w') as f:
         json.dump(output, f, indent=2)
     
-    print(f"Exported {len(sorted_dates)} dates to {OUTPUT_FILE}")
+    print(f"✅ Exported {len(sorted_dates)} dates to {OUTPUT_FILE}")
     
     # Show stats
     reading_counts = {rt: 0 for rt, _ in READING_TYPES}
@@ -341,21 +378,39 @@ def export_data():
 # =============================================================================
 
 def main():
-    if len(sys.argv) > 1:
-        cmd = sys.argv[1]
-        if cmd == "--status":
-            show_status()
-        elif cmd == "--reset":
-            reset_progress()
-        elif cmd == "--export":
-            export_data()
-        elif cmd == "--help":
-            print(__doc__)
-        else:
-            print(f"Unknown command: {cmd}")
-            print("Use --help for usage")
+    if len(sys.argv) == 1:
+        print(__doc__)
+        sys.exit(1)
+    
+    cmd = sys.argv[1]
+    
+    if cmd == "--status":
+        show_status()
+    elif cmd == "--reset":
+        reset_progress()
+    elif cmd == "--export":
+        export_data()
+    elif cmd == "--help":
+        print(__doc__)
+    elif len(sys.argv) == 3:
+        # Date range provided
+        start_date = sys.argv[1]
+        end_date = sys.argv[2]
+        
+        # Validate date format
+        try:
+            datetime.strptime(start_date, "%Y-%m-%d")
+            datetime.strptime(end_date, "%Y-%m-%d")
+        except ValueError:
+            print("ERROR: Dates must be in YYYY-MM-DD format")
+            print("Example: python3 scraper.py 2024-01-01 2027-12-31")
+            sys.exit(1)
+        
+        run_scraper(start_date, end_date)
     else:
-        run_scraper()
+        print("ERROR: Invalid arguments")
+        print(__doc__)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

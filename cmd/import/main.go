@@ -1,17 +1,17 @@
-// Command import loads the merged lectionary JSON into the SQLite database.
+// Command import loads scraped lectionary readings into the SQLite database.
 //
 // Usage:
 //
-//	go run ./cmd/import -json data/merge-data/daily_lectionary_merged.json -db data/lectionary.db
+//	go run ./cmd/import -json data/lectionary-scraper/scraped_readings.json -db data/lectionary.db
 //
 // This tool:
 // 1. Creates/opens the SQLite database
 // 2. Runs migrations to ensure schema is current
-// 3. Parses the merged JSON file
-// 4. Imports all positions and readings in a single transaction
+// 3. Parses the scraped JSON file
+// 4. Imports all readings using idempotent upserts
 //
-// The import is idempotent - running it twice will fail on duplicate positions.
-// To reimport, delete the database file first.
+// The import is idempotent - running it multiple times is safe.
+// Existing readings will be updated if data has changed.
 package main
 
 import (
@@ -28,7 +28,7 @@ import (
 
 func main() {
 	// Parse command line flags
-	jsonPath := flag.String("json", "data/merge-data/daily_lectionary_merged.json", "Path to merged JSON file")
+	jsonPath := flag.String("json", "data/lectionary-scraper/scraped_readings.json", "Path to scraped JSON file")
 	dbPath := flag.String("db", "data/lectionary.db", "Path to SQLite database")
 	verbose := flag.Bool("v", false, "Verbose output")
 	flag.Parse()
@@ -51,6 +51,48 @@ func main() {
 	logger.Info("import complete")
 }
 
+// =============================================================================
+// Scraper JSON Format
+// =============================================================================
+
+// ScraperReading represents a single reading from the scraper output.
+type ScraperReading struct {
+	Morning       string `json:"Morning"`
+	FirstReading  string `json:"First Reading"`
+	SecondReading string `json:"Second Reading"`
+	GospelReading string `json:"Gospel"`
+	Evening       string `json:"Evening"`
+}
+
+// ScraperDateEntry represents one date's data from the scraper.
+type ScraperDateEntry struct {
+	Date      string         `json:"date"`
+	URL       string         `json:"url"`
+	Readings  ScraperReading `json:"readings"`
+	ScrapedAt string         `json:"scraped_at"`
+}
+
+// ScraperMetadata contains scraper metadata.
+type ScraperMetadata struct {
+	ExportedAt string `json:"exported_at"`
+	TotalDates int    `json:"total_dates"`
+	Source     string `json:"source"`
+	DateRange  *struct {
+		Start string `json:"start"`
+		End   string `json:"end"`
+	} `json:"date_range"`
+}
+
+// ScraperData represents the complete scraper output file.
+type ScraperData struct {
+	Metadata       ScraperMetadata             `json:"metadata"`
+	ReadingsByDate map[string]ScraperDateEntry `json:"readings_by_date"`
+}
+
+// =============================================================================
+// Import Functions
+// =============================================================================
+
 func run(jsonPath, dbPath string, logger *slog.Logger) error {
 	ctx := context.Background()
 	startTime := time.Now()
@@ -65,16 +107,22 @@ func run(jsonPath, dbPath string, logger *slog.Logger) error {
 		return fmt.Errorf("read JSON file: %w", err)
 	}
 
-	var importData database.ImportData
-	if err := json.Unmarshal(data, &importData); err != nil {
+	var scraperData ScraperData
+	if err := json.Unmarshal(data, &scraperData); err != nil {
 		return fmt.Errorf("parse JSON: %w", err)
 	}
 
 	logger.Info("parsed JSON",
-		slog.Int("positions", len(importData.DailyLectionary)),
-		slog.String("source", importData.Metadata.Source),
-		slog.String("generated_at", importData.Metadata.GeneratedAt),
+		slog.Int("dates", len(scraperData.ReadingsByDate)),
+		slog.String("source", scraperData.Metadata.Source),
 	)
+
+	if scraperData.Metadata.DateRange != nil {
+		logger.Info("date range",
+			slog.String("start", scraperData.Metadata.DateRange.Start),
+			slog.String("end", scraperData.Metadata.DateRange.End),
+		)
+	}
 
 	// =========================================================================
 	// Step 2: Open database and run migrations
@@ -94,138 +142,194 @@ func run(jsonPath, dbPath string, logger *slog.Logger) error {
 	logger.Info("migrations complete", slog.Int("applied", migrated))
 
 	// =========================================================================
-	// Step 3: Import data in a transaction
+	// Step 3: Import readings
 	// =========================================================================
 	logger.Info("starting import")
 
-	var stats ImportStats
-	err = db.WithTx(ctx, func(tx *database.Tx) error {
-		return importPositions(ctx, tx, importData.DailyLectionary, logger, &stats)
-	})
-	if err != nil {
-		return fmt.Errorf("import data: %w", err)
+	stats := &ImportStats{}
+
+	for date, entry := range scraperData.ReadingsByDate {
+		if err := importReading(ctx, db, entry, logger, stats); err != nil {
+			logger.Warn("failed to import reading",
+				slog.String("date", date),
+				slog.String("error", err.Error()),
+			)
+			stats.Failed++
+		}
 	}
 
 	// =========================================================================
-	// Step 4: Verify import
+	// Step 4: Get final statistics
 	// =========================================================================
-	dayCount, err := db.CountDays(ctx)
+	dbStats, err := db.GetReadingStats(ctx)
 	if err != nil {
-		return fmt.Errorf("count days: %w", err)
-	}
-
-	readingCount, err := db.CountReadings(ctx)
-	if err != nil {
-		return fmt.Errorf("count readings: %w", err)
-	}
-
-	year1Count, year2Count, err := db.CountReadingsByYear(ctx)
-	if err != nil {
-		return fmt.Errorf("count readings by year: %w", err)
+		return fmt.Errorf("get stats: %w", err)
 	}
 
 	elapsed := time.Since(startTime)
 
 	logger.Info("import verified",
-		slog.Int("days", dayCount),
-		slog.Int("total_readings", readingCount),
-		slog.Int("year_1_readings", year1Count),
-		slog.Int("year_2_readings", year2Count),
+		slog.Int("total_days", dbStats.TotalDays),
+		slog.String("earliest_date", dbStats.EarliestDate),
+		slog.String("latest_date", dbStats.LatestDate),
 		slog.Duration("elapsed", elapsed),
 	)
 
 	// Print summary
 	fmt.Println()
 	fmt.Println("=== Import Summary ===")
-	fmt.Printf("Positions imported:  %d\n", stats.Positions)
-	fmt.Printf("Year 1 readings:     %d\n", stats.Year1Readings)
-	fmt.Printf("Year 2 readings:     %d\n", stats.Year2Readings)
-	fmt.Printf("Positions w/o Y2:    %d\n", stats.MissingYear2)
-	fmt.Printf("Time elapsed:        %v\n", elapsed.Round(time.Millisecond))
+	fmt.Printf("Imported:          %d readings\n", stats.Imported)
+	fmt.Printf("Updated:           %d readings\n", stats.Updated)
+	fmt.Printf("Failed:            %d readings\n", stats.Failed)
+	fmt.Printf("Total in database: %d readings\n", dbStats.TotalDays)
+	fmt.Printf("Date range:        %s to %s\n", dbStats.EarliestDate, dbStats.LatestDate)
+	fmt.Printf("Time elapsed:      %v\n", elapsed.Round(time.Millisecond))
+	fmt.Println()
 
 	return nil
 }
 
 // ImportStats tracks import statistics.
 type ImportStats struct {
-	Positions     int
-	Year1Readings int
-	Year2Readings int
-	MissingYear2  int
+	Imported int
+	Updated  int
+	Failed   int
 }
 
-// importPositions imports all positions and their readings.
-func importPositions(ctx context.Context, tx *database.Tx, positions []database.ImportPosition, logger *slog.Logger, stats *ImportStats) error {
-	for i, pos := range positions {
-		// Create the lectionary day (position)
-		day := &database.LectionaryDay{
-			Period:        pos.Period,
-			DayIdentifier: pos.DayIdentifier,
-			PeriodType:    database.PeriodType(pos.PeriodType),
-			SpecialName:   pos.SpecialName,
-			MorningPsalms: pos.Psalms.Morning,
-			EveningPsalms: pos.Psalms.Evening,
+// parsePsalms converts "Psalm 111; 149" to []string{"111", "149"}
+func parsePsalms(raw string) []string {
+	if raw == "" {
+		return []string{}
+	}
+
+	// Remove "Psalm" or "Psalms" prefix if present
+	raw = trimPrefix(raw, "Psalm ")
+	raw = trimPrefix(raw, "Psalms ")
+	raw = trimPrefix(raw, "Ps. ")
+	raw = trimPrefix(raw, "Pss. ")
+
+	// Split on semicolon
+	parts := splitAndTrim(raw, ";")
+
+	return parts
+}
+
+// trimPrefix removes prefix from string (case-insensitive)
+func trimPrefix(s, prefix string) string {
+	if len(s) >= len(prefix) && s[:len(prefix)] == prefix {
+		return s[len(prefix):]
+	}
+	return s
+}
+
+// splitAndTrim splits string on separator and trims whitespace
+func splitAndTrim(s, sep string) []string {
+	if s == "" {
+		return []string{}
+	}
+
+	var result []string
+	for _, part := range split(s, sep) {
+		trimmed := trim(part)
+		if trimmed != "" {
+			result = append(result, trimmed)
 		}
+	}
+	return result
+}
 
-		if err := tx.CreateDay(ctx, day); err != nil {
-			return fmt.Errorf("create day %d (%s/%s): %w",
-				i+1, pos.Period, pos.DayIdentifier, err)
-		}
+// split is a simple string split
+func split(s, sep string) []string {
+	if s == "" {
+		return []string{}
+	}
 
-		stats.Positions++
+	var result []string
+	current := ""
 
-		// Import Year 1 readings
-		if pos.Year1 != nil {
-			for _, r := range pos.Year1.Readings {
-				// Handle multiple references per reading
-				for refIdx, ref := range r.References {
-					reading := &database.Reading{
-						LectionaryDayID: day.ID,
-						YearCycle:       1,
-						ReadingType:     database.ReadingType(r.Label),
-						Position:        r.Position*10 + refIdx, // Preserve order with multi-ref
-						Reference:       ref,
-					}
-
-					if err := tx.CreateReading(ctx, reading); err != nil {
-						return fmt.Errorf("create year 1 reading for day %d: %w", i+1, err)
-					}
-
-					stats.Year1Readings++
-				}
-			}
-		}
-
-		// Import Year 2 readings
-		if pos.Year2 != nil {
-			for _, r := range pos.Year2.Readings {
-				for refIdx, ref := range r.References {
-					reading := &database.Reading{
-						LectionaryDayID: day.ID,
-						YearCycle:       2,
-						ReadingType:     database.ReadingType(r.Label),
-						Position:        r.Position*10 + refIdx,
-						Reference:       ref,
-					}
-
-					if err := tx.CreateReading(ctx, reading); err != nil {
-						return fmt.Errorf("create year 2 reading for day %d: %w", i+1, err)
-					}
-
-					stats.Year2Readings++
-				}
-			}
+	for i := 0; i < len(s); i++ {
+		if i+len(sep) <= len(s) && s[i:i+len(sep)] == sep {
+			result = append(result, current)
+			current = ""
+			i += len(sep) - 1
 		} else {
-			stats.MissingYear2++
+			current += string(s[i])
 		}
+	}
+	result = append(result, current)
 
-		// Progress logging every 50 positions
-		if (i+1)%50 == 0 {
-			logger.Debug("import progress",
-				slog.Int("position", i+1),
-				slog.Int("total", len(positions)),
+	return result
+}
+
+// trim removes leading/trailing whitespace
+func trim(s string) string {
+	start := 0
+	end := len(s)
+
+	// Trim leading
+	for start < end && (s[start] == ' ' || s[start] == '\t' || s[start] == '\n' || s[start] == '\r') {
+		start++
+	}
+
+	// Trim trailing
+	for end > start && (s[end-1] == ' ' || s[end-1] == '\t' || s[end-1] == '\n' || s[end-1] == '\r') {
+		end--
+	}
+
+	return s[start:end]
+}
+
+// importReading imports a single date's reading into the database.
+func importReading(ctx context.Context, db *database.DB, entry ScraperDateEntry, logger *slog.Logger, stats *ImportStats) error {
+	// Parse scraped_at timestamp
+	// Python's datetime.isoformat() outputs: "2026-01-03T12:04:24.723240"
+	var scrapedAt time.Time
+	var err error
+
+	// Try parsing with microseconds (Python's isoformat)
+	scrapedAt, err = time.Parse("2006-01-02T15:04:05.999999", entry.ScrapedAt)
+	if err != nil {
+		// Try RFC3339 format
+		scrapedAt, err = time.Parse(time.RFC3339, entry.ScrapedAt)
+		if err != nil {
+			logger.Debug("could not parse scraped_at timestamp",
+				slog.String("date", entry.Date),
+				slog.String("scraped_at", entry.ScrapedAt),
+				slog.String("error", err.Error()),
 			)
+			scrapedAt = time.Now() // fallback to now
 		}
+	}
+
+	// Create DailyReading struct
+	reading := &database.DailyReading{
+		Date:          entry.Date,
+		MorningPsalms: parsePsalms(entry.Readings.Morning),
+		EveningPsalms: parsePsalms(entry.Readings.Evening),
+		FirstReading:  entry.Readings.FirstReading,
+		SecondReading: entry.Readings.SecondReading,
+		GospelReading: entry.Readings.GospelReading,
+		SourceURL:     entry.URL,
+		ScrapedAt:     &scrapedAt,
+	}
+
+	// Check if it already exists (for stats)
+	existing, err := db.GetReadingByDate(ctx, entry.Date)
+	if err != nil && !database.IsNotFound(err) {
+		return fmt.Errorf("check existing reading: %w", err)
+	}
+
+	// Upsert (insert or update)
+	if err := db.UpsertDailyReading(ctx, reading); err != nil {
+		return fmt.Errorf("upsert reading: %w", err)
+	}
+
+	if existing != nil {
+		stats.Updated++
+		logger.Debug("updated reading", slog.String("date", entry.Date))
+	} else {
+		stats.Imported++
+		logger.Debug("imported reading", slog.String("date", entry.Date))
 	}
 
 	return nil
